@@ -3,7 +3,7 @@ package com.breathsafe.kth.breathsafe.JsonParsers;
 import android.content.res.Resources;
 import android.util.Log;
 
-import com.breathsafe.kth.breathsafe.Model.AirPollusion;
+import com.breathsafe.kth.breathsafe.Model.AirPollution;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -15,9 +15,9 @@ import java.util.List;
 
 public class AirJsonParser {
 
-    public static List<AirPollusion> parseAirLuftdaten(Resources res, String s) throws JSONException {
+    public static List<AirPollution> parseAirLuftdaten(Resources res, String s) throws JSONException {
         JSONArray jsonArray = new JSONArray(s);
-        List<AirPollusion> list = new ArrayList<>();
+        List<AirPollution> list = new ArrayList<>();
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject j1 = jsonArray.getJSONObject(i);
             JSONObject sensor = j1.getJSONObject("sensor");
@@ -42,8 +42,9 @@ public class AirJsonParser {
             double lng = location.getDouble("longitude");
             String country = location.getString("country");
             int id = sensor.getInt("id");
-            AirPollusion airPollusion = new AirPollusion(id, name, country, lat, lng, p1, p2, nowTimeInMillis());
-            list.add(airPollusion);
+            AirPollution airPollution = new AirPollution(id, name, country, lat, lng, p1, p2, nowTimeInMillis());
+
+            list.add(airPollution);
         }
         return list;
     }

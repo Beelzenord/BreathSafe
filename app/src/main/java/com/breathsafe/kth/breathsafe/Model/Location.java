@@ -1,13 +1,28 @@
 package com.breathsafe.kth.breathsafe.Model;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
+
+@Entity(tableName = "Location")
 public class Location {
-    String category;
+    @NonNull
+    @PrimaryKey
     String id;
+    @ColumnInfo(name = "category")
+    String category;
+    @ColumnInfo(name = "name")
     String name;
+    @ColumnInfo(name = "timeCreated")
     long timeCreated;
+    @ColumnInfo(name = "timeUpdated")
     long timeUpdated;
+    @ColumnInfo(name = "latitude")
     double latitude;
+    @ColumnInfo(name = "longitude")
     double longitude;
+    @ColumnInfo(name = "retrieved")
     long retrieved;
 
     public Location(String category, String id, String name, long timeCreated, long timeUpdated, double latitude, double longitude, long retrieved) {

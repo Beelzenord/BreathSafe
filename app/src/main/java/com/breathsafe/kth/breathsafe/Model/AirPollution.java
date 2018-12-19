@@ -1,16 +1,31 @@
 package com.breathsafe.kth.breathsafe.Model;
 
-public class AirPollusion {
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
+
+@Entity(tableName = "AirPollution")
+public class AirPollution {
+    @NonNull
+    @PrimaryKey
     int id;
+    @ColumnInfo(name = "name")
     String name;
+    @ColumnInfo(name = "country")
     String country;
+    @ColumnInfo(name = "latitude")
     double latitude;
+    @ColumnInfo(name = "longitude")
     double longitude;
+    @ColumnInfo(name = "P1")
     double P1;
+    @ColumnInfo(name = "P2")
     double P2;
+    @ColumnInfo(name = "retrieved")
     long retrieved;
 
-    public AirPollusion(int id, String name, String country, double latitude, double longitude, double p1, double p2, long retrieved) {
+    public AirPollution(int id, String name, String country, double latitude, double longitude, double p1, double p2, long retrieved) {
         this.id = id;
         this.name = name;
         this.country = country;
@@ -21,7 +36,7 @@ public class AirPollusion {
         this.retrieved = retrieved;
     }
 
-    public AirPollusion() {
+    public AirPollution() {
     }
 
     public int getId() {
