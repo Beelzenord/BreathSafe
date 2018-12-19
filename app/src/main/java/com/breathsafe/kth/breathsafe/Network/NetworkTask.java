@@ -4,7 +4,9 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.breathsafe.kth.breathsafe.Exceptions.CancelTaskException;
+import com.breathsafe.kth.breathsafe.JsonParsers.AirJsonParser;
 import com.breathsafe.kth.breathsafe.MainActivity;
+
 
 import org.json.JSONException;
 
@@ -15,6 +17,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
 /**
  * Asynchronous task to collect Locations from a specific string. Returns CancelTaskException
@@ -87,7 +90,7 @@ public class NetworkTask extends AsyncTask<String, Void, NetworkTask.Result> {
                 throw new CancelTaskException();
 
             String msg = sb.toString();
-//            List<AirPollusion> parsedJsonObject = AirJsonParser.parseAirLuftdaten(callbackActivity.getResources(), sb.toString());
+          //  List<AirPollusion> parsedJsonObject = AirJsonParser.parseAirLuftdaten(callbackActivity.getResources(), sb.toString());
             if (msg != null)
                 result = new NetworkTask.Result(msg, tag);
             else

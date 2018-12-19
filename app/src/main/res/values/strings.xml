@@ -13,4 +13,5 @@
     <string name="menu_search_title_select_category">Select Category</string>
     <string name="title_activity_maps23">Map3</string>
     <string name="title_activity_search">Search</string>
+    <string name="database">BreathSafe</string>
 </resources>

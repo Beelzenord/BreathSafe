@@ -1,12 +1,30 @@
 package com.breathsafe.kth.breathsafe.Model;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+
+import android.support.annotation.NonNull;
+
+@Entity(tableName = "LocationCategory")
 public class LocationCategory {
-    String singularName;
+
+    @NonNull
+    @PrimaryKey
+    @ColumnInfo(name = "id")
     String id;
+
+    @ColumnInfo(name="singularName")
+    String singularName;
+    @ColumnInfo(name = "timeCreated")
     long timeCreated;
+    @ColumnInfo(name = "timeUpdated")
     long timeUpdated;
+    @ColumnInfo(name = "groupId")
     int groupId;
+    @ColumnInfo(name = "groupName")
     String groupName;
+    @ColumnInfo(name = "retrieved")
     long retrieved;
 
     public LocationCategory(String singularName, String id, long timeCreated, long timeUpdated, int groupId, String groupName, long retrieved) {
@@ -18,6 +36,7 @@ public class LocationCategory {
         this.groupName = groupName;
         this.retrieved = retrieved;
     }
+
 
     public String getSingularName() {
         return singularName;
