@@ -14,4 +14,11 @@
     <string name="title_activity_maps23">Map3</string>
     <string name="title_activity_search">Search</string>
     <string name="database">BreathSafe</string>
+
+
+
+
+
+
+    <string name="fragment_user_list">User List</string>
 </resources>
