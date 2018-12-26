@@ -4,14 +4,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.breathsafe.kth.breathsafe.Database.DatabaseTables;
 import com.breathsafe.kth.breathsafe.Database.LocationCategoryDoa;
 import com.breathsafe.kth.breathsafe.Database.Repository;
 import com.breathsafe.kth.breathsafe.Database.StoreToDatabase;
-import com.breathsafe.kth.breathsafe.IO.DatabaseRead.DatabaseTask;
 import com.breathsafe.kth.breathsafe.Model.LocationCategory;
 import com.breathsafe.kth.breathsafe.Model.LocationCategoryData;
-import com.breathsafe.kth.breathsafe.IO.Network.NetworkTask;
+import com.breathsafe.kth.breathsafe.Network.NetworkTask;
 
 import java.util.Calendar;
 import java.util.List;
@@ -62,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
                     for (LocationCategory lc : locationCategoryData.getList())
                         System.out.println(lc.getSingularName());
                     StoreToDatabase storeToDatabase = new StoreToDatabase(this,locationCategoryData.getList());
-                    storeToDatabase.execute(); //if executed the database holds values for location categories
+              //      storeToDatabase.execute(); //if executed the database holds values for location categories
                     Log.d(TAG, "onDownloadComplete: stored categories");
                     break;
                 case LOCATION_TASK:
