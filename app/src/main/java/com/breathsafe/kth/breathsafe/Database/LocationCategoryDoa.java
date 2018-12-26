@@ -14,15 +14,14 @@ import java.util.List;
 @Dao
 public interface LocationCategoryDoa {
 
-    @Insert
-    void insert(List<LocationCategory> locationCategorys);
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    long insert(LocationCategory locationCategory);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertAsList(List<LocationCategory> locationCategories);
 
-
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    void update(LocationCategory... locationCategories);
+    void update(LocationCategory locationCategories);
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     void updateAsList(List<LocationCategory> locationCategories);

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="api_air_country_SE">http://api.luftdaten.info/static/v1/filter/country=SE</string>
-    <string name="api_location_hund_SE">http://api.stockholm.se/PlaceService/ServiceUnitTypes/68fd76fb-6706-45cb-ba24-28ed1c25b71e/ServiceUnits/json?apikey=91350845b8e34a69b713e347a3840d76</string>
-    <string name="api_stockholm_all_categories">http://api.stockholm.se/PlaceService/ServiceUnitTypes/json?apikey=</string>
-    <string name="api_stockholm_specific_prefix">http://api.stockholm.se/PlaceService/ServiceUnitTypes/</string>
+    <string name="api_luftdaten_country_SE">https://api.luftdaten.info/static/v1/filter/country=SE</string>
+    <string name="api_luftdaten_lat_lat_area">https://api.luftdaten.info/static/v1/filter/area=</string>
+    <string name="api_stockholm_all_categories">https://api.stockholm.se/PlaceService/ServiceUnitTypes/json?apikey=</string>
+    <string name="api_stockholm_specific_prefix">https://api.stockholm.se/PlaceService/ServiceUnitTypes/</string>
     <string name="api_stockholm_specific_midfix">/ServiceUnits/json?apikey=</string>
 </resources>

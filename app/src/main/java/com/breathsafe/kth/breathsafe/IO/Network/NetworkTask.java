@@ -1,11 +1,10 @@
-package com.breathsafe.kth.breathsafe.Network;
+package com.breathsafe.kth.breathsafe.IO.Network;
 
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.breathsafe.kth.breathsafe.AsyncTaskCallback;
 import com.breathsafe.kth.breathsafe.Exceptions.CancelTaskException;
-import com.breathsafe.kth.breathsafe.JsonParsers.AirJsonParser;
-import com.breathsafe.kth.breathsafe.MainActivity;
 
 
 import org.json.JSONException;
@@ -17,15 +16,14 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.List;
 
 /**
  * Asynchronous task to collect Locations from a specific string. Returns CancelTaskException
  * if the task i canceled.
  */
 public class NetworkTask extends AsyncTask<String, Void, NetworkTask.Result> {
-    private static final String logStr = "NetworkAirTask";
-    private MainActivity callbackActivity;
+    private static final String logStr = "NetworkTask";
+    private AsyncTaskCallback callbackActivity;
     private String urlString;
     private int tag;
 
@@ -35,14 +33,14 @@ public class NetworkTask extends AsyncTask<String, Void, NetworkTask.Result> {
      * @param urlString The urlString to use.
      * @param tag The tag of the task.
      */
-    public NetworkTask(MainActivity callbackActivity, String urlString, int tag) {
+    public NetworkTask(AsyncTaskCallback callbackActivity, String urlString, int tag) {
         this.callbackActivity = callbackActivity;
         this.urlString = urlString;
         this.tag = tag;
     }
 
     /**
-     * When the task is done call onLocationDownloadComplete.
+     * When the task is done call onDownloadComplete.
      * @param result The result of the download.
      */
     @Override
@@ -72,7 +70,7 @@ public class NetworkTask extends AsyncTask<String, Void, NetworkTask.Result> {
 
             Log.i(logStr, urlStr.toString());
             url = new URL(urlStr.toString());
-            System.out.println("CALLING LUFTDATEN API");
+            System.out.println("CALLING API");
             http = (HttpURLConnection) url.openConnection();
             if (isCancelled())
                 throw new CancelTaskException();
@@ -94,7 +92,7 @@ public class NetworkTask extends AsyncTask<String, Void, NetworkTask.Result> {
             if (msg != null)
                 result = new NetworkTask.Result(msg, tag);
             else
-                result = new NetworkTask.Result(new JSONException("Could not parse SMHI data"), tag);
+                result = new NetworkTask.Result(new JSONException("Could not parse data"), tag);
         } catch (MalformedURLException e) {
             e.printStackTrace();
             result = new NetworkTask.Result(e, tag);
