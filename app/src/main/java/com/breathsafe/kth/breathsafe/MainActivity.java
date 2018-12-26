@@ -1,10 +1,6 @@
 package com.breathsafe.kth.breathsafe;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,10 +9,7 @@ import android.util.Log;
 import com.breathsafe.kth.breathsafe.Database.DatabaseTables;
 import com.breathsafe.kth.breathsafe.IO.DatabaseRead.DatabaseTask;
 import com.breathsafe.kth.breathsafe.IO.DatabaseSynchronizer;
-import com.breathsafe.kth.breathsafe.Maps.InitLocation;
 import com.breathsafe.kth.breathsafe.Maps.MapActivity;
-import com.breathsafe.kth.breathsafe.Maps.MapHandler;
-import com.breathsafe.kth.breathsafe.Maps.MapsThingFragment;
 import com.breathsafe.kth.breathsafe.Model.Location;
 import com.breathsafe.kth.breathsafe.Model.LocationCategory;
 import com.breathsafe.kth.breathsafe.Model.LocationCategoryData;
@@ -30,7 +23,6 @@ import com.breathsafe.kth.breathsafe.Search.SelectLocationFragment;
 import java.util.Calendar;
 import java.util.List;
 
-import static com.breathsafe.kth.breathsafe.Constants.PERMISSIONS_REQUEST_ENABLE_GPS;
 
 public class MainActivity extends AppCompatActivity implements AsyncTaskCallback {
     private static final String TAG = "MainActivity";
@@ -44,7 +36,6 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
     private PagerAdapter mPagerAdapter;
     private ViewPager mViewPager;
     private SelectLocationFragment selectLocationFragment;
-    private MapHandler mapHandler;
 
 
     @Override
@@ -53,7 +44,6 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
         setContentView(R.layout.activity_main);
         Log.i(TAG, "onCreate: hello0");
         searchButtonPressed = false;
-        mapHandler = MapHandler.getInstance();
 
         prev = Calendar.getInstance().getTimeInMillis();
 
