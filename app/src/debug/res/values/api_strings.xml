@@ -5,4 +5,5 @@
     <string name="api_stockholm_all_categories">http://api.stockholm.se/PlaceService/ServiceUnitTypes/json?apikey=</string>
     <string name="api_stockholm_specific_prefix">http://api.stockholm.se/PlaceService/ServiceUnitTypes/</string>
     <string name="api_stockholm_specific_midfix">/ServiceUnits/json?apikey=</string>
+    <string name="api_stockholm_all_locations">http://api.stockholm.se/PlaceService/ServiceUnits/json?apikey=</string>
 </resources>

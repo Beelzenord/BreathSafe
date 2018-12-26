@@ -47,7 +47,7 @@ public class OnTaskCompleteHelper {
     public static List<Location> onSpecificLocationTaskComplete(Activity activity, String s) {
         try {
 //            LocationData locationData = LocationData.getInstance();
-            List<Location> list = LocationJsonParser.parseLocationStockholmApi(activity.getResources(), s);
+            List<Location> list = LocationJsonParser.parseLocationStockholmApi( s);
 //            locationData.setList(list);
             return list;
         } catch (JSONException e) {

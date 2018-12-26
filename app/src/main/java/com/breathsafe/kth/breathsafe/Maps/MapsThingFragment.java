@@ -13,12 +13,18 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.breathsafe.kth.breathsafe.Constants;
+import com.breathsafe.kth.breathsafe.Model.Location;
+import com.breathsafe.kth.breathsafe.Network.NetworkGetAllLocation;
 import com.breathsafe.kth.breathsafe.R;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 
 public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
@@ -30,13 +36,25 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
     private RecyclerView mUserListRecyclerView;
     private MapView mMapView;
 
+    private static LatLng latLng;
+
+    private List<Location> locationList ;
+
+    public static LatLng getLatLng() {
+        return latLng;
+    }
+
+    public static void setLatLng(LatLng latLng) {
+        MapsThingFragment.latLng = latLng;
+    }
 
     //vars
 //    private ArrayList<User> mUserList = new ArrayList<>();
 //    private UserRecyclerAdapter mUserRecyclerAdapter;
 
 
-    public static MapsThingFragment newInstance() {
+    public static MapsThingFragment newInstance(LatLng latLng) {
+        setLatLng(latLng);
         return new MapsThingFragment();
     }
 
@@ -45,6 +63,15 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
 //            mUserList = getArguments().getParcelableArrayList(getString(R.string.intent_user_list));
+        }
+
+        NetworkGetAllLocation networkGetAllLocation= new NetworkGetAllLocation(getContext());
+        try {
+            locationList = networkGetAllLocation.execute().get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
@@ -127,8 +154,25 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        map.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("New"));
+
+
+        //map.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("New"));
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(getLatLng(),15f));
+
+        MarkerOptions options = new MarkerOptions().position(getLatLng()).title("some title");
         map.setMyLocationEnabled(true);
+        map.addMarker(options);
+
+        initOthers(locationList,map);
+
+
+
+    }
+
+    private void initOthers(List<Location> locationList, GoogleMap map) {
+        for(Location l : locationList){
+            map.addMarker(new MarkerOptions().position(new LatLng(l.getLatitude(),l.getLongitude())).title(l.getName()));
+        }
     }
 
     @Override

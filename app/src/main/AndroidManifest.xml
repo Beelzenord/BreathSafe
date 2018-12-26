@@ -34,7 +34,8 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
 
-        <activity android:name=".Maps.MapActivity"></activity>
+        <activity android:name=".Maps.MapActivity" />
+        <activity android:name=".FilterSearchActivity"></activity>
     </application>
 
 </manifest>

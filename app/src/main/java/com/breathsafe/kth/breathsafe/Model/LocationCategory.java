@@ -4,10 +4,12 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 @Entity(tableName = "LocationCategory")
-public class LocationCategory {
+public class LocationCategory implements Parcelable{
 
     @NonNull
     @PrimaryKey
@@ -37,6 +39,28 @@ public class LocationCategory {
         this.retrieved = retrieved;
     }
 
+
+    protected LocationCategory(Parcel in) {
+        id = in.readString();
+        singularName = in.readString();
+        timeCreated = in.readLong();
+        timeUpdated = in.readLong();
+        groupId = in.readInt();
+        groupName = in.readString();
+        retrieved = in.readLong();
+    }
+
+    public static final Creator<LocationCategory> CREATOR = new Creator<LocationCategory>() {
+        @Override
+        public LocationCategory createFromParcel(Parcel in) {
+            return new LocationCategory(in);
+        }
+
+        @Override
+        public LocationCategory[] newArray(int size) {
+            return new LocationCategory[size];
+        }
+    };
 
     public String getSingularName() {
         return singularName;
@@ -92,5 +116,21 @@ public class LocationCategory {
 
     public void setRetrieved(long retrieved) {
         this.retrieved = retrieved;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(id);
+        parcel.writeString(singularName);
+        parcel.writeLong(timeCreated);
+        parcel.writeLong(timeUpdated);
+        parcel.writeInt(groupId);
+        parcel.writeString(groupName);
+        parcel.writeLong(retrieved);
     }
 }

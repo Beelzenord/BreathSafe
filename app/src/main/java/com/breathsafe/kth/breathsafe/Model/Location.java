@@ -99,4 +99,18 @@ public class Location {
     public void setRetrieved(long retrieved) {
         this.retrieved = retrieved;
     }
+
+    @Override
+    public String toString() {
+        return "Location{" +
+                "id='" + id + '\'' +
+                ", category='" + category + '\'' +
+                ", name='" + name + '\'' +
+                ", timeCreated=" + timeCreated +
+                ", timeUpdated=" + timeUpdated +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", retrieved=" + retrieved +
+                '}';
+    }
 }

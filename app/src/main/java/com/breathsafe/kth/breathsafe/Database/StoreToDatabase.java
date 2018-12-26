@@ -18,8 +18,10 @@ public class StoreToDatabase extends AsyncTask<Void,Void,Boolean> {
     @Override
     protected Boolean doInBackground(Void... voids) {
         repository = Repository.getInstance(this.context);
-        repository.locationCategoryDoa().insert(locationCategories);
+        //repository.locationCategoryDoa().insert(locationCategories);
+        System.out.println("Number of entities " + repository.locationCategoryDoa().countNumberOfEntities());
         if(repository.locationCategoryDoa().countNumberOfEntities()!=0){
+
             return true;
         }
         return false;

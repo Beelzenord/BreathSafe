@@ -16,8 +16,11 @@ import java.util.List;
 
 public class LocationJsonParser {
 
-    public static List<Location> parseLocationStockholmApi(Resources res, String s) throws JSONException {
+    public static List<Location> parseLocationStockholmApi( String s) throws JSONException {
         CoordinateHandler ch = new CoordinateHandler();
+
+       //System.out.println("String in parser " + s);
+
         JSONArray jsonArray = new JSONArray(s);
         List<Location> list = new ArrayList<>();
         for (int i = 0; i < jsonArray.length(); i++) {

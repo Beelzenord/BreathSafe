@@ -13,7 +13,7 @@ import java.util.List;
 @Dao
 public interface LocationDoa {
     @Insert
-    void insert(Location location);
+    void insert(List<Location> locations);
 
     @Update
     void update(Location... locations);

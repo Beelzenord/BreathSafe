@@ -16,9 +16,5 @@
     <string name="database">BreathSafe</string>
 
 
-
-
-
-
     <string name="fragment_user_list">User List</string>
 </resources>

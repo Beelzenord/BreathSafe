@@ -66,12 +66,14 @@ public class InitLocation {
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             ((MapActivity)activity).locationPermissionGranted = true;
+            Log.i("gotPermission","Got Permission");
             /** DO THE THING **/
 //            getChatrooms();
         } else {
             ActivityCompat.requestPermissions(activity,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     Constants.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+            Log.i("gotPermission","Did not get Permission");
         }
     }
 

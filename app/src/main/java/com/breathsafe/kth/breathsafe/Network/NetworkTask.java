@@ -5,7 +5,9 @@ import android.util.Log;
 
 import com.breathsafe.kth.breathsafe.Exceptions.CancelTaskException;
 import com.breathsafe.kth.breathsafe.JsonParsers.AirJsonParser;
+import com.breathsafe.kth.breathsafe.JsonParsers.LocationJsonParser;
 import com.breathsafe.kth.breathsafe.MainActivity;
+import com.breathsafe.kth.breathsafe.Model.Location;
 
 
 import org.json.JSONException;
@@ -90,7 +92,10 @@ public class NetworkTask extends AsyncTask<String, Void, NetworkTask.Result> {
                 throw new CancelTaskException();
 
             String msg = sb.toString();
-          //  List<AirPollusion> parsedJsonObject = AirJsonParser.parseAirLuftdaten(callbackActivity.getResources(), sb.toString());
+
+            System.out.println("MSG: " + msg.length());
+           // List<Location> parsedJsonObject = AirJsonParser.parseAirLuftdaten(callbackActivity.getResources(), sb.toString());
+
             if (msg != null)
                 result = new NetworkTask.Result(msg, tag);
             else
@@ -120,6 +125,7 @@ public class NetworkTask extends AsyncTask<String, Void, NetworkTask.Result> {
                 return new NetworkTask.Result(e, tag);
             }
         }
+        System.out.println("returning result");
         return result;
     }
 
