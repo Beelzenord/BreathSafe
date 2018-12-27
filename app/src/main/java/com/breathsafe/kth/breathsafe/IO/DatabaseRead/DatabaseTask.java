@@ -7,6 +7,7 @@ import com.breathsafe.kth.breathsafe.Database.Repository;
 import com.breathsafe.kth.breathsafe.Exceptions.CancelTaskException;
 import com.breathsafe.kth.breathsafe.MainActivity;
 import com.breathsafe.kth.breathsafe.Database.DatabaseTables;
+import com.breathsafe.kth.breathsafe.Model.AirPollution;
 import com.breathsafe.kth.breathsafe.Model.Location;
 import com.breathsafe.kth.breathsafe.Model.LocationCategory;
 
@@ -40,18 +41,22 @@ public class DatabaseTask {
     @Override
     protected Result doInBackground(Void... strings) {
         Result result = null;
+        Repository repository;
         try {
             if (isCancelled())
                 throw new CancelTaskException();
             switch (tag) {
                 case DatabaseTables.AIR_POLLUTION:
+                    repository = Repository.getInstance(activity);
+                    List<AirPollution> list1 = repository.airPollutionDoa().getAirPollution();
+                    result = new Result(tag, list1);
                     break;
 
 
                 case DatabaseTables.LOCATION_CATEGORY:
-                    Repository repository = Repository.getInstance(activity);
-                    List<LocationCategory> list = repository.locationCategoryDoa().getAllLocationCategory();
-                    result = new Result(tag, list);
+                    repository = Repository.getInstance(activity);
+                    List<LocationCategory> list2 = repository.locationCategoryDoa().getAllLocationCategory();
+                    result = new Result(tag, list2);
 //                      repository.locationCategoryDoa().insertAsList((List<LocationCategory>)data);
                     break;
 
@@ -59,8 +64,8 @@ public class DatabaseTask {
                 case DatabaseTables.LOCATION:
                     System.out.println("gettings locations");
                     Repository repository2 = Repository.getInstance(activity);
-                    List<Location> list2 = repository2.locationDoa().getAllLocations();
-                    result = new Result(tag, list2);
+                    List<Location> list3 = repository2.locationDoa().getAllLocations();
+                    result = new Result(tag, list3);
                     break;
 
 

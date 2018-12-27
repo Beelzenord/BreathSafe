@@ -29,6 +29,9 @@ public class Location {
     long retrieved;
 
     @Ignore
+    double averageAQI;
+
+    @Ignore
     public Location(String id, List<String> categories, String name, long timeCreated, long timeUpdated, double latitude, double longitude, long retrieved) {
         this.id = id;
         this.categories = new Categories(categories);
@@ -38,6 +41,7 @@ public class Location {
         this.latitude = latitude;
         this.longitude = longitude;
         this.retrieved = retrieved;
+        averageAQI = -1;
     }
 
     public Location(@NonNull String id, Categories categories, String name, long timeCreated, long timeUpdated, double latitude, double longitude, long retrieved) {
@@ -149,5 +153,15 @@ public class Location {
         }
         return null;
 
+    }
+
+    @Ignore
+    public double getAverageAQI() {
+        return averageAQI;
+    }
+
+    @Ignore
+    public void setAverageAQI(double averageAQI) {
+        this.averageAQI = averageAQI;
     }
 }

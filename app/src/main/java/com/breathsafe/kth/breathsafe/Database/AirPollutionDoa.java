@@ -3,25 +3,31 @@ package com.breathsafe.kth.breathsafe.Database;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
+import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
 import com.breathsafe.kth.breathsafe.Model.AirPollution;
-import com.breathsafe.kth.breathsafe.Model.LocationCategory;
 
 import java.util.List;
 
 @Dao
 public interface AirPollutionDoa {
 
-    @Insert
-    void Insert(AirPollution... airPollusion);
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    long insert(AirPollution airPollusion);
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    void insertAsList(List<AirPollution> airPollutions);
 
     @Update
-    void Update(AirPollution... airPollusions);
+    void update(AirPollution airPollusions);
+
+    @Update
+    void updateAsList(List<AirPollution> airPollutions);
 
     @Delete
-    void Delete(AirPollution... airPollusions);
+    void delete(AirPollution... airPollusions);
 
     @Query("SELECT * FROM AirPollution")
     List<AirPollution> getAirPollution();

@@ -43,6 +43,7 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
     private MapView mMapView;
     private DisplayOnMapList displayOnMapList;
     private boolean clearMarkers;
+    private List<AirPollution> tmp;
 
     //vars
 //    private ArrayList<User> mUserList = new ArrayList<>();
@@ -61,6 +62,11 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
+    public void setAir(List<AirPollution> tmp) {
+        this.tmp = tmp;
+        mMapView.getMapAsync(this);
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -71,6 +77,7 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
         clearMarkers = false;
         setHasOptionsMenu(true);
         initGoogleMap(savedInstanceState);
+        ((MapActivity)getActivity()).checkForAirPollution();
 
         return view;
     }
@@ -166,13 +173,20 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
             return;
         }
 
+        if (tmp != null) {
+            for (AirPollution ap : tmp) {
+                map.addMarker(new MarkerOptions().position(new LatLng(ap.getLatitude(), ap.getLongitude())).title("POL " + ap.getP1()));
+            }
+        }
+
         if (clearMarkers) {
             map.clear();
             clearMarkers = false;
         }
         List<Location> displayList = displayOnMapList.getList();
         for (Location l : displayList) {
-            map.addMarker(new MarkerOptions().position(new LatLng(l.getLatitude(), l.getLongitude())).title(l.getName()));
+            String title = l.getName() + " - Average AQI: " + Math.round(l.getAverageAQI());
+            map.addMarker(new MarkerOptions().position(new LatLng(l.getLatitude(), l.getLongitude())).title(title));
         }
 
         if (displayList.size() > 0) {

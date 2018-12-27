@@ -10,6 +10,8 @@ import com.breathsafe.kth.breathsafe.Database.DatabaseTables;
 import com.breathsafe.kth.breathsafe.IO.DatabaseRead.DatabaseTask;
 import com.breathsafe.kth.breathsafe.IO.DatabaseSynchronizer;
 import com.breathsafe.kth.breathsafe.Maps.MapActivity;
+import com.breathsafe.kth.breathsafe.Model.AirPollution;
+import com.breathsafe.kth.breathsafe.Model.AirPollutionData;
 import com.breathsafe.kth.breathsafe.Model.Location;
 import com.breathsafe.kth.breathsafe.Model.LocationCategory;
 import com.breathsafe.kth.breathsafe.Model.LocationCategoryData;
@@ -45,7 +47,6 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
         Log.i(TAG, "onCreate: hello0");
         searchButtonPressed = false;
 
-        prev = Calendar.getInstance().getTimeInMillis();
 
         mPagerAdapter = new PagerAdapter(getSupportFragmentManager());
         mViewPager = (ViewPager)findViewById(R.id.container);
@@ -64,10 +65,13 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
     }
 
     private void startReadFromDatabase() {
+        prev = System.currentTimeMillis();
         DatabaseTask.Read databaseTask = new DatabaseTask.Read(this, null, DatabaseTables.LOCATION_CATEGORY);
         databaseTask.execute();
         DatabaseTask.Read location = new DatabaseTask.Read(this, null, DatabaseTables.LOCATION);
         location.execute();
+        DatabaseTask.Read airPollution = new DatabaseTask.Read(this, null, DatabaseTables.AIR_POLLUTION);
+        airPollution.execute();
     }
 
     private void startDatabaseSynchronizer() {
@@ -123,8 +127,14 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
     public void onDatabaseReadComplete(DatabaseTask.Result result) {
         if (result.msg != null) {
             switch(result.tag) {
-                case DatabaseTables.AIR_POLLUTION:
+                case DatabaseTables.AIR_POLLUTION: {
+                    long now = System.currentTimeMillis();
+                    List<AirPollution> airPollutions = (List<AirPollution>)result.msg;
+                    AirPollutionData.getInstance().setList(airPollutions);
+                    Log.i(TAG, "onDatabaseReadComplete: time to read AirPollutions: " + (now - prev));
+                    Log.i(TAG, "onDatabaseReadComplete: size of AirPollutions: " + airPollutions.size());
                     break;
+                }
                 case DatabaseTables.LOCATION_CATEGORY: {
                     long now = Calendar.getInstance().getTimeInMillis();
                     List<LocationCategory> list = (List<LocationCategory>)result.msg;
