@@ -26,12 +26,35 @@ public class LocationJsonParser {
             String timeUpdated = j1.getString("TimeUpdated");
             String id = j1.getString("Id");
             String name = j1.getString("Name");
-            String category = "Temp";
             JSONObject coordiates = j1.getJSONObject("GeographicalPosition");
             int x = coordiates.getInt("X");
             int y = coordiates.getInt("Y");
             double[] coords = ch.gridToGeodetic(x, y);
-            Location location = new Location(category, id, name, stringDateToLongDate(timeCreated),
+
+            Location location = new Location(id, new ArrayList(), name, stringDateToLongDate(timeCreated),
+                    stringDateToLongDate(timeUpdated), coords[0], coords[1], nowTimeInMillis());
+            list.add(location);
+        }
+        return list;
+    }
+
+    public static List<Location> parseLocationStockholmApi(String s, String categoryName) throws JSONException {
+        CoordinateHandler ch = new CoordinateHandler();
+        JSONArray jsonArray = new JSONArray(s);
+        List<Location> list = new ArrayList<>();
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject j1 = jsonArray.getJSONObject(i);
+            String timeCreated = j1.getString("TimeCreated");
+            String timeUpdated = j1.getString("TimeUpdated");
+            String id = j1.getString("Id");
+            String name = j1.getString("Name");
+            JSONObject coordiates = j1.getJSONObject("GeographicalPosition");
+            int x = coordiates.getInt("X");
+            int y = coordiates.getInt("Y");
+            double[] coords = ch.gridToGeodetic(x, y);
+            List<String> category = new ArrayList<>();
+            category.add(categoryName);
+            Location location = new Location(id, category, name, stringDateToLongDate(timeCreated),
                     stringDateToLongDate(timeUpdated), coords[0], coords[1], nowTimeInMillis());
             list.add(location);
         }

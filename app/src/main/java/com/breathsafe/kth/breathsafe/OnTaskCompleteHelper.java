@@ -55,4 +55,16 @@ public class OnTaskCompleteHelper {
             return null;
         }
     }
+
+    public static List<Location> onSpecificLocationTaskComplete(String s, String categoryName) {
+        try {
+//            LocationData locationData = LocationData.getInstance();
+            List<Location> list = LocationJsonParser.parseLocationStockholmApi(s, categoryName);
+//            locationData.setList(list);
+            return list;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

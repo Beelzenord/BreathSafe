@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/menu_maps_clear"
+        android:title="@string/menu_maps_title_clear"
+        app:showAsAction="ifRoom"/>
+    <item android:id="@+id/menu_maps_search"
+        android:title="@string/menu_maps_title_search"
+        app:showAsAction="ifRoom"/>
+    <item android:id="@+id/menu_maps_settings"
+        android:title="@string/menu_maps_title_settings"
+        app:showAsAction="ifRoom"/>
+</menu>

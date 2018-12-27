@@ -8,17 +8,29 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.breathsafe.kth.breathsafe.Constants;
+import com.breathsafe.kth.breathsafe.MainActivity;
+import com.breathsafe.kth.breathsafe.Model.AirPollution;
+import com.breathsafe.kth.breathsafe.Model.DisplayOnMapList;
+import com.breathsafe.kth.breathsafe.Model.Location;
 import com.breathsafe.kth.breathsafe.R;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.List;
 
 
 public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
@@ -29,7 +41,8 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
     //widgets
     private RecyclerView mUserListRecyclerView;
     private MapView mMapView;
-
+    private DisplayOnMapList displayOnMapList;
+    private boolean clearMarkers;
 
     //vars
 //    private ArrayList<User> mUserList = new ArrayList<>();
@@ -54,11 +67,41 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
         View view = inflater.inflate(R.layout.fragment_user_list, container, false);
 //        mUserListRecyclerView = view.findViewById(R.id.user_list_recycler_view);
         mMapView = view.findViewById(R.id.user_list_map);
-
-        initUserListRecyclerView();
+        displayOnMapList = DisplayOnMapList.getInstance();
+        clearMarkers = false;
+        setHasOptionsMenu(true);
         initGoogleMap(savedInstanceState);
 
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.maps_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    /**
+     * Handles a click on the menu.
+     * @param item The menu item to handle.
+     * @return Boolean.
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.menu_maps_clear :
+                displayOnMapList.clearList();
+                clearMarkers = true;
+                mMapView.getMapAsync(this);
+                break;
+            case R.id.menu_maps_search :
+                getActivity().finish();
+                break;
+            case R.id.menu_maps_settings :
+
+                break;
+        }
+        return true;
     }
 
     private void initGoogleMap(Bundle savedInstanceState){
@@ -75,11 +118,6 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
         mMapView.getMapAsync(this);
     }
 
-    private void initUserListRecyclerView() {
-//        mUserRecyclerAdapter = new UserRecyclerAdapter(mUserList);
-//        mUserListRecyclerView.setAdapter(mUserRecyclerAdapter);
-//        mUserListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -127,7 +165,24 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        map.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("New"));
+
+        if (clearMarkers) {
+            map.clear();
+            clearMarkers = false;
+        }
+        List<Location> displayList = displayOnMapList.getList();
+        for (Location l : displayList) {
+            map.addMarker(new MarkerOptions().position(new LatLng(l.getLatitude(), l.getLongitude())).title(l.getName()));
+        }
+
+        if (displayList.size() > 0) {
+            Location first = displayList.get(displayList.size() - 1);
+            LatLng latLng = new LatLng(first.getLatitude(), first.getLongitude());
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14));
+            map.animateCamera(CameraUpdateFactory.zoomIn());
+            map.animateCamera(CameraUpdateFactory.zoomTo(14), 10000, null);
+        }
+
         map.setMyLocationEnabled(true);
     }
 
@@ -147,6 +202,40 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
     public void onLowMemory() {
         super.onLowMemory();
         mMapView.onLowMemory();
+    }
+
+
+    public final static double AVERAGE_RADIUS_OF_EARTH_M = 6378137;
+    public int calculateDistanceInMeter(double userLat, double userLng,
+                                            double venueLat, double venueLng) {
+
+        double latDistance = Math.toRadians(userLat - venueLat);
+        double lngDistance = Math.toRadians(userLng - venueLng);
+
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(userLat)) * Math.cos(Math.toRadians(venueLat))
+                * Math.sin(lngDistance / 2) * Math.sin(lngDistance / 2);
+
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        return (int) (Math.round(AVERAGE_RADIUS_OF_EARTH_M * c));
+    }
+
+
+    public final static double AVERAGE_RADIUS_OF_EARTH_KM = 6371;
+    public int calculateDistanceInKilometer(double userLat, double userLng,
+                                            double venueLat, double venueLng) {
+
+        double latDistance = Math.toRadians(userLat - venueLat);
+        double lngDistance = Math.toRadians(userLng - venueLng);
+
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(userLat)) * Math.cos(Math.toRadians(venueLat))
+                * Math.sin(lngDistance / 2) * Math.sin(lngDistance / 2);
+
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        return (int) (Math.round(AVERAGE_RADIUS_OF_EARTH_KM * c));
     }
 }
 
