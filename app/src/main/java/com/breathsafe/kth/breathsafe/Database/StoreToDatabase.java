@@ -4,13 +4,14 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.breathsafe.kth.breathsafe.Model.AirPollution;
 import com.breathsafe.kth.breathsafe.Model.Location;
 import com.breathsafe.kth.breathsafe.Model.LocationCategory;
 
 import java.util.List;
 
 public class StoreToDatabase {
-    private static final String TAG = "DatabaseSynchronizer";
+    private static final String TAG = "StoreToDatabase";
 
     public class StoreLocationCategoryOld extends AsyncTask<Void, Void, Boolean> {
         private Repository repository;
@@ -101,6 +102,44 @@ public class StoreToDatabase {
                 }
             }
             Log.d(TAG, "timer: end of Location: " + System.currentTimeMillis());
+            Log.d(TAG, "run: Time to save to database: " + (System.currentTimeMillis() - startOfDatabaseSave));
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+        }
+    }
+
+    public static class StoreAirPollution extends AsyncTask<Void, Void, Boolean> {
+        private Repository repository;
+        private Context context;
+        private List<AirPollution> airPollutions;
+        public StoreAirPollution(Context context, List<AirPollution> airPollutions){
+            this.context = context;
+            this.airPollutions = airPollutions;
+        }
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            long startOfDatabaseSave = System.currentTimeMillis();
+            repository = Repository.getInstance(this.context);
+            int count = repository.airPollutionDoa().countNumberOfEntities();
+            Log.d(TAG, "number of air pollution in db: " + count);
+            if (count == airPollutions.size()) {
+                repository.airPollutionDoa().updateAsList(airPollutions);
+            }
+            /** this takes very long **/
+            else {
+                long id;
+                for (AirPollution a : airPollutions) {
+                    id = repository.airPollutionDoa().insert(a);
+                    if (id < 0) {
+                        repository.airPollutionDoa().update(a);
+                    }
+                }
+            }
+            Log.d(TAG, "timer: end of AirPollution: " + System.currentTimeMillis());
             Log.d(TAG, "run: Time to save to database: " + (System.currentTimeMillis() - startOfDatabaseSave));
             return true;
         }
