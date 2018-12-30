@@ -16,7 +16,8 @@ import android.widget.Button;
 
 public class MainFragment extends Fragment {
     private static final String TAG = "MainFragment";
-    private Button searchText;
+    private Button searchButton;
+    private Button goToMapButton;
 
     @Nullable
     @Override
@@ -24,11 +25,19 @@ public class MainFragment extends Fragment {
         Log.i("Fragments", "MainFragment");
         View view = inflater.inflate(R.layout.main_fragment, container, false);
         setHasOptionsMenu(true);
-        searchText = (Button)view.findViewById(R.id.main_search_text);
-        searchText.setOnClickListener(new View.OnClickListener() {
+        searchButton = (Button)view.findViewById(R.id.main_search_text);
+        searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity)getActivity()).setmViewPagerint(1);
+//                ((MainActivity)getActivity()).setmViewPagerint(1);
+                ((MainActivity)getActivity()).startSearchActivity();
+            }
+        });
+        goToMapButton = view.findViewById(R.id.go_to_map_button);
+        goToMapButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity)getActivity()).startMapActivity();
             }
         });
 
@@ -50,10 +59,10 @@ public class MainFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.menu_search_category :
-                ((MainActivity)getActivity()).setmViewPagerint(1);
+                ((MainActivity)getActivity()).startSearchActivity();
                 break;
             case R.id.menu_search_select_item :
-                ((MainActivity)getActivity()).setmViewPagerint(2);
+                ((MainActivity)getActivity()).startSearchActivity();
                 break;
             case R.id.menu_search_select_category :
 

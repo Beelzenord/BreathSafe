@@ -2,12 +2,13 @@ package com.breathsafe.kth.breathsafe.Maps;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,39 +16,32 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.breathsafe.kth.breathsafe.Constants;
-import com.breathsafe.kth.breathsafe.MainActivity;
-import com.breathsafe.kth.breathsafe.Model.AirPollution;
 import com.breathsafe.kth.breathsafe.Model.DisplayOnMapList;
 import com.breathsafe.kth.breathsafe.Model.Location;
 import com.breathsafe.kth.breathsafe.R;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.List;
 
 
 public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
-
-
     private static final String TAG = "MapsThingFragment";
 
-    //widgets
-    private RecyclerView mUserListRecyclerView;
     private MapView mMapView;
     private DisplayOnMapList displayOnMapList;
     private boolean clearMarkers;
-    private List<AirPollution> tmp;
-
-    //vars
-//    private ArrayList<User> mUserList = new ArrayList<>();
-//    private UserRecyclerAdapter mUserRecyclerAdapter;
+    private TextView locationNameTextView;
+    private TextView airQualityTextView;
 
 
     public static MapsThingFragment newInstance() {
@@ -57,28 +51,29 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-//            mUserList = getArguments().getParcelableArrayList(getString(R.string.intent_user_list));
-        }
-    }
-
-    public void setAir(List<AirPollution> tmp) {
-        this.tmp = tmp;
-        mMapView.getMapAsync(this);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_user_list, container, false);
-//        mUserListRecyclerView = view.findViewById(R.id.user_list_recycler_view);
-        mMapView = view.findViewById(R.id.user_list_map);
+        View view = inflater.inflate(R.layout.maps_fragment, container, false);
+        mMapView = view.findViewById(R.id.test_user_list_map);
         displayOnMapList = DisplayOnMapList.getInstance();
         clearMarkers = false;
         setHasOptionsMenu(true);
         initGoogleMap(savedInstanceState);
+        ConstraintLayout cl = view.findViewById(R.id.lul);
+        cl.setBackgroundColor(getResources().getColor(R.color.colorGreyish));
+        locationNameTextView = view.findViewById(R.id.location_name_view);
+        airQualityTextView = view.findViewById(R.id.air_quality_view);
         ((MapActivity)getActivity()).checkForAirPollution();
-
+        Button button = view.findViewById(R.id.go_to_comments_button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO: go to comment activity
+            }
+        });
         return view;
     }
 
@@ -102,7 +97,7 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
                 mMapView.getMapAsync(this);
                 break;
             case R.id.menu_maps_search :
-                getActivity().finish();
+                ((MapActivity)getActivity()).startSearchActivity();
                 break;
             case R.id.menu_maps_settings :
 
@@ -119,9 +114,7 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
         if (savedInstanceState != null) {
             mapViewBundle = savedInstanceState.getBundle(Constants.MAPVIEW_BUNDLE_KEY);
         }
-
         mMapView.onCreate(mapViewBundle);
-
         mMapView.getMapAsync(this);
     }
 
@@ -137,6 +130,10 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
         }
 
         mMapView.onSaveInstanceState(mapViewBundle);
+    }
+
+    public void refreshMap() {
+        mMapView.getMapAsync(this);
     }
 
     @Override
@@ -163,6 +160,7 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
                 != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
+            Log.i(TAG, "onMapReady: failed");
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -173,31 +171,84 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
             return;
         }
 
-        if (tmp != null) {
-            for (AirPollution ap : tmp) {
-                map.addMarker(new MarkerOptions().position(new LatLng(ap.getLatitude(), ap.getLongitude())).title("POL " + ap.getP1()));
-            }
-        }
-
-        if (clearMarkers) {
             map.clear();
-            clearMarkers = false;
-        }
+        if (clearMarkers)
+            doClearMarkers();
+
         List<Location> displayList = displayOnMapList.getList();
         for (Location l : displayList) {
-            String title = l.getName() + " - Average AQI: " + Math.round(l.getAverageAQI());
-            map.addMarker(new MarkerOptions().position(new LatLng(l.getLatitude(), l.getLongitude())).title(title));
+            String title = l.getName();
+            Marker m = map.addMarker(new MarkerOptions().position(new LatLng(l.getLatitude(), l.getLongitude())).title(title));
+            m.setTag(l);
         }
 
         if (displayList.size() > 0) {
-            Location first = displayList.get(displayList.size() - 1);
-            LatLng latLng = new LatLng(first.getLatitude(), first.getLongitude());
+            Location latest = displayList.get(displayList.size() - 1);
+            LatLng latLng = new LatLng(latest.getLatitude(), latest.getLongitude());
+            updateTextViews(latest);
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14));
             map.animateCamera(CameraUpdateFactory.zoomIn());
             map.animateCamera(CameraUpdateFactory.zoomTo(14), 10000, null);
+
         }
 
         map.setMyLocationEnabled(true);
+        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                Location l = (Location)marker.getTag();
+                Log.i(TAG, "onMarkerClick: " + l.getName());
+                Log.i(TAG, "onMarkerClick: " + l.getAverageAQI());
+                updateTextViews(l);
+                marker.showInfoWindow();
+                return true;
+            }
+        });
+        // if the map doesn't load..
+        if (!mMapView.hasWindowFocus())
+            mMapView.getMapAsync(this);
+    }
+
+    private void doClearMarkers() {
+        clearMarkers = false;
+        locationNameTextView.setText(getResources().getString(R.string.no_location_selected));
+        airQualityTextView.setText(getResources().getString(R.string.no_location_selected));
+        airQualityTextView.setTextColor(Color.BLACK);
+    }
+
+    private void updateTextViews(Location location) {
+        locationNameTextView.setText(location.getName());
+        setAirQuialityString(location.getAverageAQI());
+    }
+
+    private void setAirQuialityString(double averageAQI) {
+//        Random r = new Random();
+//        averageAQI = r.nextInt(250);
+//        averageAQI = 80.0;
+        if (averageAQI <= 0) {
+            airQualityTextView.setText(getResources().getString(R.string.air_quality_string_not_found));
+            airQualityTextView.setTextColor(Color.BLACK);
+        }
+        else if (averageAQI < 51) {
+            airQualityTextView.setText(getResources().getString(R.string.air_quality_string_good));
+            airQualityTextView.setTextColor(getResources().getColor(R.color.colorGreen, null));
+        }
+        else if (averageAQI < 101) {
+            airQualityTextView.setText(getResources().getString(R.string.air_quality_string_moderate));
+            airQualityTextView.setTextColor(getResources().getColor(R.color.colorYellow, null));
+        }
+        else if (averageAQI < 151) {
+            airQualityTextView.setText(getResources().getString(R.string.air_quality_string_unhealthy_sensitive));
+            airQualityTextView.setTextColor(getResources().getColor(R.color.colorOrange, null));
+        }
+        else if (averageAQI < 201) {
+            airQualityTextView.setText(getResources().getString(R.string.air_quality_string_unhealthy));
+            airQualityTextView.setTextColor(getResources().getColor(R.color.colorRed, null));
+        }
+        else if (averageAQI < 301) {
+            airQualityTextView.setText(getResources().getString(R.string.air_quality_string_very_unhealthy));
+            airQualityTextView.setTextColor(getResources().getColor(R.color.colorPurple, null));
+        }
     }
 
     @Override
@@ -218,39 +269,6 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
         mMapView.onLowMemory();
     }
 
-
-    public final static double AVERAGE_RADIUS_OF_EARTH_M = 6378137;
-    public int calculateDistanceInMeter(double userLat, double userLng,
-                                            double venueLat, double venueLng) {
-
-        double latDistance = Math.toRadians(userLat - venueLat);
-        double lngDistance = Math.toRadians(userLng - venueLng);
-
-        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
-                + Math.cos(Math.toRadians(userLat)) * Math.cos(Math.toRadians(venueLat))
-                * Math.sin(lngDistance / 2) * Math.sin(lngDistance / 2);
-
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-        return (int) (Math.round(AVERAGE_RADIUS_OF_EARTH_M * c));
-    }
-
-
-    public final static double AVERAGE_RADIUS_OF_EARTH_KM = 6371;
-    public int calculateDistanceInKilometer(double userLat, double userLng,
-                                            double venueLat, double venueLng) {
-
-        double latDistance = Math.toRadians(userLat - venueLat);
-        double lngDistance = Math.toRadians(userLng - venueLng);
-
-        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
-                + Math.cos(Math.toRadians(userLat)) * Math.cos(Math.toRadians(venueLat))
-                * Math.sin(lngDistance / 2) * Math.sin(lngDistance / 2);
-
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-        return (int) (Math.round(AVERAGE_RADIUS_OF_EARTH_KM * c));
-    }
 }
 
 

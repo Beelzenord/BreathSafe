@@ -150,4 +150,39 @@ public class StoreToDatabase {
         }
     }
 
+    public static class DeleteAllAndStoreAirPollution extends AsyncTask<Void, Void, Boolean> {
+        private Repository repository;
+        private Context context;
+        private List<AirPollution> airPollutions;
+        public DeleteAllAndStoreAirPollution(Context context, List<AirPollution> airPollutions){
+            this.context = context;
+            this.airPollutions = airPollutions;
+        }
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            long startOfDatabaseSave = System.currentTimeMillis();
+            repository = Repository.getInstance(this.context);
+            repository.airPollutionDoa().deleteAllAirPollution();
+            repository.airPollutionDoa().insertAsList(airPollutions);
+            /** this takes very long **/
+            /*else {
+                long id;
+                for (AirPollution a : airPollutions) {
+                    id = repository.airPollutionDoa().insert(a);
+                    if (id < 0) {
+                        repository.airPollutionDoa().update(a);
+                    }
+                }
+            }*/
+            Log.d(TAG, "timer: end of AirPollution: " + System.currentTimeMillis());
+            Log.d(TAG, "run: Time to save to database: " + (System.currentTimeMillis() - startOfDatabaseSave));
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+        }
+    }
+
 }

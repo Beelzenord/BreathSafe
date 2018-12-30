@@ -56,7 +56,7 @@ public class InitLocation {
         return true;
     }
 
-    public static void getLocationPermission(Activity activity) {
+    public static boolean getLocationPermission(Activity activity) {
         /*
          * Request location permission, so that we can get the location of the
          * device. The result of the permission request is handled by a callback,
@@ -66,12 +66,16 @@ public class InitLocation {
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             ((MapActivity)activity).locationPermissionGranted = true;
+            Log.i(TAG, "getLocationPermission: locationPermissionGranted = true");
             /** DO THE THING **/
 //            getChatrooms();
+            return true;
         } else {
             ActivityCompat.requestPermissions(activity,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     Constants.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+            Log.i(TAG, "getLocationPermission: locationPermissionGranted = false");
+            return false;
         }
     }
 

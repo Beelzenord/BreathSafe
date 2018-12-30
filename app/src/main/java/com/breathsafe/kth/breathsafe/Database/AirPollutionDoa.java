@@ -29,6 +29,9 @@ public interface AirPollutionDoa {
     @Delete
     void delete(AirPollution... airPollusions);
 
+    @Query("DELETE FROM AirPollution")
+    void deleteAllAirPollution();
+
     @Query("SELECT * FROM AirPollution")
     List<AirPollution> getAirPollution();
 

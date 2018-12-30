@@ -1,13 +1,11 @@
 package com.breathsafe.kth.breathsafe;
 
-import android.content.Intent;
 import android.util.Log;
 
 import com.breathsafe.kth.breathsafe.Model.AirPollution;
 import com.breathsafe.kth.breathsafe.Model.Location;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class CalculateAirPollutionData {
@@ -29,7 +27,8 @@ public class CalculateAirPollutionData {
         }
 
         double average = caculateAverage(toCalculate, distancesToUse);
-        Log.i(TAG, "weightedPM1andPM2: Time to calculate: " + (System.currentTimeMillis() - start));
+//        Log.i(TAG, "weightedPM1andPM2: Time to calculate: " + (System.currentTimeMillis() - start));
+        Log.i(TAG, "weightedPM1andPM2: AQI: " + average);
         return average;
     }
 
@@ -50,23 +49,23 @@ public class CalculateAirPollutionData {
             double weight = (double)((double)dist / (double)totalDistance2);
             weightedP1 += (weight * ap.getP1());
             weightedP2 += (weight * ap.getP2());
-            Log.i(TAG, "caculateAverage: weightedP1: " + (weight * ap.getP1()));
-            Log.i(TAG, "caculateAverage: weightedP2: " + (weight * ap.getP1()));
-            Log.i(TAG, "caculateAverage: Dist: " + distances.get(i));
-            Log.i(TAG, "caculateAverage: P1: " + ap.getP1());
-            Log.i(TAG, "caculateAverage: P2: " + ap.getP2());
+//            Log.i(TAG, "caculateAverage: weightedP1: " + (weight * ap.getP1()));
+//            Log.i(TAG, "caculateAverage: weightedP2: " + (weight * ap.getP1()));
+//            Log.i(TAG, "caculateAverage: Dist: " + distances.get(i));
+//            Log.i(TAG, "caculateAverage: P1: " + ap.getP1());
+//            Log.i(TAG, "caculateAverage: P2: " + ap.getP2());
         }
 
-        Log.i(TAG, "caculateAverage: TotalDist: " + totalDistance2);
-        Log.i(TAG, "caculateAverage: Total P1: " + weightedP1);
-        Log.i(TAG, "caculateAverage: Total P2: " + weightedP2);
+//        Log.i(TAG, "caculateAverage: TotalDist: " + totalDistance2);
+//        Log.i(TAG, "caculateAverage: Total P1: " + weightedP1);
+//        Log.i(TAG, "caculateAverage: Total P2: " + weightedP2);
 
         double AQIP1 = (weightedP1 / 1.5);
         double AQIP2 = (weightedP2 / 0.35);
-        Log.i(TAG, "caculateAverage: AQIP1: " + AQIP1);
-        Log.i(TAG, "caculateAverage: AQIP2: " + AQIP2);
-        double averageAQI = ((AQIP1 + AQIP2) / 2);
-        Log.i(TAG, "caculateAverage: AQI average: " + averageAQI);
+//        Log.i(TAG, "caculateAverage: AQIP1: " + AQIP1);
+//        Log.i(TAG, "caculateAverage: AQIP2: " + AQIP2);
+        double averageAQI = (AQIP1 + AQIP2);
+//        Log.i(TAG, "caculateAverage: AQI average: " + averageAQI);
 
         return averageAQI;
     }

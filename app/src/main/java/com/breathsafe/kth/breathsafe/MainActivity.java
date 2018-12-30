@@ -1,5 +1,6 @@
 package com.breathsafe.kth.breathsafe;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -18,9 +19,7 @@ import com.breathsafe.kth.breathsafe.Model.LocationCategoryData;
 import com.breathsafe.kth.breathsafe.IO.Network.NetworkTask;
 import com.breathsafe.kth.breathsafe.Model.LocationData;
 import com.breathsafe.kth.breathsafe.Search.PagerAdapter;
-import com.breathsafe.kth.breathsafe.Search.SearchCategoryFragment;
-import com.breathsafe.kth.breathsafe.Search.SelectCategoryFragment;
-import com.breathsafe.kth.breathsafe.Search.SelectLocationFragment;
+import com.breathsafe.kth.breathsafe.Search.SearchActivity;
 
 import java.util.Calendar;
 import java.util.List;
@@ -28,6 +27,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements AsyncTaskCallback {
     private static final String TAG = "MainActivity";
+
     private static final int AIR_TASK = 0;
     private static final int LOCATION_CATEGORY_TASK = 1;
     private static final int LOCATION_TASK = 2;
@@ -37,31 +37,20 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
 
     private PagerAdapter mPagerAdapter;
     private ViewPager mViewPager;
-    private SelectLocationFragment selectLocationFragment;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.i(TAG, "onCreate: hello0");
+        Log.i(TAG, "onCreate: ");
         searchButtonPressed = false;
-
 
         mPagerAdapter = new PagerAdapter(getSupportFragmentManager());
         mViewPager = (ViewPager)findViewById(R.id.container);
         setupViewPager(mViewPager);
 
-//        System.out.println("URL PATH : " + getResources().getString(R.string.api_stockholm_all_categories));
-//        String apicall = getResources().getString(R.string.api_stockholm_all_categories) +
-//                getResources().getString(R.string.stockholm_api_key);
-//        NetworkTask networkTask = new NetworkTask(this, apicall, LOCATION_CATEGORY_TASK);
-//        networkTask.execute();
-
-
         startReadFromDatabase();
-
-
     }
 
     private void startReadFromDatabase() {
@@ -82,17 +71,18 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
     @Override
     protected void onStart() {
         super.onStart();
-        Log.i(TAG, "onStart: hello1");
+        Log.i(TAG, "onStart: ");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.i(TAG, "onResume: hello2");
+        Log.i(TAG, "onResume: ");
     }
 
     @Override
     public void onDownloadComplete(NetworkTask.Result result) {
+        Log.i(TAG, "onDownloadComplete: is this ever called?");
         if (result.msg != null) {
             switch (result.tag) {
                 case AIR_TASK:
@@ -140,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
                     List<LocationCategory> list = (List<LocationCategory>)result.msg;
                     LocationCategoryData locationCategoryData = LocationCategoryData.getInstance();
                     locationCategoryData.setList(list);
-                    Log.i(TAG, "onDatabaseReadComplete: time to read LocationCategory" + (now - prev));
+                    Log.i(TAG, "onDatabaseReadComplete: time to read LocationCategory: " + (now - prev));
                     Log.i(TAG, "onDatabaseReadComplete: size of LocationCategory: " + list.size());
                     if (list.size() <= 0) {
                         Log.i(TAG, "onDatabaseReadComplete: No data in database, starting DatabaseSynchronizer");
@@ -165,11 +155,30 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
         }
     }
 
+    /**
+     * When another activity returns data to this activity.
+     * If the requestCode is SELECT_LOCATION then this activity will try to show information
+     * about the selected location.
+     * @param requestCode The request code.
+     * @param resultCode The result code.
+     * @param result Contains the information sent from the other activity to this activity.
+     */
+    public void onActivityResult(int requestCode, int resultCode, Intent result) {
+        super.onActivityResult(requestCode, resultCode, result);
 
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case Constants.SEARCH_ACTIVITY_LOCATION:
+                    Log.i(TAG, "onActivityResult: ");
+                    startMapActivity();
+                    break;
+            }
+        }
+    }
 
     public void onDBSynchronizeComplete(Boolean result) {
         if (result && searchButtonPressed) {
-            //TODO: start search activity
+
         }
 
     }
@@ -177,28 +186,26 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
     private void setupViewPager(ViewPager viewPager) {
         PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new MainFragment(), "MainFragment");
-        adapter.addFragment(new SearchCategoryFragment(), "SearchCategory");
-        selectLocationFragment = new SelectLocationFragment();
-        adapter.addFragment(selectLocationFragment, "SelectLocation");
-        adapter.addFragment(new SelectCategoryFragment(), "SelectCategory");
         viewPager.setAdapter(adapter);
     }
 
     public void setmViewPagerint(int nr) {
         mViewPager.setCurrentItem(nr);
     }
-    public void setmViewPagerIntCategory(int nr, String category) {
-        selectLocationFragment.setCategory(category);
-        mViewPager.setCurrentItem(nr);
-    }
 
     public void startMapActivity() {
+        Log.i(TAG, "startMapActivity: ");
         Intent intent = new Intent(this, MapActivity.class);
         startActivity(intent);
     }
 
-
-
-
+    /**
+     * MainFragment call this method when the search button is pressed.
+     */
+    public void startSearchActivity() {
+        Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+        intent.putExtra(Constants.SEARCH_ACTIVITY_CALLBACK_ACTIVITY, Constants.SEARCH_ACTIVITY_CALLBACK_MAINACTIVITY);
+        startActivityForResult(intent, Constants.SEARCH_ACTIVITY_LOCATION);
+    }
 }
 
