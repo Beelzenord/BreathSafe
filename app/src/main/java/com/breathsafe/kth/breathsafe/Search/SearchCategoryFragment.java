@@ -36,6 +36,8 @@ public class SearchCategoryFragment extends Fragment implements SearchCategoryAd
     private LocationCategoryData locationCategoryData;
     private EditText searchText;
     private String actualSearchText;
+    private boolean hasLoaded = false;
+
 
     @Nullable
     @Override
@@ -48,6 +50,7 @@ public class SearchCategoryFragment extends Fragment implements SearchCategoryAd
         searchText = view.findViewById(R.id.search1_search_text);
         addTextWatcher();
         createRecycler(view);
+        hasLoaded = true;
         return view;
     }
 
@@ -81,7 +84,8 @@ public class SearchCategoryFragment extends Fragment implements SearchCategoryAd
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
             Log.i("Fragments", "SearchCategoryFragment is visible");
-            updateList();
+            if (hasLoaded)
+                updateList();
         }
     }
 
@@ -101,8 +105,8 @@ public class SearchCategoryFragment extends Fragment implements SearchCategoryAd
         switch(item.getItemId()) {
             case R.id.menu_search_category :
                 break;
-            case R.id.menu_search_select_item ://org:2
-                ((MainActivity)getActivity()).setmViewPagerint(3);
+            case R.id.menu_search_select_item :
+                ((SearchActivity)getActivity()).setmViewPagerIntCategory(1, "All");
                 break;
             case R.id.menu_search_select_category :
 
@@ -155,10 +159,11 @@ public class SearchCategoryFragment extends Fragment implements SearchCategoryAd
         LocationCategory locationCategory = mAdapter.getLocationCategory(position);
         if (locationCategory.getSingularName().equals("All")) {
             Log.i(TAG, "Clicked All");
+            ((SearchActivity)getActivity()).setmViewPagerIntCategory(1, "All");
         }
         else {
-            Log.i(TAG, "Clicked item: " + locationCategory.getSingularName());//org 2
-            ((MainActivity)getActivity()).setmViewPagerIntCategory(3, locationCategory.getSingularName(),locationCategory.getId());
+            Log.i(TAG, "Clicked item: " + locationCategory.getSingularName());
+            ((SearchActivity)getActivity()).setmViewPagerIntCategory(1, locationCategory.getSingularName());
         }
 //        Location location = mAdapter.getLocation(position);
 //        result.putExtra(MainActivity.LOCATION_RESULT, (Parcelable) location);
@@ -168,7 +173,7 @@ public class SearchCategoryFragment extends Fragment implements SearchCategoryAd
     }
 
     private List<LocationCategory> newList() {
-        List<LocationCategory> list = locationCategoryData.getList();
+        List<LocationCategory> list = LocationCategoryData.getInstance().getList();
         if (list.size() > 0) {
             List<LocationCategory> clone = new ArrayList<>();
             LocationCategory all = new LocationCategory("All");

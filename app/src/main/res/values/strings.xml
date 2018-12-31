@@ -23,4 +23,17 @@
     <string name="search_field">Search</string>
 
     <string name="fragment_user_list">User List</string>
+
+    <string name="no_location_selected">No Location Selected</string>
+
+    <string name="air_quality_string_not_found">Could not find probable air Quality</string>
+    <string name="air_quality_string_good">Air quality is Good</string>
+    <string name="air_quality_string_moderate">Air quality is Moderate</string>
+    <string name="air_quality_string_unhealthy_sensitive">Air quality is Unhealthy for Sensitive Groups</string>
+    <string name="air_quality_string_unhealthy">Air quality is Unhealthy</string>
+    <string name="air_quality_string_very_unhealthy">Air quality is Very Unhealthy</string>
+
+    <string name="comment_button_title">Comments</string>
+    <string name="go_to_map_button_title">Map</string>
+    <string name="go_to_favourites_button_title">Favourites</string>
 </resources>
