@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import com.breathsafe.kth.breathsafe.Database.LinkAsFavorite;
 import com.breathsafe.kth.breathsafe.IO.Network.NetworkTask;
 import com.breathsafe.kth.breathsafe.MainActivity;
 import com.breathsafe.kth.breathsafe.Maps.MapActivity;
@@ -40,6 +41,8 @@ public class SelectLocationFragment extends Fragment implements SelectLocationAd
     private String actualSearchText;
     private String actualSearchTextPrev;
     private List<Location> selectedCategoryLocations;
+
+    private String locatorForCategory;
 
     private DisplayOnMapList displayOnMapList;
 
@@ -113,8 +116,8 @@ public class SelectLocationFragment extends Fragment implements SelectLocationAd
         switch(item.getItemId()) {
             case R.id.menu_search_category :
                 break;
-            case R.id.menu_search_select_item :
-                ((MainActivity)getActivity()).setmViewPagerint(1);
+            case R.id.menu_search_select_item : //org:1
+                ((MainActivity)getActivity()).setmViewPagerint(2);
                 break;
             case R.id.menu_search_select_category :
 
@@ -163,7 +166,14 @@ public class SelectLocationFragment extends Fragment implements SelectLocationAd
             Log.i(TAG, "Name: " + location.getName());
             Log.i(TAG, "Lat: " + location.getLatitude());
             Log.i(TAG, "Lng: " + location.getLongitude());
+            Log.i(TAG, "child: " + location.getChildId() + " " + this.locatorForCategory) ;
             displayOnMapList.add(location);
+
+          //  location.setChildId(this.locatorForCategory);
+            //Link With Foreign key
+            LinkAsFavorite linkAsFavorite = new LinkAsFavorite(getContext(),this.locatorForCategory,location);
+
+            linkAsFavorite.execute();
 
             ((MainActivity)getActivity()).startMapActivity();
 //            ((SearchActivity)getActivity()).setmViewPagerint(1);
@@ -191,7 +201,7 @@ public class SelectLocationFragment extends Fragment implements SelectLocationAd
         updateList();
     }
 
-    public void setCategory(String category) {
+    public void setCategory(String category, String identifier) {
         long start = System.currentTimeMillis();
 
         List<Location> list = locationData.getList();
@@ -202,5 +212,7 @@ public class SelectLocationFragment extends Fragment implements SelectLocationAd
                 selectedCategoryLocations.add(l);
         }
         Log.i(TAG, "setCategory: timer: " + (System.currentTimeMillis() - start));
+        this.locatorForCategory = identifier;
+        Log.i(TAG,"list category from fragment " + selectedCategoryLocations.size() + " identifier " + identifier);
     }
 }

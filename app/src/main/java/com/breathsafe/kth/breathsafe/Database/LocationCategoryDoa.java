@@ -34,4 +34,8 @@ public interface LocationCategoryDoa {
 
     @Query("SELECT COUNT(*) FROM LocationCategory")
     int countNumberOfEntities();
+
+    //@Query("SELECT * FROM Location WHERE id = :idString LIMIT 1")
+    @Query("SELECT * FROM LOCATIONCATEGORY WHERE id = :stringID ")
+    LocationCategory getSingle(String stringID);
 }

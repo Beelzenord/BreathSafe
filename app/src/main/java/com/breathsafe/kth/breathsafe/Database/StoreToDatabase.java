@@ -88,6 +88,7 @@ public class StoreToDatabase {
             repository = Repository.getInstance(this.context);
             int count = repository.locationDoa().countNumberOfEntities();
             Log.d(TAG, "number of location in db: " + count);
+            Log.d(TAG, "number of locationCategories in db: " + repository.locationCategoryDoa().countNumberOfEntities());
             if (count == locations.size()) {
                 repository.locationDoa().updateAsList(locations);
             }

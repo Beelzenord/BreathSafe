@@ -101,11 +101,11 @@ public class SelectCategoryFragment extends Fragment implements SelectCategoryAd
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
-            case R.id.menu_search_category :
-                ((MainActivity)getActivity()).setmViewPagerint(1);
-                break;
-            case R.id.menu_search_select_item :
+            case R.id.menu_search_category : //org:1
                 ((MainActivity)getActivity()).setmViewPagerint(2);
+                break;
+            case R.id.menu_search_select_item : //org:2
+                ((MainActivity)getActivity()).setmViewPagerint(3);
                 break;
             case R.id.menu_search_select_category :
 

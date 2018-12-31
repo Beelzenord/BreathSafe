@@ -101,8 +101,8 @@ public class SearchCategoryFragment extends Fragment implements SearchCategoryAd
         switch(item.getItemId()) {
             case R.id.menu_search_category :
                 break;
-            case R.id.menu_search_select_item :
-                ((MainActivity)getActivity()).setmViewPagerint(2);
+            case R.id.menu_search_select_item ://org:2
+                ((MainActivity)getActivity()).setmViewPagerint(3);
                 break;
             case R.id.menu_search_select_category :
 
@@ -157,8 +157,8 @@ public class SearchCategoryFragment extends Fragment implements SearchCategoryAd
             Log.i(TAG, "Clicked All");
         }
         else {
-            Log.i(TAG, "Clicked item: " + locationCategory.getSingularName());
-            ((MainActivity)getActivity()).setmViewPagerIntCategory(2, locationCategory.getSingularName());
+            Log.i(TAG, "Clicked item: " + locationCategory.getSingularName());//org 2
+            ((MainActivity)getActivity()).setmViewPagerIntCategory(3, locationCategory.getSingularName(),locationCategory.getId());
         }
 //        Location location = mAdapter.getLocation(position);
 //        result.putExtra(MainActivity.LOCATION_RESULT, (Parcelable) location);

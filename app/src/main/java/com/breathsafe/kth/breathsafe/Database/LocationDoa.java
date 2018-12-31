@@ -19,8 +19,9 @@ public interface LocationDoa {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertAsList(List<Location> locations);
 
-    @Update
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     void update(Location... location);
+
 
     @Update
     void updateAsList(List<Location> locations);
@@ -33,5 +34,12 @@ public interface LocationDoa {
 
     @Query("SELECT COUNT(*) FROM Location")
     int countNumberOfEntities();
+
+    @Query("SELECT * FROM Location WHERE childId IS NOT NULL")
+    List<Location> getFavorites();
+
+    //@Query("SELECT id FROM items WHERE id = :id LIMIT 1")
+    @Query("SELECT * FROM Location WHERE id = :idString LIMIT 1")
+    Location getById(String idString);
 
 }

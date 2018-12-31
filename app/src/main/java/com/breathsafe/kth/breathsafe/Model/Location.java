@@ -2,13 +2,20 @@ package com.breathsafe.kth.breathsafe.Model;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
 import java.util.List;
 
-@Entity(tableName = "Location")
+import static android.arch.persistence.room.ForeignKey.CASCADE;
+
+
+@Entity(tableName = "Location",foreignKeys = @ForeignKey(entity = LocationCategory.class,
+        parentColumns = "id",childColumns = "childId",
+        onDelete = CASCADE))
+//@Entity(tableName = "Location")
 public class Location {
     @NonNull
     @PrimaryKey
@@ -27,6 +34,9 @@ public class Location {
     double longitude;
     @ColumnInfo(name = "retrieved")
     long retrieved;
+
+    @ColumnInfo(name = "childId")
+    String childId;
 
     @Ignore
     double averageAQI;
@@ -155,6 +165,14 @@ public class Location {
 
     }
 
+    public String getChildId() {
+        return childId;
+    }
+
+    public void setChildId(String childId) {
+        this.childId = childId;
+    }
+
     @Ignore
     public double getAverageAQI() {
         return averageAQI;
@@ -163,5 +181,21 @@ public class Location {
     @Ignore
     public void setAverageAQI(double averageAQI) {
         this.averageAQI = averageAQI;
+    }
+
+    @Override
+    public String toString() {
+        return "Location{" +
+                "id='" + id + '\'' +
+                ", categories=" + categories +
+                ", name='" + name + '\'' +
+                ", timeCreated=" + timeCreated +
+                ", timeUpdated=" + timeUpdated +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", retrieved=" + retrieved +
+                ", childId='" + childId + '\'' +
+                ", averageAQI=" + averageAQI +
+                '}';
     }
 }

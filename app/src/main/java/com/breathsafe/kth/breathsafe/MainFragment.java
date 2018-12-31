@@ -27,8 +27,8 @@ public class MainFragment extends Fragment {
         searchText = (Button)view.findViewById(R.id.main_search_text);
         searchText.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                ((MainActivity)getActivity()).setmViewPagerint(1);
+            public void onClick(View v) { //org:1
+                ((MainActivity)getActivity()).setmViewPagerint(2);
             }
         });
 
@@ -49,11 +49,11 @@ public class MainFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
-            case R.id.menu_search_category :
-                ((MainActivity)getActivity()).setmViewPagerint(1);
-                break;
-            case R.id.menu_search_select_item :
+            case R.id.menu_search_category ://org:1
                 ((MainActivity)getActivity()).setmViewPagerint(2);
+                break;
+            case R.id.menu_search_select_item ://org:2
+                ((MainActivity)getActivity()).setmViewPagerint(3);
                 break;
             case R.id.menu_search_select_category :
 

@@ -2,11 +2,15 @@ package com.breathsafe.kth.breathsafe.Model;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
 import android.support.annotation.NonNull;
 
+import static android.arch.persistence.room.ForeignKey.CASCADE;
+
+//locationCategories can have many Locations
 @Entity(tableName = "LocationCategory")
 public class LocationCategory {
 

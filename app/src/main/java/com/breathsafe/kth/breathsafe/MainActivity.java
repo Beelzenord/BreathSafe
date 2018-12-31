@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.breathsafe.kth.breathsafe.Database.DatabaseTables;
+import com.breathsafe.kth.breathsafe.Database.RetrieveFavorites;
 import com.breathsafe.kth.breathsafe.IO.DatabaseRead.DatabaseTask;
 import com.breathsafe.kth.breathsafe.IO.DatabaseSynchronizer;
 import com.breathsafe.kth.breathsafe.Maps.MapActivity;
@@ -20,6 +21,7 @@ import com.breathsafe.kth.breathsafe.Model.LocationCategory;
 import com.breathsafe.kth.breathsafe.Model.LocationCategoryData;
 import com.breathsafe.kth.breathsafe.IO.Network.NetworkTask;
 import com.breathsafe.kth.breathsafe.Model.LocationData;
+import com.breathsafe.kth.breathsafe.Search.FavoritesFragment;
 import com.breathsafe.kth.breathsafe.Search.PagerAdapter;
 import com.breathsafe.kth.breathsafe.Search.SearchCategoryFragment;
 import com.breathsafe.kth.breathsafe.Search.SelectCategoryFragment;
@@ -65,6 +67,10 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
         startReadFromDatabase();
 
 
+        RetrieveFavorites retrieveFavorites = new RetrieveFavorites(this);
+        retrieveFavorites.execute();
+
+
     }
 
     private void startReadFromDatabase() {
@@ -78,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
     }
 
     private void startDatabaseSynchronizer() {
+        System.out.println("Assuming direct control");
         DatabaseSynchronizer databaseSynchronizer = new DatabaseSynchronizer(this);
         databaseSynchronizer.execute();
     }
@@ -179,19 +186,26 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
 
     private void setupViewPager(ViewPager viewPager) {
         PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager());
+        adapter.addFragment(new FavoritesFragment(),"FavoritesFragment");
         adapter.addFragment(new MainFragment(), "MainFragment");
         adapter.addFragment(new SearchCategoryFragment(), "SearchCategory");
         selectLocationFragment = new SelectLocationFragment();
         adapter.addFragment(selectLocationFragment, "SelectLocation");
         adapter.addFragment(new SelectCategoryFragment(), "SelectCategory");
         viewPager.setAdapter(adapter);
+        mViewPager.setCurrentItem(1);
     }
 
     public void setmViewPagerint(int nr) {
         mViewPager.setCurrentItem(nr);
     }
-    public void setmViewPagerIntCategory(int nr, String category) {
+  /*  public void setmViewPagerIntCategory(int nr, String category) {
         selectLocationFragment.setCategory(category);
+        mViewPager.setCurrentItem(nr);
+    }*/
+
+    public void setmViewPagerIntCategory(int nr, String category,String extra) {
+        selectLocationFragment.setCategory(category,extra);
         mViewPager.setCurrentItem(nr);
     }
 
@@ -199,6 +213,7 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
         Intent intent = new Intent(this, MapActivity.class);
         startActivity(intent);
     }
+
 
 
 
