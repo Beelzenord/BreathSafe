@@ -35,6 +35,7 @@ import java.util.concurrent.TimeUnit;
 
 
 
+
 public class DatabaseSynchronizer extends AsyncTask<Void, Void, Boolean> {
     private static final String TAG = "DatabaseSynchronizer";
     private Activity activity;

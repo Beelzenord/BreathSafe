@@ -35,7 +35,7 @@
             android:required="false" />
 
         <activity android:name=".Maps.MapActivity" />
-       <!-- <activity android:name=".Search.SearchActivity"></activity> -->
+       <activity android:name=".Search.SearchActivity"></activity>
     </application>
 
 </manifest>

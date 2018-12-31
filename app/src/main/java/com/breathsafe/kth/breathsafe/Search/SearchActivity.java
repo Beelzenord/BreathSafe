@@ -51,6 +51,10 @@ public class SearchActivity extends AppCompatActivity {
         mViewPager.setCurrentItem(nr);
     }
 
+    public void setmViewPagerIntCategory(int nr, String category, String categoryIdentifier) {
+        selectLocationFragment.setCategory(category,categoryIdentifier);
+        mViewPager.setCurrentItem(nr);
+    }
     public void exitThisActivity() {
         Intent intent = null;
         switch (callbackActivity) {
@@ -66,4 +70,6 @@ public class SearchActivity extends AppCompatActivity {
         }
         finish();
     }
+
+
 }

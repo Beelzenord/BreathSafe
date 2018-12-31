@@ -186,7 +186,7 @@ public class SelectLocationFragment extends Fragment implements SelectLocationAd
 
             linkAsFavorite.execute();
 
-            ((MainActivity)getActivity()).startMapActivity();
+         //   ((MainActivity)getActivity()).startMapActivity();
 //            ((SearchActivity)getActivity()).setmViewPagerint(1);
 //            ((MainActivity)getActivity()).startMapActivity();
             ((SearchActivity)getActivity()).exitThisActivity();
@@ -233,6 +233,24 @@ public class SelectLocationFragment extends Fragment implements SelectLocationAd
         }
         Log.i(TAG, "setCategory: timer: " + (System.currentTimeMillis() - start));
        // this.locatorForCategory = identifier;
-        Log.i(TAG,"list category from fragment " + selectedCategoryLocations.size() + " identifier " + identifier);
+       // Log.i(TAG,"list category from fragment " + selectedCategoryLocations.size() + " identifier " + identifier);
+    }
+
+    public void setCategory(String category, String categoryIdentifier) {
+        this.locatorForCategory = categoryIdentifier;
+        long start = System.currentTimeMillis();
+        if (category.equalsIgnoreCase("All")) {
+            selectedCategoryLocations = locationData.getList();
+        }
+        else {
+            List<Location> list = locationData.getList();
+            Log.i(TAG, "setCategory: locationData size: " + list.size());
+            selectedCategoryLocations = new ArrayList<>();
+            for (Location l : list) {
+                if (l.containsCategory(category))
+                    selectedCategoryLocations.add(l);
+            }
+        }
+        Log.i(TAG, "setCategory: timer: " + (System.currentTimeMillis() - start));
     }
 }

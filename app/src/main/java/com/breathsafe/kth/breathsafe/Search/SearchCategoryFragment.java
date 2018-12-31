@@ -163,7 +163,7 @@ public class SearchCategoryFragment extends Fragment implements SearchCategoryAd
         }
         else {
             Log.i(TAG, "Clicked item: " + locationCategory.getSingularName());
-            ((SearchActivity)getActivity()).setmViewPagerIntCategory(1, locationCategory.getSingularName());
+            ((SearchActivity)getActivity()).setmViewPagerIntCategory(1, locationCategory.getSingularName(),locationCategory.getId());
         }
 //        Location location = mAdapter.getLocation(position);
 //        result.putExtra(MainActivity.LOCATION_RESULT, (Parcelable) location);

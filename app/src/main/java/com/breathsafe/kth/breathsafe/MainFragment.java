@@ -18,6 +18,7 @@ public class MainFragment extends Fragment {
     private static final String TAG = "MainFragment";
     private Button searchButton;
     private Button goToMapButton;
+    private Button goToFragment;
 
     @Nullable
     @Override
@@ -25,6 +26,13 @@ public class MainFragment extends Fragment {
         Log.i("Fragments", "MainFragment");
         View view = inflater.inflate(R.layout.main_fragment, container, false);
         setHasOptionsMenu(true);
+        goToFragment = (Button) view.findViewById(R.id.go_to_favourites_button);
+        goToFragment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((MainActivity)getActivity()).setmViewPagerint(0);
+            }
+        });
         searchButton = (Button)view.findViewById(R.id.main_search_text);
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
