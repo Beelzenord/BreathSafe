@@ -11,10 +11,12 @@ public class LinkAsFavorite extends AsyncTask<Void,Void,Boolean> {
     private Location location;
     private String foreinKey;
     private final String TAG = "LinkAsFavorite";
+
     public LinkAsFavorite(Context context,String categoryID, Location location) {
         this.context = context;
         this.foreinKey = categoryID;
         this.location = location;
+
     }
 
 
@@ -25,7 +27,7 @@ public class LinkAsFavorite extends AsyncTask<Void,Void,Boolean> {
         Repository repository = Repository.getInstance(this.context);
         repository.locationDoa().update(location);
         Log.i(TAG,"Foreign Key " + this.foreinKey);
-        Log.i(TAG,"Successfully updated " + location.toString());
+        Log.i(TAG,"Sucfully updated " + location.toString());
         Location l = repository.locationDoa().getById(location.getId());
         Log.i(TAG,"retrieved " + l.toString());
         return true;
@@ -33,7 +35,9 @@ public class LinkAsFavorite extends AsyncTask<Void,Void,Boolean> {
 
     @Override
     protected void onPostExecute(Boolean aBoolean) {
-
         super.onPostExecute(aBoolean);
+        Repository repository = Repository.getInstance(this.context);
+//        List<Location> locations = repository.locationDoa().getFavorites();
+
     }
 }
