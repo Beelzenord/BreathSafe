@@ -20,7 +20,7 @@ public class Location {
     @NonNull
     @PrimaryKey
     String id;
-    @ColumnInfo(name = "item")
+    @ColumnInfo(name = "categories")
     Categories categories;
     @ColumnInfo(name = "name")
     String name;
@@ -40,6 +40,8 @@ public class Location {
 
     @Ignore
     double averageAQI;
+    @Ignore
+    boolean isOnMap;
 
     @Ignore
     public Location(String id, List<String> categories, String name, long timeCreated, long timeUpdated, double latitude, double longitude, long retrieved) {
@@ -52,6 +54,7 @@ public class Location {
         this.longitude = longitude;
         this.retrieved = retrieved;
         averageAQI = -1;
+        isOnMap = false;
     }
 
     public Location(@NonNull String id, Categories categories, String name, long timeCreated, long timeUpdated, double latitude, double longitude, long retrieved) {
@@ -181,6 +184,16 @@ public class Location {
     @Ignore
     public void setAverageAQI(double averageAQI) {
         this.averageAQI = averageAQI;
+    }
+
+    @Ignore
+    public boolean isOnMap() {
+        return isOnMap;
+    }
+
+    @Ignore
+    public void setOnMap(boolean onMap) {
+        isOnMap = onMap;
     }
 
     @Override

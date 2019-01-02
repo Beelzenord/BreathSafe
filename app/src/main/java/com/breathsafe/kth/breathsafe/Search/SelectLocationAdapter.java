@@ -24,7 +24,7 @@ public class SelectLocationAdapter extends RecyclerView.Adapter<SelectLocationAd
     }
 
     /**
-     * Returns the location item selected at position i.
+     * Returns the location name selected at position i.
      * @param i The position selected.
      * @return The location at position i.
      */
@@ -33,7 +33,7 @@ public class SelectLocationAdapter extends RecyclerView.Adapter<SelectLocationAd
     }
 
     /**
-     * When created, finds the view item to be used in each item.
+     * When created, finds the view name to be used in each name.
      * @param viewGroup The view group of a certain layout.
      * @param i The position.
      * @return The viewholder created from the view items.
@@ -42,10 +42,11 @@ public class SelectLocationAdapter extends RecyclerView.Adapter<SelectLocationAd
     @Override
     public SelectLocationAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View v = (View) LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.item_in_recycler, viewGroup, false);
+                .inflate(R.layout.row_favs, viewGroup, false);
 
         SelectLocationAdapter.MyViewHolder vh = new SelectLocationAdapter.MyViewHolder(v);
-        vh.item = v.findViewById(R.id.item_in_recycler);
+        vh.name = v.findViewById(R.id.teeto);
+        vh.desc = v.findViewById(R.id.deeto);
 //        vh.district = v.findViewById(R.id.district);
 
         return vh;
@@ -59,9 +60,10 @@ public class SelectLocationAdapter extends RecyclerView.Adapter<SelectLocationAd
     @Override
     public void onBindViewHolder(@NonNull SelectLocationAdapter.MyViewHolder myViewHolder, int i) {
         try {
-            Location locationCategory = mDataset.get(i);
+            Location location = mDataset.get(i);
 
-            myViewHolder.item.setText(locationCategory.getName());
+            myViewHolder.name.setText(location.getName());
+            myViewHolder.desc.setText(location.getFirstCategory());
 
         }  catch (Exception e) {
             e.printStackTrace();
@@ -69,7 +71,7 @@ public class SelectLocationAdapter extends RecyclerView.Adapter<SelectLocationAd
     }
 
     /**
-     * Sets the listener to be used when a user clicks an item.
+     * Sets the listener to be used when a user clicks an name.
      * @param itemClickListener The listener to be used.
      */
     void setClickListener(SelectLocationAdapter.ItemClickListener itemClickListener) {
@@ -100,10 +102,11 @@ public class SelectLocationAdapter extends RecyclerView.Adapter<SelectLocationAd
     }
 
     /**
-     * The view holder from every item in the list.
+     * The view holder from every name in the list.
      */
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener  {
-        public TextView item;
+        public TextView name;
+        public TextView desc;
         public MyViewHolder(View v) {
             super(v);
             itemView.setOnClickListener(this);

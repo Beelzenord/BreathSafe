@@ -14,4 +14,14 @@ public class Constants {
     public static final int SEARCH_ACTIVITY_CALLBACK_MAINACTIVITY = 0;
     public static final int SEARCH_ACTIVITY_CALLBACK_MAPACTIVITY = 1;
 
+    public static long start;
+
+    public static void setStart() {
+        start = System.currentTimeMillis();
+    }
+
+    public static long getStart() {
+        return start;
+    }
+
 }

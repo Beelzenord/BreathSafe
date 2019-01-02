@@ -31,7 +31,7 @@ public class MapActivity extends AppCompatActivity implements AsyncTaskCallback 
     private static final int NETWORK_AIR = 5;
     private static final double defaultLat = 59.33937606387055;
     private static final double defaultLng = 18.04011602003701;
-    private static final int defaultRadius = 30;
+    private static final int defaultRadius = 36;
 //    private static final int thirtyMinutesInMillis = 1800000; //actual
     private static final int thirtyMinutesInMillis = 1800000009; //during testing use database downloads
 //    private static final int thirtyMinutesInMillis = 60000; // during testing download new data every time
@@ -80,12 +80,13 @@ public class MapActivity extends AppCompatActivity implements AsyncTaskCallback 
 
     public void checkForAirPollution() {
         List<Location> list = DisplayOnMapList.getInstance().getList();
-        if (list.size() <= 0) {
+        if (list.size() == 0) {
             Log.i(TAG, "createAirTask: list is <= 0");
+            fragment.refreshMap();
             return;
         }
         List<AirPollution> airPollutions = AirPollutionData.getInstance().getList();
-        if (airPollutions.size() <= 0) {
+        if (airPollutions.size() == 0) {
             Log.i(TAG, "checkForAirPollution: No AirPollution data in database");
             startNetworkTask();
             return;
@@ -106,6 +107,7 @@ public class MapActivity extends AppCompatActivity implements AsyncTaskCallback 
 //            Log.i(TAG, "on database data: averageAQI: " + res);
             l.setAverageAQI(res);
         }
+        fragment.refreshMap();
     }
 
     private void startNetworkTask() {

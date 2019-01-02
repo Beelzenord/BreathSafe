@@ -62,6 +62,7 @@ public class SearchActivity extends AppCompatActivity {
                 intent = new Intent(this, MainActivity.class);
                 break;
             case Constants.SEARCH_ACTIVITY_CALLBACK_MAPACTIVITY:
+                Constants.setStart();
                 intent = new Intent(this, MapActivity.class);
                 break;
         }

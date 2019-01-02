@@ -60,7 +60,7 @@ public class MainFragment extends Fragment {
 
     /**
      * Handles a click on the menu.
-     * @param item The menu item to handle.
+     * @param item The menu name to handle.
      * @return Boolean.
      */
     @Override

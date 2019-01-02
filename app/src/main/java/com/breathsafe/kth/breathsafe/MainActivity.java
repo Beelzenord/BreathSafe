@@ -1,6 +1,7 @@
 package com.breathsafe.kth.breathsafe;
 
 import android.app.Activity;
+import android.arch.persistence.room.RoomDatabase;
 import android.content.Intent;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -54,9 +55,9 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
         mPagerAdapter = new PagerAdapter(getSupportFragmentManager());
         mViewPager = (ViewPager)findViewById(R.id.container);
         setupViewPager(mViewPager);
+        openOrCreateDatabase("BreathSafe", MODE_PRIVATE, null);
 
         startReadFromDatabase();
-
 
         RetrieveFavorites retrieveFavorites = new RetrieveFavorites(this);
         retrieveFavorites.execute();
@@ -217,6 +218,7 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
 
     public void startMapActivity() {
         Log.i(TAG, "startMapActivity: ");
+        Constants.setStart();
         Intent intent = new Intent(this, MapActivity.class);
         startActivity(intent);
     }

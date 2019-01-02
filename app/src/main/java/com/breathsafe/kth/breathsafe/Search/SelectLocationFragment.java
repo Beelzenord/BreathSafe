@@ -109,7 +109,7 @@ public class SelectLocationFragment extends Fragment implements SelectLocationAd
 
     /**
      * Handles a click on the menu.
-     * @param item The menu item to handle.
+     * @param item The menu name to handle.
      * @return Boolean.
      */
     @Override
@@ -154,7 +154,7 @@ public class SelectLocationFragment extends Fragment implements SelectLocationAd
      * When a location is clicked it is picked out and sent back to the main activity.
      * This activity closes.
      * @param view The view the click came from.
-     * @param position The position in the list of the item clicked.
+     * @param position The position in the list of the name clicked.
      */
     @Override
     public void onItemClick(View view, int position) {

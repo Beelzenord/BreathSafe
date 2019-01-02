@@ -27,6 +27,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -59,6 +60,7 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
         View view = inflater.inflate(R.layout.maps_fragment, container, false);
         mMapView = view.findViewById(R.id.test_user_list_map);
         displayOnMapList = DisplayOnMapList.getInstance();
+        displayOnMapList.setOnMapFalse();
         clearMarkers = false;
         setHasOptionsMenu(true);
         initGoogleMap(savedInstanceState);
@@ -85,7 +87,7 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
 
     /**
      * Handles a click on the menu.
-     * @param item The menu item to handle.
+     * @param item The menu name to handle.
      * @return Boolean.
      */
     @Override
@@ -115,7 +117,7 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
             mapViewBundle = savedInstanceState.getBundle(Constants.MAPVIEW_BUNDLE_KEY);
         }
         mMapView.onCreate(mapViewBundle);
-        mMapView.getMapAsync(this);
+//        mMapView.getMapAsync(this);
     }
 
 
@@ -171,15 +173,19 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
             return;
         }
 
+        if (clearMarkers) {
             map.clear();
-        if (clearMarkers)
             doClearMarkers();
+        }
 
         List<Location> displayList = displayOnMapList.getList();
         for (Location l : displayList) {
-            String title = l.getName();
-            Marker m = map.addMarker(new MarkerOptions().position(new LatLng(l.getLatitude(), l.getLongitude())).title(title));
-            m.setTag(l);
+            if (!l.isOnMap()) {
+                l.setOnMap(true);
+                String title = l.getName();
+                Marker m = map.addMarker(new MarkerOptions().position(new LatLng(l.getLatitude(), l.getLongitude())).title(title));
+                m.setTag(l);
+            }
         }
 
         if (displayList.size() > 0) {
@@ -188,29 +194,49 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
             updateTextViews(latest);
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14));
             map.animateCamera(CameraUpdateFactory.zoomIn());
-            map.animateCamera(CameraUpdateFactory.zoomTo(14), 10000, null);
-
+            map.animateCamera(CameraUpdateFactory.zoomTo(14), 2000, null);
+//            CameraPosition cameraPosition = new CameraPosition.Builder()
+//                    .target(latLng)      // Sets the center of the map to Mountain View
+//                    .zoom(14)                   // Sets the zoom
+//                    .bearing(0)                // Sets the orientation of the camera to east
+//                    .tilt(0)                   // Sets the tilt of the camera to 30 degrees
+//                    .build();                   // Creates a CameraPosition from the builder
+//            map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         }
+        else {
+            doClearMarkers();
+            //TODO: Zoom to phones location
+        }
+
 
         map.setMyLocationEnabled(true);
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                Location l = (Location)marker.getTag();
-                Log.i(TAG, "onMarkerClick: " + l.getName());
-                Log.i(TAG, "onMarkerClick: " + l.getAverageAQI());
-                updateTextViews(l);
-                marker.showInfoWindow();
-                return true;
+                if (marker.getTag() != null) {
+                    Location l = (Location) marker.getTag();
+                    Log.i(TAG, "onMarkerClick: " + l.getName());
+                    Log.i(TAG, "onMarkerClick: " + l.getAverageAQI());
+                    updateTextViews(l);
+                }
+                    marker.showInfoWindow();
+                    return true;
             }
         });
         // if the map doesn't load..
-        if (!mMapView.hasWindowFocus())
+        if (!mMapView.hasWindowFocus()) {
+            Log.i(TAG, "onMapReady: NOT FOCUS");
             mMapView.getMapAsync(this);
+        }
+        else {
+            Log.i(TAG, "onMapReady: HAS LOADED");
+            Log.i(TAG, "onMapReady: Time: " + (System.currentTimeMillis() - Constants.getStart()));
+        }
     }
 
     private void doClearMarkers() {
         clearMarkers = false;
+        displayOnMapList.clearList();
         locationNameTextView.setText(getResources().getString(R.string.no_location_selected));
         airQualityTextView.setText(getResources().getString(R.string.no_location_selected));
         airQualityTextView.setTextColor(Color.BLACK);

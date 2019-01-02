@@ -97,7 +97,7 @@ public class SearchCategoryFragment extends Fragment implements SearchCategoryAd
 
     /**
      * Handles a click on the menu.
-     * @param item The menu item to handle.
+     * @param item The menu name to handle.
      * @return Boolean.
      */
     @Override
@@ -152,7 +152,7 @@ public class SearchCategoryFragment extends Fragment implements SearchCategoryAd
      * When a location is clicked it is picked out and sent back to the main activity.
      * This activity closes.
      * @param view The view the click came from.
-     * @param position The position in the list of the item clicked.
+     * @param position The position in the list of the name clicked.
      */
     @Override
     public void onItemClick(View view, int position) {
@@ -162,7 +162,7 @@ public class SearchCategoryFragment extends Fragment implements SearchCategoryAd
             ((SearchActivity)getActivity()).setmViewPagerIntCategory(1, "All");
         }
         else {
-            Log.i(TAG, "Clicked item: " + locationCategory.getSingularName());
+            Log.i(TAG, "Clicked name: " + locationCategory.getSingularName());
             ((SearchActivity)getActivity()).setmViewPagerIntCategory(1, locationCategory.getSingularName(),locationCategory.getId());
         }
 //        Location location = mAdapter.getLocation(position);

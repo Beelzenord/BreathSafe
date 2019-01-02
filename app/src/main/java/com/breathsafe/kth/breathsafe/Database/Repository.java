@@ -14,7 +14,7 @@ import com.breathsafe.kth.breathsafe.Model.LocationCategory;
 import com.breathsafe.kth.breathsafe.R;
 import com.google.android.gms.location.places.Place;
 
-@Database(entities = {AirPollution.class,Location.class, LocationCategory.class}, version = 3 )
+@Database(entities = {AirPollution.class,Location.class, LocationCategory.class}, version = 4 )
 @TypeConverters({CategoriesConverter.class})
 public abstract class Repository extends RoomDatabase{
 

@@ -95,7 +95,7 @@ public class SelectCategoryFragment extends Fragment implements SelectCategoryAd
 
     /**
      * Handles a click on the menu.
-     * @param item The menu item to handle.
+     * @param item The menu name to handle.
      * @return Boolean.
      */
     @Override
@@ -151,7 +151,7 @@ public class SelectCategoryFragment extends Fragment implements SelectCategoryAd
      * When a location is clicked it is picked out and sent back to the main activity.
      * This activity closes.
      * @param view The view the click came from.
-     * @param position The position in the list of the item clicked.
+     * @param position The position in the list of the name clicked.
      */
     @Override
     public void onItemClick(View view, int position) {
@@ -160,7 +160,7 @@ public class SelectCategoryFragment extends Fragment implements SelectCategoryAd
             Log.i(TAG, "Clicked All");
         }
         else {
-            Log.i(TAG, "Clicked item: " + locationCategory.getSingularName());
+            Log.i(TAG, "Clicked name: " + locationCategory.getSingularName());
             List<Location> locations = LocationData.getInstance().getList();
             for (Location l : locations) {
                 if (l.containsCategory(locationCategory.getSingularName()))

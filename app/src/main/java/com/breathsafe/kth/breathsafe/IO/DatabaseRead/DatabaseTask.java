@@ -43,6 +43,8 @@ public class DatabaseTask {
         Result result = null;
         Repository repository;
         try {
+//            repository = Repository.getInstance(activity);
+//            repository.clearAllTables();
             if (isCancelled())
                 throw new CancelTaskException();
             switch (tag) {

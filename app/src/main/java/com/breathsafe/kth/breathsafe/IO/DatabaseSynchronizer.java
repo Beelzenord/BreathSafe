@@ -39,16 +39,13 @@ import java.util.concurrent.TimeUnit;
 public class DatabaseSynchronizer extends AsyncTask<Void, Void, Boolean> {
     private static final String TAG = "DatabaseSynchronizer";
     private Activity activity;
-
     private long startOfPool;
 
     private static List<LocationCategory> locationCategories;
     private static List<Location>[] locations;
-    private static int position;
 
     public DatabaseSynchronizer(Activity activity) {
         this.activity = activity;
-
     }
 
     private void saveLocationsToDB(List<Location> wholeList) {
@@ -70,7 +67,6 @@ public class DatabaseSynchronizer extends AsyncTask<Void, Void, Boolean> {
     }
 
     private void downloadLocations() throws ExecutionException, InterruptedException {
-        position = -1;
         int cores = Runtime.getRuntime().availableProcessors();
         Log.d(TAG, "downloadLocations: cores: " + cores);
         int alive = 1000;

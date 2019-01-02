@@ -31,6 +31,13 @@ public class DisplayOnMapList {
     }
 
     public void clearList() {
+        for (Location l : list)
+            l.setOnMap(false);
         list = new ArrayList<>();
+    }
+
+    public void setOnMapFalse() {
+        for (Location l : list)
+            l.setOnMap(false);
     }
 }

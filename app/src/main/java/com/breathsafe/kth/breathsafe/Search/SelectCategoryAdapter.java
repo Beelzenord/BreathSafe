@@ -24,7 +24,7 @@ public class SelectCategoryAdapter extends RecyclerView.Adapter<SelectCategoryAd
     }
 
     /**
-     * Returns the location item selected at position i.
+     * Returns the location name selected at position i.
      * @param i The position selected.
      * @return The location at position i.
      */
@@ -33,7 +33,7 @@ public class SelectCategoryAdapter extends RecyclerView.Adapter<SelectCategoryAd
     }
 
     /**
-     * When created, finds the view item to be used in each item.
+     * When created, finds the view name to be used in each name.
      * @param viewGroup The view group of a certain layout.
      * @param i The position.
      * @return The viewholder created from the view items.
@@ -69,7 +69,7 @@ public class SelectCategoryAdapter extends RecyclerView.Adapter<SelectCategoryAd
     }
 
     /**
-     * Sets the listener to be used when a user clicks an item.
+     * Sets the listener to be used when a user clicks an name.
      * @param itemClickListener The listener to be used.
      */
     void setClickListener(SelectCategoryAdapter.ItemClickListener itemClickListener) {
@@ -100,7 +100,7 @@ public class SelectCategoryAdapter extends RecyclerView.Adapter<SelectCategoryAd
     }
 
     /**
-     * The view holder from every item in the list.
+     * The view holder from every name in the list.
      */
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener  {
         public TextView category;
