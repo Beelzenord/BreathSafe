@@ -1,17 +1,25 @@
 package com.breathsafe.kth.breathsafe.Search;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.breathsafe.kth.breathsafe.Database.RemoveFromDatabase;
+import com.breathsafe.kth.breathsafe.Maps.MapActivity;
+import com.breathsafe.kth.breathsafe.Model.DisplayOnMapList;
 import com.breathsafe.kth.breathsafe.Model.Location;
 import com.breathsafe.kth.breathsafe.R;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.ViewHolder>{
     private Context context;
@@ -33,10 +41,76 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
 
     @Override
     public void onBindViewHolder(@NonNull FavoritesAdapter.ViewHolder viewHolder, int i) {
-        Location fingItem = list.get(i);
+        final Location fingItem = list.get(i);
         viewHolder.textName.setText(fingItem.getName());
-        viewHolder.textDesc.setText(fingItem.getCategories().getSingleCategory());
+        viewHolder.textDesc.setText(fingItem.getCategories().getCategories().get(0));
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showPopup(context,view,fingItem);
 
+
+            }
+        });
+
+    }
+
+    private void showPopup(final Context context, View view, final Location position) {
+
+        PopupMenu popupMenu = new PopupMenu(context,view);
+        MenuInflater inflater = popupMenu.getMenuInflater();
+        inflater.inflate(R.menu.popup_menu,popupMenu.getMenu());
+        popupMenu.show();
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+
+                switch (menuItem.getItemId()){
+                    case R.id.item_remover:
+                        removeFromFavorite(context,position); return true;
+
+                       // System.out.println("Clicked Removed " + position.getName()); return true;
+                    case R.id.item_find:
+                        findFavorites(context,position);
+                        System.out.println("Clicked find"); return true;
+                    default : return false;
+                }
+
+            }
+
+            private void findFavorites(Context context, Location position) {
+
+             //   Intent intent = new Intent(context, WelcomeActivity.class);
+               // intent.putExtra("MAP", mapIndex);  // Pass the selected mapIndex
+               // intent.putExtra("MAX", m.numLevels());
+               // context.startActivity(intent);
+                /*
+                *
+                *  case Constants.SEARCH_ACTIVITY_CALLBACK_MAPACTIVITY:
+                intent = new Intent(this, MapActivity.class);
+                break;
+                * */
+                DisplayOnMapList displayOnMapList = DisplayOnMapList.getInstance();
+                displayOnMapList.add(position);
+                Intent intent = new Intent(context, MapActivity.class);
+                context.startActivity(intent);
+            }
+
+            private void removeFromFavorite(Context context, Location position) {
+                RemoveFromDatabase removeFromDatabase = new RemoveFromDatabase(context,position);
+                System.out.println("PRE-REMOVE " + position.getName());
+                removeFromDatabase.execute();
+               /* try {
+                    if(removeFromDatabase.execute().get()){
+                        list.remove(position);
+                    }
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }*/
+            }
+        });
     }
 
     @Override

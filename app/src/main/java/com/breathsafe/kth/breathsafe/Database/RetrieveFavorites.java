@@ -8,6 +8,7 @@ import com.breathsafe.kth.breathsafe.Model.Location;
 import com.breathsafe.kth.breathsafe.Model.LocationCategory;
 import com.breathsafe.kth.breathsafe.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RetrieveFavorites extends AsyncTask<Void,Void,List<Location>> {
@@ -25,9 +26,17 @@ public class RetrieveFavorites extends AsyncTask<Void,Void,List<Location>> {
 
         if(locations!=null){
             for(Location l : locations){
-                LocationCategory locationCategory = repository.locationCategoryDoa().getSingle(l.getChildId());
-                Categories categories = new Categories(locationCategory.getSingularName());
-                l.setCategories(categories);
+                //LocationCategory locationCategory = repository.locationCategoryDoa().getSingle(l.getChildId());
+             //   Categories categories = new Categories(locationCategory.getSingularName());
+             //   l.setCategories(categories);
+                List<String> tmp = l.getCategory();
+
+                if(tmp!=null){
+                    for(String s : tmp){
+                        System.out.println("CATEGORY: " + s);
+                    }
+                }
+
             }
             return locations;
         }

@@ -1,5 +1,6 @@
 package com.breathsafe.kth.breathsafe.Search;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,13 +20,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.breathsafe.kth.breathsafe.Database.LinkAsFavorite;
-import com.breathsafe.kth.breathsafe.IO.Network.NetworkTask;
-import com.breathsafe.kth.breathsafe.MainActivity;
-import com.breathsafe.kth.breathsafe.Maps.MapActivity;
 import com.breathsafe.kth.breathsafe.Model.DisplayOnMapList;
 import com.breathsafe.kth.breathsafe.Model.Location;
-import com.breathsafe.kth.breathsafe.Model.LocationCategory;
-import com.breathsafe.kth.breathsafe.Model.LocationCategoryData;
 import com.breathsafe.kth.breathsafe.Model.LocationData;
 import com.breathsafe.kth.breathsafe.R;
 
@@ -42,10 +38,17 @@ public class SelectLocationFragment extends Fragment implements SelectLocationAd
     private String actualSearchText;
     private String actualSearchTextPrev;
     private List<Location> selectedCategoryLocations;
-
     private String locatorForCategory;
-
     private DisplayOnMapList displayOnMapList;
+
+
+
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+    }
 
     @Nullable
     @Override
@@ -58,6 +61,7 @@ public class SelectLocationFragment extends Fragment implements SelectLocationAd
         locationData = LocationData.getInstance();
         displayOnMapList = DisplayOnMapList.getInstance();
         searchText = view.findViewById(R.id.search2_search_text);
+
         addTextWatcher();
         createRecycler(view);
         return view;
@@ -186,10 +190,19 @@ public class SelectLocationFragment extends Fragment implements SelectLocationAd
 
             linkAsFavorite.execute();
 
+            if(location!=null){
+
+            }
+
+            //((MainActivity)getActivity()).startActivity(in);
+
+
+
          //   ((MainActivity)getActivity()).startMapActivity();
 //            ((SearchActivity)getActivity()).setmViewPagerint(1);
 //            ((MainActivity)getActivity()).startMapActivity();
             ((SearchActivity)getActivity()).exitThisActivity();
+           // ((M))
         }
     }
 
@@ -253,4 +266,6 @@ public class SelectLocationFragment extends Fragment implements SelectLocationAd
         }
         Log.i(TAG, "setCategory: timer: " + (System.currentTimeMillis() - start));
     }
+
+
 }

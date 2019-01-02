@@ -26,6 +26,8 @@ public class SearchActivity extends AppCompatActivity {
         mViewPager = (ViewPager)findViewById(R.id.search_container);
         setupViewPager(mViewPager);
 
+
+
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             callbackActivity = extras.getInt(Constants.SEARCH_ACTIVITY_CALLBACK_ACTIVITY);
@@ -35,6 +37,8 @@ public class SearchActivity extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager());
+
+       // adapter.addFragment(new FavoritesFragment(),"FavoritesFragment");
         adapter.addFragment(new SearchCategoryFragment(), "SearchCategory");
         selectLocationFragment = new SelectLocationFragment();
         adapter.addFragment(selectLocationFragment, "SelectLocation");
@@ -70,6 +74,7 @@ public class SearchActivity extends AppCompatActivity {
         }
         finish();
     }
+
 
 
 }
