@@ -3,7 +3,6 @@ package com.breathsafe.kth.breathsafe.Maps;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.PorterDuff;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -24,7 +23,7 @@ import com.breathsafe.kth.breathsafe.Model.Location;
 import com.breathsafe.kth.breathsafe.OnTaskCompleteHelper;
 import com.breathsafe.kth.breathsafe.R;
 import com.breathsafe.kth.breathsafe.Search.SearchActivity;
-import com.google.android.gms.location.FusedLocationProviderClient;
+import com.breathsafe.kth.breathsafe.Util;
 
 import java.util.List;
 
@@ -33,22 +32,17 @@ import static com.breathsafe.kth.breathsafe.Constants.PERMISSIONS_REQUEST_ENABLE
 public class MapActivity extends AppCompatActivity implements AsyncTaskCallback {
     private static final String TAG = "MapActivityTagger";
     private static final int NETWORK_AIR = 5;
-    private static final double defaultLat = 59.33937606387055;
-    private static final double defaultLng = 18.04011602003701;
-    private static final int defaultRadius = 36;
-//    private static final int thirtyMinutesInMillis = 1800000; //actual
-    private static final int thirtyMinutesInMillis = 1800000009; //during testing use database downloads
-//    private static final int thirtyMinutesInMillis = 60000; // during testing download new data every time
 
     public boolean locationPermissionGranted;
-    private FusedLocationProviderClient fusedLocationProviderClient;
-    MapsThingFragment fragment;
+    public boolean gpsEnabled;
+    private MapsThingFragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
         locationPermissionGranted = false;
+        gpsEnabled = false;
     }
 
     private void startMapsFragment(){
@@ -65,15 +59,21 @@ public class MapActivity extends AppCompatActivity implements AsyncTaskCallback 
     @Override
     protected void onResume() {
         super.onResume();
-        if (InitLocation.checkMapServices(this)) {
-            locationPermissionGranted = InitLocation.getLocationPermission(this);
-            if (locationPermissionGranted) {
+        Log.i(TAG, "onResume: ");
+        if (InitLocation.isServicesOK(this)) {
+//            gpsEnabled = InitLocation.isMapsEnabled(this);
+
+            if (InitLocation.getLocationPermission(this)) {
                 Log.i(TAG, "onResume: start maps fragments");
                 startMapsFragment();
             }
-            else {
-                InitLocation.getLocationPermission(this);
+
+            /*if (InitLocation.isMapsEnabled(this)) {
+                gpsEnabled = true;
             }
+            else {
+                gpsEnabled = false;
+            }*/
         }
     }
 
@@ -84,23 +84,15 @@ public class MapActivity extends AppCompatActivity implements AsyncTaskCallback 
             fragment.refreshMap();
             return;
         }
-        List<AirPollution> airPollutions = AirPollutionData.getInstance().getList();
-        if (airPollutions.size() == 0) {
-            Log.i(TAG, "checkForAirPollution: No AirPollution data in database");
+
+        if (Util.isThresholdReachedToDownloadAirPollution(this))
             startNetworkTask();
-            return;
-        }
-        AirPollution first = airPollutions.get(0);
-        if ((System.currentTimeMillis() - first.getRetrieved()) > thirtyMinutesInMillis) {
-            Log.i(TAG, "checkForAirPollution: Air Pollution data in database is not up to date");
-            startNetworkTask();
-            return;
-        }
-        Log.i(TAG, "checkForAirPollution: using database AirPollution ");
-        handleAirPollutionData(airPollutions);
+        else
+            useOldAirPollutionData();
     }
 
-    private void handleAirPollutionData(List<AirPollution> list) {
+    private void useOldAirPollutionData() {
+        List<AirPollution> list = AirPollutionData.getInstance().getList();
         for (Location l : DisplayOnMapList.getInstance().getList()) {
             double res = CalculateAirPollutionData.weightedPM1andPM2(list, l);
 //            Log.i(TAG, "on database data: averageAQI: " + res);
@@ -109,47 +101,24 @@ public class MapActivity extends AppCompatActivity implements AsyncTaskCallback 
         fragment.refreshMap();
     }
 
-    private void startNetworkTask() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getResources().getString(R.string.api_luftdaten_lat_lat_area));
-        sb.append(defaultLat);sb.append(",");
-        sb.append(defaultLng);sb.append(",");
-        sb.append(defaultRadius);
-        NetworkTask networkTask = new NetworkTask(this, sb.toString(), NETWORK_AIR);
-        networkTask.execute();
-    }
-
-/*    private void createAirTask() {
-        List<Location> list = DisplayOnMapList.getInstance().getList();
-        if (list.size() <= 0) {
-            Log.i(TAG, "createAirTask: list is <= 0");
-            return;
-        }
-        Location location = list.get(list.size()-1);
-        StringBuilder sb = new StringBuilder();
-        sb.append(getResources().getString(R.string.api_luftdaten_lat_lat_area));
-        sb.append(location.getLatitude());sb.append(",");
-        sb.append(location.getLongitude());sb.append(",");
-        sb.append(defaultRadius);
-        NetworkTask networkTask = new NetworkTask(this, sb.toString(), NETWORK_AIR);
-        networkTask.execute();
-    }*/
-
-
-
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String permissions[],
                                            @NonNull int[] grantResults) {
-        locationPermissionGranted = false;
+//        locationPermissionGranted = false;
         switch (requestCode) {
             case Constants.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    locationPermissionGranted = true;
-                    Log.d(TAG, "onRequestPermissionsResult: " + "granted");
+//                    locationPermissionGranted = true;
+                    Log.i(TAG, "onRequestPermissionsResult: GRANTED");
                     startMapsFragment();
+                }
+                else {
+                    Log.i(TAG, "onRequestPermissionsResult: NOT GRANTED");
+                    showToast("Permission is needed to show the map");
+                    finish();
                 }
             }
         }
@@ -158,11 +127,12 @@ public class MapActivity extends AppCompatActivity implements AsyncTaskCallback 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d(TAG, "onActivityResult: called.");
+        Log.d(TAG, "onActivityResult: called : req: " + requestCode);
+        Log.d(TAG, "onActivityResult: called : res: " + resultCode);
         switch (requestCode) {
             case PERMISSIONS_REQUEST_ENABLE_GPS: {
                 if(locationPermissionGranted){
-                    Log.d(TAG, "onActivityResult: " + "nr2");
+                    Log.i(TAG, "onActivityResult: " + "nr2");
                     startMapsFragment();
                     break;
                 }
@@ -178,10 +148,16 @@ public class MapActivity extends AppCompatActivity implements AsyncTaskCallback 
         }
     }
 
-    public void startSearchActivity() {
-        Intent intent = new Intent(this, SearchActivity.class);
-        intent.putExtra(Constants.SEARCH_ACTIVITY_CALLBACK_ACTIVITY, Constants.SEARCH_ACTIVITY_CALLBACK_MAPACTIVITY);
-        startActivityForResult(intent, Constants.SEARCH_ACTIVITY_LOCATION);
+    private void startNetworkTask() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getResources().getString(R.string.api_luftdaten_lat_lat_area));
+        sb.append(getResources().getString(R.string.api_luftdaten_default_lat));
+        sb.append(",");
+        sb.append(getResources().getString(R.string.api_luftdaten_default_lng));
+        sb.append(",");
+        sb.append(getResources().getString(R.string.api_luftdaten_default_radius));
+        NetworkTask networkTask = new NetworkTask(this, sb.toString(), NETWORK_AIR);
+        networkTask.execute();
     }
 
     @Override
@@ -196,6 +172,7 @@ public class MapActivity extends AppCompatActivity implements AsyncTaskCallback 
                 l.setAverageAQI(res);
             }
             fragment.refreshMap();
+            AirPollutionData.getInstance().setList(list);
             StoreToDatabase.DeleteAllAndStoreAirPollution storeAirPollution = new StoreToDatabase.DeleteAllAndStoreAirPollution(this, list);
             storeAirPollution.execute();
         }
@@ -220,7 +197,12 @@ public class MapActivity extends AppCompatActivity implements AsyncTaskCallback 
             sb.append(getResources().getString(R.string.already_in_favorites));
             showToast(sb.toString());
         }
+    }
 
+    public void startSearchActivity() {
+        Intent intent = new Intent(this, SearchActivity.class);
+        intent.putExtra(Constants.SEARCH_ACTIVITY_CALLBACK_ACTIVITY, Constants.SEARCH_ACTIVITY_CALLBACK_MAPACTIVITY);
+        startActivityForResult(intent, Constants.SEARCH_ACTIVITY_LOCATION);
     }
 
     /**
@@ -229,7 +211,7 @@ public class MapActivity extends AppCompatActivity implements AsyncTaskCallback 
      */
     private void showToast(String msg) {
         Context context = getApplicationContext();
-        Toast toast = Toast.makeText(this, msg, Toast.LENGTH_SHORT);
+        Toast toast = Toast.makeText(this, msg, Toast.LENGTH_LONG);
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
     }

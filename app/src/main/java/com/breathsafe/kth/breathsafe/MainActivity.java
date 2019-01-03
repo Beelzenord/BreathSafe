@@ -2,16 +2,23 @@ package com.breathsafe.kth.breathsafe;
 
 import android.app.Activity;
 import android.arch.persistence.room.RoomDatabase;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.NetworkInfo;
+import android.preference.PreferenceManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.widget.Toast;
 
 import com.breathsafe.kth.breathsafe.Database.DatabaseTables;
 import com.breathsafe.kth.breathsafe.Database.RetrieveFavorites;
 import com.breathsafe.kth.breathsafe.IO.DatabaseRead.DatabaseTask;
 import com.breathsafe.kth.breathsafe.IO.DatabaseSynchronizer;
+import com.breathsafe.kth.breathsafe.IO.Network.NetworkIdentifier;
 import com.breathsafe.kth.breathsafe.Maps.MapActivity;
 import com.breathsafe.kth.breathsafe.Model.AirPollution;
 import com.breathsafe.kth.breathsafe.Model.AirPollutionData;
@@ -44,8 +51,6 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
 
     private PagerAdapter mPagerAdapter;
     private ViewPager mViewPager;
-    //private SelectLocationFragment selectLocationFragment;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,15 +65,9 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
 
         openOrCreateDatabase(getResources().getString(R.string.database), MODE_PRIVATE, null);
         startReadFromDatabase();
-//        prev = System.currentTimeMillis();
-//        startDBSynchronizer = System.currentTimeMillis();
-//        startDatabaseSynchronizer();
-//        RetrieveFavorites retrieveFavorites = new RetrieveFavorites(this);
-//        retrieveFavorites.execute();
-
-//        searchButtonPressed = true;
-//        startSearchActivity();
     }
+
+
 
     private void startReadFromDatabase() {
         prev = System.currentTimeMillis();
@@ -146,8 +145,12 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
 
                     Log.i(TAG, "onDatabaseReadComplete: time to read LocationCategory: " + (now - prev));
                     Log.i(TAG, "onDatabaseReadComplete: size of LocationCategory: " + list.size());
-                    if (list.size() <= 0) {
-                        Log.i(TAG, "onDatabaseReadComplete: No data in database, starting DatabaseSynchronizer");
+                    for (LocationCategory lc : list) {
+                        Log.i(TAG, "onDatabaseReadComplete: name: " + lc.getSingularName());
+                        Log.i(TAG, "onDatabaseReadComplete: id: " + lc.getId());
+                    }
+                    if (Util.isThresholdReachedToDownloadPlaces(this)) {
+                        Log.i(TAG, "onDatabaseReadComplete: starting DatabaseSynchronizer");
                         startDBSynchronizer = System.currentTimeMillis();
                         startDatabaseSynchronizer();
                     }
@@ -173,15 +176,13 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
                     break;
                 }
                 case DatabaseTables.LOCATION_AND_CATEGORY_RELATION: {
-//                    List<LocationCategory> list = (List<LocationCategory>)result.msg;
-//
                     loadingDatabaseLocationsCounter++;
                     if (loadingDatabaseLocationsCounter >= LocationData.getInstance().getList().size()) {
-                        Log.i(TAG, "onDatabaseReadComplete: SearchActivity.setLocationsLoaded()");
                         if (searchButtonPressed) {
                             SearchActivity.setLocationsLoaded();
+                            Log.i(TAG, "onDatabaseReadComplete: SearchActivity.setLocationsLoaded()");
                         }
-                        Log.i(TAG, "categoreies loaded: " + (System.currentTimeMillis() - prev));
+                        Log.i(TAG, "Everything loaded: " + (System.currentTimeMillis() - prev));
                     }
                     break;
                 }
@@ -235,15 +236,6 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
     public void setmViewPagerint(int nr) {
         mViewPager.setCurrentItem(nr);
     }
-  /*  public void setmViewPagerIntCategory(int nr, String category) {
-        selectLocationFragment.setCategory(category);
-        mViewPager.setCurrentItem(nr);
-    }*/
-
-    /*public void setmViewPagerIntCategory(int nr, String category,String extra) {
-        selectLocationFragment.setCategory(category,extra);
-        mViewPager.setCurrentItem(nr);
-    }*/
 
     public void startMapActivity() {
         Log.i(TAG, "startMapActivity: ");
@@ -259,6 +251,17 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
         Intent intent = new Intent(MainActivity.this, SearchActivity.class);
         intent.putExtra(Constants.SEARCH_ACTIVITY_CALLBACK_ACTIVITY, Constants.SEARCH_ACTIVITY_CALLBACK_MAINACTIVITY);
         startActivityForResult(intent, Constants.SEARCH_ACTIVITY_LOCATION);
+    }
+
+    /**
+     * Shows a short toast message in the middle of the screen.
+     * @param msg The message to show.
+     */
+    private void showToast(String msg) {
+        Context context = getApplicationContext();
+        Toast toast = Toast.makeText(this, msg, Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.CENTER, 0, 0);
+        toast.show();
     }
 }
 

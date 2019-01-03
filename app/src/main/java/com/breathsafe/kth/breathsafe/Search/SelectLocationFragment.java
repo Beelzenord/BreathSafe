@@ -40,6 +40,7 @@ public class SelectLocationFragment extends Fragment implements SelectLocationAd
     private List<Location> selectedCategoryLocations;
     private String locatorForCategory;
     private DisplayOnMapList displayOnMapList;
+    private String category;
 
 
 
@@ -56,6 +57,7 @@ public class SelectLocationFragment extends Fragment implements SelectLocationAd
         Log.i("Fragments", "onCreateView SelectLocationFragment");
         View view = inflater.inflate(R.layout.select_item_fragment, container, false);
         setHasOptionsMenu(true);
+        category = "";
         actualSearchText = "";
         actualSearchTextPrev = "";
         locationData = LocationData.getInstance();
@@ -148,7 +150,7 @@ public class SelectLocationFragment extends Fragment implements SelectLocationAd
 //        if (mAdapter.hasEmptyList()) {
 //            List<LocationCategory> list = locationCategoryData.getList();
 //            if (list != null) {
-            mAdapter.setList(newList());
+            mAdapter.setList(newList(), category);
             mAdapter.notifyDataSetChanged();
 //            }
 //        }
@@ -166,79 +168,52 @@ public class SelectLocationFragment extends Fragment implements SelectLocationAd
         if (location.getName().equals("All")) {
             Log.i(TAG, "Clicked All");
             if (selectedCategoryLocations.size() == locationData.getList().size()) {
-                Toast.makeText(getContext(), "You may only select All locations if you first select a category", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "You may only select All locations if you first select a category", Toast.LENGTH_LONG).show();
             }
             else {
                 Log.i(TAG, "onItemClick: selectedCategoryLocations: " + selectedCategoryLocations.size());
                 Log.i(TAG, "onItemClick: locationData: " + locationData.getList().size());
-                for (Location l : selectedCategoryLocations) {
-                    displayOnMapList.add(l);
+                List<Location> list = mAdapter.getList();
+                if (list.size() > 1) {
+                    for (int i = 1; i < list.size(); i++)
+                        displayOnMapList.add(list.get(i));
+                    ((SearchActivity) getActivity()).exitThisActivity();
                 }
-                ((SearchActivity)getActivity()).exitThisActivity();
             }
         }
         else {
             Log.i(TAG, "Name: " + location.getName());
             Log.i(TAG, "Lat: " + location.getLatitude());
             Log.i(TAG, "Lng: " + location.getLongitude());
-            Log.i(TAG, "child: " + location.getChildId() + " " + this.locatorForCategory) ;
             displayOnMapList.add(location);
-
-          //  location.setChildId(this.locatorForCategory);
-            //Link With Foreign key
-//            LinkAsFavorite linkAsFavorite = new LinkAsFavorite(getContext(),this.locatorForCategory,location);
-//            linkAsFavorite.execute();
-
-            if(location!=null){
-
-            }
-
-            //((MainActivity)getActivity()).startActivity(in);
-
-
-
-         //   ((MainActivity)getActivity()).startMapActivity();
-//            ((SearchActivity)getActivity()).setmViewPagerint(1);
-//            ((MainActivity)getActivity()).startMapActivity();
             ((SearchActivity)getActivity()).exitThisActivity();
-           // ((M))
         }
     }
 
     private List<Location> newList() {
         long now = System.currentTimeMillis();
-        if (selectedCategoryLocations == null || selectedCategoryLocations.size() <= 0)
+        if (selectedCategoryLocations == null || category.equalsIgnoreCase("All"))
             selectedCategoryLocations = LocationData.getInstance().getList();
-
-//        if (selectedCategoryLocations != null && selectedCategoryLocations.size() > 0) {
-            List<Location> clone = new ArrayList<>();
-            Location all = new Location("All");
-            clone.add(all);
-            for (Location l : selectedCategoryLocations) {
-                if (l.getName().toLowerCase().contains(actualSearchText.toLowerCase()))
-                    clone.add(l);
-            }
-            Log.i(TAG, "newList: Time to create clone: " + (System.currentTimeMillis() - now));
-            return clone;
-//        }
-//        else {
-//            Log.i(TAG, "newList: else Time to create clone: " + (System.currentTimeMillis() - now));
-//            return new ArrayList<Location>();
-//        }
-    }
-
-    public void onKeyTypedInSearchField(View view) {
-        updateList();
+        List<Location> clone = new ArrayList<>();
+        Location all = new Location("All");
+        clone.add(all);
+        for (Location l : selectedCategoryLocations) {
+            if (l.getName().toLowerCase().contains(actualSearchText.toLowerCase()))
+                clone.add(l);
+        }
+        Log.i(TAG, "newList: Time to create clone: " + (System.currentTimeMillis() - now));
+        return clone;
     }
 
     public void setCategory(String category) {
         long start = System.currentTimeMillis();
+        this.category = category;
+        Log.i(TAG, "setCategory: " + category);
         if (category.equalsIgnoreCase("All")) {
             selectedCategoryLocations = locationData.getList();
         }
         else {
             List<Location> list = locationData.getList();
-            Log.i(TAG, "setCategory: locationData size: " + list.size());
             selectedCategoryLocations = new ArrayList<>();
             for (Location l : list) {
                 if (l.containsCategoryName(category))
@@ -250,7 +225,8 @@ public class SelectLocationFragment extends Fragment implements SelectLocationAd
        // Log.i(TAG,"list category from fragment " + selectedCategoryLocations.size() + " identifier " + identifier);
     }
 
-    public void setCategory(String category, String categoryIdentifier) {
+    /*public void setCategory(String category, String categoryIdentifier) {
+        this.category = category;
         this.locatorForCategory = categoryIdentifier;
         long start = System.currentTimeMillis();
         if (category.equalsIgnoreCase("All")) {
@@ -266,7 +242,7 @@ public class SelectLocationFragment extends Fragment implements SelectLocationAd
             }
         }
         Log.i(TAG, "setCategory: timer: " + (System.currentTimeMillis() - start));
-    }
+    }*/
 
 
 }

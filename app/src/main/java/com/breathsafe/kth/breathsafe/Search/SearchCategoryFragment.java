@@ -163,7 +163,7 @@ public class SearchCategoryFragment extends Fragment implements SearchCategoryAd
         }
         else {
             Log.i(TAG, "Clicked name: " + locationCategory.getSingularName());
-            ((SearchActivity)getActivity()).setmViewPagerIntCategory(1, locationCategory.getSingularName(),locationCategory.getId());
+            ((SearchActivity)getActivity()).setmViewPagerIntCategory(1, locationCategory.getSingularName());
         }
 //        Location location = mAdapter.getLocation(position);
 //        result.putExtra(MainActivity.LOCATION_RESULT, (Parcelable) location);
@@ -174,8 +174,6 @@ public class SearchCategoryFragment extends Fragment implements SearchCategoryAd
 
     private List<LocationCategory> newList() {
         List<LocationCategory> list = LocationCategoryData.getInstance().getList();
-        if (list == null)
-            Log.i(TAG, "newList: this cannot be null wtf");
         if (list.size() > 0) {
             List<LocationCategory> clone = new ArrayList<>();
             LocationCategory all = new LocationCategory("All");

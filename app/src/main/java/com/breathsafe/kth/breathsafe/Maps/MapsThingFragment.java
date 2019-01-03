@@ -142,7 +142,8 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
     }
 
     public void refreshMap() {
-        mMapView.getMapAsync(this);
+        if (mMapView != null)
+            mMapView.getMapAsync(this);
     }
 
     @Override
@@ -238,12 +239,17 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
             }
         });
         // if the map doesn't load..
-        if (!mMapView.hasWindowFocus()) {
+//        if (!mMapView.hasWindowFocus()) {
+        if (!mMapView.isEnabled()) {
             Log.i(TAG, "onMapReady: NOT FOCUS");
+            Log.i(TAG, "onMapReady: isActivated: " + mMapView.isActivated());
+            Log.i(TAG, "onMapReady: isEnabled: " + mMapView.isEnabled());
             mMapView.getMapAsync(this);
         }
         else {
             Log.i(TAG, "onMapReady: HAS LOADED");
+            Log.i(TAG, "onMapReady: isActivated: " + mMapView.isActivated());
+            Log.i(TAG, "onMapReady: isEnabled: " + mMapView.isEnabled());
             Log.i(TAG, "onMapReady: Time: " + (System.currentTimeMillis() - Constants.getStart()));
         }
     }

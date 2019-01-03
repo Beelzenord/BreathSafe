@@ -23,8 +23,12 @@ public class InitLocation {
     private static final String TAG = "InitLocation";
 
 
+
+
     public static boolean checkMapServices(Activity activity){
         if(isServicesOK(activity)){
+            Log.i(TAG, "checkMapServices: isServices is OK");
+//            return true;
             if(isMapsEnabled(activity)){
                 return true;
             }
@@ -34,8 +38,15 @@ public class InitLocation {
 
     public static void buildAlertMessageNoGps(final Activity activity) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setMessage("This application requires GPS to work properly, do you want to enable it?")
+        builder.setMessage("Enable GPS to show your own location, do you want to enable it?")
                 .setCancelable(false)
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+//                        Toast.makeText(activity, "This application requires GPS to work properly", Toast.LENGTH_LONG).show();
+//                        activity.finish();
+//                        builder.
+                    }
+                })
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
                         Intent enableGpsIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
@@ -65,9 +76,8 @@ public class InitLocation {
         if (ContextCompat.checkSelfPermission(activity.getApplicationContext(),
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-            ((MapActivity)activity).locationPermissionGranted = true;
+//            ((MapActivity)activity).locationPermissionGranted = true;
             Log.i(TAG, "getLocationPermission: locationPermissionGranted = true");
-            /** DO THE THING **/
 //            getChatrooms();
             return true;
         } else {

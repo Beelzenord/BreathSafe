@@ -5,4 +5,14 @@
     <string name="api_stockholm_all_categories">https://api.stockholm.se/PlaceService/ServiceUnitTypes/json?apikey=</string>
     <string name="api_stockholm_specific_prefix">https://api.stockholm.se/PlaceService/ServiceUnitTypes/</string>
     <string name="api_stockholm_specific_midfix">/ServiceUnits/json?apikey=</string>
+
+    <string name="api_luftdaten_default_lat">59.33937606387055</string>
+    <string name="api_luftdaten_default_lng">18.04011602003701</string>
+    <string name="api_luftdaten_default_radius">36</string>
+
+
+
+    <!--private static final double defaultLat = 59.33937606387055;-->
+    <!--private static final double defaultLng = 18.04011602003701;-->
+    <!--private static final int defaultRadius = 36;-->
 </resources>

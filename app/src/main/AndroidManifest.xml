@@ -7,6 +7,8 @@
         android:required="true" />
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -23,6 +25,12 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".Maps.MapActivity" />
+        <activity android:name=".Search.SearchActivity" />
+        <activity android:name=".SettingsActivity" />
+        <!--<activity-->
+            <!--android:name=".SettingsActivity"-->
+            <!--android:label="@string/title_activity_settings"></activity>-->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
@@ -34,8 +42,6 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
 
-        <activity android:name=".Maps.MapActivity" />
-       <activity android:name=".Search.SearchActivity"></activity>
     </application>
 
 </manifest>

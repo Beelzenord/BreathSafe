@@ -1,5 +1,6 @@
 package com.breathsafe.kth.breathsafe;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -54,7 +55,7 @@ public class MainFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.search_menu, menu);
+        inflater.inflate(R.menu.main_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -66,14 +67,9 @@ public class MainFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
-            case R.id.menu_search_category :
-                ((MainActivity)getActivity()).startSearchActivity();
-                break;
-            case R.id.menu_search_select_item :
-                ((MainActivity)getActivity()).startSearchActivity();
-                break;
-            case R.id.menu_search_select_category :
-
+            case R.id.menu_main_settings :
+                Intent intent = new Intent(getActivity(), SettingsActivity.class);
+                startActivity(intent);
                 break;
         }
         return true;
