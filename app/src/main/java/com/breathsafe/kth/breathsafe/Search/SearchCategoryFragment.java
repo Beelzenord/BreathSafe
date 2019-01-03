@@ -84,8 +84,10 @@ public class SearchCategoryFragment extends Fragment implements SearchCategoryAd
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
             Log.i("Fragments", "SearchCategoryFragment is visible");
-            if (hasLoaded)
+            if (hasLoaded) {
                 updateList();
+
+            }
         }
     }
 
@@ -123,27 +125,25 @@ public class SearchCategoryFragment extends Fragment implements SearchCategoryAd
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        List<LocationCategory> list = locationCategoryData.getList();
-        mAdapter = new SearchCategoryAdapter(getActivity(), newList());
-        /*if (list != null && list.size() > 0) {
-            List<LocationCategory> clone = new ArrayList<>();
-            for (LocationCategory lc : list)
-                clone.add(lc);
-            mAdapter = new SelectLocationAdapter(getActivity(), clone);
-        }
-        else
-            mAdapter = new SelectLocationAdapter(getActivity(), new ArrayList<LocationCategory>());*/
+//        if (SearchActivity.isLocationCategoriesLoaded()) {
+//            List<LocationCategory> list = locationCategoryData.getList();
+            mAdapter = new SearchCategoryAdapter(getActivity(), newList());
+//        }
+//        else
+//            mAdapter = new SearchCategoryAdapter(getActivity(), new ArrayList<LocationCategory>());
 
         mAdapter.setClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
+//        LocationCategory locationCategory = mAdapter.getLocationCategory(5);
+//        ((SearchActivity)getActivity()).setmViewPagerIntCategory(1, locationCategory.getSingularName(),locationCategory.getId());
     }
 
-    private void updateList() {
+    public void updateList() {
 //        if (mAdapter.hasEmptyList()) {
 //            List<LocationCategory> list = locationCategoryData.getList();
 //            if (list != null) {
-                mAdapter.setList(newList());
-                mAdapter.notifyDataSetChanged();
+            mAdapter.setList(newList());
+            mAdapter.notifyDataSetChanged();
 //            }
 //        }
     }
@@ -174,6 +174,8 @@ public class SearchCategoryFragment extends Fragment implements SearchCategoryAd
 
     private List<LocationCategory> newList() {
         List<LocationCategory> list = LocationCategoryData.getInstance().getList();
+        if (list == null)
+            Log.i(TAG, "newList: this cannot be null wtf");
         if (list.size() > 0) {
             List<LocationCategory> clone = new ArrayList<>();
             LocationCategory all = new LocationCategory("All");

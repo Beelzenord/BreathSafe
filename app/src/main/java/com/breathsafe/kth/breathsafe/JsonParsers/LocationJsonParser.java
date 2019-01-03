@@ -31,14 +31,14 @@ public class LocationJsonParser {
             int y = coordiates.getInt("Y");
             double[] coords = ch.gridToGeodetic(x, y);
 
-            Location location = new Location(id, new ArrayList(), name, stringDateToLongDate(timeCreated),
+            Location location = new Location(id, new ArrayList(), new ArrayList(), name, stringDateToLongDate(timeCreated),
                     stringDateToLongDate(timeUpdated), coords[0], coords[1], nowTimeInMillis());
             list.add(location);
         }
         return list;
     }
 
-    public static List<Location> parseLocationStockholmApi(String s, String categoryName) throws JSONException {
+    public static List<Location> parseLocationStockholmApi(String s, String categoryName, String categoryID) throws JSONException {
         CoordinateHandler ch = new CoordinateHandler();
         JSONArray jsonArray = new JSONArray(s);
         List<Location> list = new ArrayList<>();
@@ -54,7 +54,9 @@ public class LocationJsonParser {
             double[] coords = ch.gridToGeodetic(x, y);
             List<String> category = new ArrayList<>();
             category.add(categoryName);
-            Location location = new Location(id, category, name, stringDateToLongDate(timeCreated),
+            List<String> categoryIDlist = new ArrayList<>();
+            categoryIDlist.add(categoryID);
+            Location location = new Location(id, category, categoryIDlist, name, stringDateToLongDate(timeCreated),
                     stringDateToLongDate(timeUpdated), coords[0], coords[1], nowTimeInMillis());
             list.add(location);
         }

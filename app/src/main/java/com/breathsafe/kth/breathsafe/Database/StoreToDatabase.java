@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.breathsafe.kth.breathsafe.Model.AirPollution;
 import com.breathsafe.kth.breathsafe.Model.Location;
+import com.breathsafe.kth.breathsafe.Model.LocationAndCategoryRelation;
 import com.breathsafe.kth.breathsafe.Model.LocationCategory;
 
 import java.util.List;
@@ -89,7 +90,7 @@ public class StoreToDatabase {
             int count = repository.locationDoa().countNumberOfEntities();
             Log.d(TAG, "number of location in db: " + count);
             Log.d(TAG, "number of locationCategories in db: " + repository.locationCategoryDoa().countNumberOfEntities());
-            if (count == locations.size()) {
+            if (count == locations.size() && 1 == 4) {
                 repository.locationDoa().updateAsList(locations);
             }
             /** this takes very long but shouldn't happen more than a few times a year **/
@@ -100,8 +101,12 @@ public class StoreToDatabase {
                     if (id < 0) {
                         repository.locationDoa().update(l);
                     }
+                    for (String s : l.getTmpLCID()) {
+                        repository.locationAndCategoryRelationDao().insert(new LocationAndCategoryRelation(l.getId(), s));
+                    }
                 }
             }
+
             Log.d(TAG, "timer: end of Location: " + System.currentTimeMillis());
             Log.d(TAG, "run: Time to save to database: " + (System.currentTimeMillis() - startOfDatabaseSave));
             return true;
@@ -177,6 +182,29 @@ public class StoreToDatabase {
             }*/
             Log.d(TAG, "timer: end of AirPollution: " + System.currentTimeMillis());
             Log.d(TAG, "run: Time to save to database: " + (System.currentTimeMillis() - startOfDatabaseSave));
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+        }
+    }
+
+    public static class UpdateLocation extends AsyncTask<Void, Void, Boolean> {
+        private Repository repository;
+        private Context context;
+        private Location location;
+        public UpdateLocation(Context context, Location location){
+            this.context = context;
+            this.location = location;
+        }
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            long startSavingLocationCategories = System.currentTimeMillis();
+            repository = Repository.getInstance(this.context);
+            repository.locationDoa().update(location);
+            Log.d(TAG, "Time to update Location to db: " + (System.currentTimeMillis() - startSavingLocationCategories));
             return true;
         }
 

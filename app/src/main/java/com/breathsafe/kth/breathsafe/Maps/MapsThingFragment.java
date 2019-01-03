@@ -43,6 +43,8 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
     private boolean clearMarkers;
     private TextView locationNameTextView;
     private TextView airQualityTextView;
+    private Location currentLocation;
+    private MenuItem favoriteMenu;
 
 
     public static MapsThingFragment newInstance() {
@@ -82,6 +84,7 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.maps_menu, menu);
+        favoriteMenu = menu.findItem(R.id.menu_maps_favorite);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -101,6 +104,10 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
             case R.id.menu_maps_search :
                 ((MapActivity)getActivity()).startSearchActivity();
                 break;
+            case R.id.menu_maps_favorite :
+                if (currentLocation != null)
+                    ((MapActivity)getActivity()).addToFavorites(currentLocation);
+                break;
             case R.id.menu_maps_settings :
 
                 break;
@@ -117,7 +124,7 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
             mapViewBundle = savedInstanceState.getBundle(Constants.MAPVIEW_BUNDLE_KEY);
         }
         mMapView.onCreate(mapViewBundle);
-//        mMapView.getMapAsync(this);
+        mMapView.getMapAsync(this);
     }
 
 
@@ -178,6 +185,7 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
             doClearMarkers();
         }
 
+        map.setMyLocationEnabled(true);
         List<Location> displayList = displayOnMapList.getList();
         for (Location l : displayList) {
             if (!l.isOnMap()) {
@@ -191,7 +199,9 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
         if (displayList.size() > 0) {
             Location latest = displayList.get(displayList.size() - 1);
             LatLng latLng = new LatLng(latest.getLatitude(), latest.getLongitude());
+//            locationNameTextView.setText(l.getName());
             updateTextViews(latest);
+            currentLocation = latest;
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14));
             map.animateCamera(CameraUpdateFactory.zoomIn());
             map.animateCamera(CameraUpdateFactory.zoomTo(14), 2000, null);
@@ -209,7 +219,6 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
         }
 
 
-        map.setMyLocationEnabled(true);
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
@@ -218,6 +227,11 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
                     Log.i(TAG, "onMarkerClick: " + l.getName());
                     Log.i(TAG, "onMarkerClick: " + l.getAverageAQI());
                     updateTextViews(l);
+                    currentLocation = l;
+                    /*if (l.isFavorite())
+                        favoriteMenu.setTitle(getResources().getString(R.string.menu_maps_title_remove_favorite));
+                    else
+                        favoriteMenu.setTitle(getResources().getString(R.string.menu_maps_title_add_favorite));*/
                 }
                     marker.showInfoWindow();
                     return true;

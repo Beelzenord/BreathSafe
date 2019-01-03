@@ -33,9 +33,6 @@ public class LocationDownloadThread implements Runnable {
 
     @Override
     public void run() {
-
-
-
         InputStream in = null;
         HttpURLConnection http = null;
         BufferedReader br = null;
@@ -59,8 +56,8 @@ public class LocationDownloadThread implements Runnable {
                 sb.append(line);
             String msg = sb.toString();
 
-            List<Location> data = OnTaskCompleteHelper.onSpecificLocationTaskComplete(msg, locationCategory.getSingularName());
 
+            List<Location> data = OnTaskCompleteHelper.onSpecificLocationTaskComplete(msg, locationCategory.getSingularName(), locationCategory.getId());
             list[position] = data;
         } catch (Exception e) {
 

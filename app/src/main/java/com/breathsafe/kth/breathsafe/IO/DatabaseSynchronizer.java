@@ -53,9 +53,12 @@ public class DatabaseSynchronizer extends AsyncTask<Void, Void, Boolean> {
         storeLC.execute();
     }
 
-    private void saveLocationCategoriesToDB() {
+    private void saveLocationCategoriesToDB() throws ExecutionException, InterruptedException {
         StoreToDatabase.StoreLocationCategory storeLC = new StoreToDatabase.StoreLocationCategory(activity, locationCategories);
         storeLC.execute();
+        Log.i(TAG, "saveLocationCategoriesToDB: waitng");
+        Log.i(TAG, "saveLocationCategoriesToDB: done waiting");
+        
     }
 
     private Location getLocationUsingId(List<Location> list, String id) {
@@ -117,6 +120,13 @@ public class DatabaseSynchronizer extends AsyncTask<Void, Void, Boolean> {
             locationCategories = OnTaskCompleteHelper.onLocationCategoryTaskComplete(activity, msg);
             LocationCategoryData locationCategoryData = LocationCategoryData.getInstance();
             locationCategoryData.setList(locationCategories);
+//            saveLocationCategoriesToDB();
+            saveLocationCategories();
+            Log.i(TAG, "doInBackground: DONE");
+//            if (true)
+//                return true;
+            Log.i(TAG, "doInBackground: is downloading more ");
+            
 
             locations = (List<Location>[]) new ArrayList[locationCategories.size()];
             startOfPool = System.currentTimeMillis();
@@ -132,7 +142,10 @@ public class DatabaseSynchronizer extends AsyncTask<Void, Void, Boolean> {
                     if (keys.contains(l.getId())) {
                         Location dupLocation = getLocationUsingId(wholeList, l.getId());
                         if (dupLocation != null) {
-                            dupLocation.addCategory(l.getFirstCategory());
+                            if (l.getFirstTmpLCID().length() > 0) {
+                                dupLocation.addTmpLCID(l.getFirstTmpLCID());
+                                dupLocation.addCategoryNames(l.getFirstCategory());
+                            }
                         }
                     }
                     else {
@@ -143,18 +156,19 @@ public class DatabaseSynchronizer extends AsyncTask<Void, Void, Boolean> {
             }
             Log.d(TAG, "downloadLocations: Time to merge: " + (System.currentTimeMillis() - startOfMerge));
 
-            ArrayList<String> keys2 = new ArrayList<>();
+            /*ArrayList<String> keys2 = new ArrayList<>();
             for (Location l : wholeList) {
                 if (keys2.contains(l.getId())) {
                     Log.d(TAG, "run: duplicate " + l.getId() + " " + l.getName());
                 }
                 keys2.add(l.getId());
-            }
+            }*/
+
 
             LocationData locationData = LocationData.getInstance();
             locationData.setList(wholeList);
 
-            saveLocationCategoriesToDB();
+//            saveLocationCategoriesToDB();
             saveLocationsToDB(wholeList);
             Log.d(TAG, "timer: end of all: " + (System.currentTimeMillis() - startOfAll));
         } catch (Exception e) {
@@ -164,6 +178,26 @@ public class DatabaseSynchronizer extends AsyncTask<Void, Void, Boolean> {
         }
 
         return true;
+    }
+
+    private void saveLocationCategories() {
+        long startSavingLocationCategories = System.currentTimeMillis();
+        Repository repository = Repository.getInstance(activity);
+        int count = repository.locationCategoryDoa().countNumberOfEntities();
+        if (count == locationCategories.size()) {
+            repository.locationCategoryDoa().updateAsList(locationCategories);
+        }
+        else {
+            long id;
+            for (LocationCategory lc : locationCategories) {
+                id = repository.locationCategoryDoa().insert(lc);
+                if (id < 0) {
+                    repository.locationCategoryDoa().update(lc);
+                }
+            }
+        }
+        Log.d(TAG, "timer: end of LocationCategories: " + System.currentTimeMillis());
+        Log.d(TAG, "Time to save locationcategores to db: " + (System.currentTimeMillis() - startSavingLocationCategories));
     }
 
     /**

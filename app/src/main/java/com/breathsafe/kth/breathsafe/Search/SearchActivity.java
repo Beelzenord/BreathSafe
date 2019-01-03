@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.breathsafe.kth.breathsafe.Constants;
 import com.breathsafe.kth.breathsafe.MainActivity;
@@ -12,11 +13,17 @@ import com.breathsafe.kth.breathsafe.Maps.MapActivity;
 import com.breathsafe.kth.breathsafe.R;
 
 public class SearchActivity extends AppCompatActivity {
+    private static final String TAG = "SearchActivity";
     private int callbackActivity;
+    private static boolean locationCategoriesLoaded;
+    private static boolean locationsLoaded;
+
+    private static SearchCategoryFragment searchCategoryFragment;
+    private static SelectLocationFragment selectLocationFragment;
 
     private PagerAdapter mPagerAdapter;
     private ViewPager mViewPager;
-    private SelectLocationFragment selectLocationFragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,10 +46,11 @@ public class SearchActivity extends AppCompatActivity {
         PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager());
 
        // adapter.addFragment(new FavoritesFragment(),"FavoritesFragment");
-        adapter.addFragment(new SearchCategoryFragment(), "SearchCategory");
+        searchCategoryFragment = new SearchCategoryFragment();
+        adapter.addFragment(searchCategoryFragment, "SearchCategory");
         selectLocationFragment = new SelectLocationFragment();
         adapter.addFragment(selectLocationFragment, "SelectLocation");
-        adapter.addFragment(new SelectCategoryFragment(), "SelectCategory");
+//        adapter.addFragment(new SelectCategoryFragment(), "SelectCategory");
         viewPager.setAdapter(adapter);
     }
 
@@ -76,6 +84,34 @@ public class SearchActivity extends AppCompatActivity {
         finish();
     }
 
+    public static void hello(String s) {
+        Log.i(TAG, "hello: " + s);
+    }
 
 
+
+    public static void setLocationCategoriesLoaded() {
+        if (searchCategoryFragment != null) {
+            if (searchCategoryFragment.isVisible())
+                searchCategoryFragment.updateList();
+        }
+    }
+
+    public static void setLocationsLoaded() {
+        if (selectLocationFragment != null) {
+            Log.i(TAG, "setLocationsLoaded: ");
+            if (selectLocationFragment.isVisible()) {
+                Log.i(TAG, "setLocationsLoaded: ");
+                selectLocationFragment.updateList();
+            }
+        }
+    }
+
+    public static boolean isLocationCategoriesLoaded() {
+        return locationCategoriesLoaded;
+    }
+
+    public static boolean isLocationsLoaded() {
+        return locationsLoaded;
+    }
 }

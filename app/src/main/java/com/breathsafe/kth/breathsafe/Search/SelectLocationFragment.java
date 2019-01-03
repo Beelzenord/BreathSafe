@@ -144,12 +144,12 @@ public class SelectLocationFragment extends Fragment implements SelectLocationAd
         mRecyclerView.setAdapter(mAdapter);
     }
 
-    private void updateList() {
+    public void updateList() {
 //        if (mAdapter.hasEmptyList()) {
 //            List<LocationCategory> list = locationCategoryData.getList();
 //            if (list != null) {
-        mAdapter.setList(newList());
-        mAdapter.notifyDataSetChanged();
+            mAdapter.setList(newList());
+            mAdapter.notifyDataSetChanged();
 //            }
 //        }
     }
@@ -186,9 +186,8 @@ public class SelectLocationFragment extends Fragment implements SelectLocationAd
 
           //  location.setChildId(this.locatorForCategory);
             //Link With Foreign key
-            LinkAsFavorite linkAsFavorite = new LinkAsFavorite(getContext(),this.locatorForCategory,location);
-
-            linkAsFavorite.execute();
+//            LinkAsFavorite linkAsFavorite = new LinkAsFavorite(getContext(),this.locatorForCategory,location);
+//            linkAsFavorite.execute();
 
             if(location!=null){
 
@@ -208,8 +207,10 @@ public class SelectLocationFragment extends Fragment implements SelectLocationAd
 
     private List<Location> newList() {
         long now = System.currentTimeMillis();
+        if (selectedCategoryLocations == null || selectedCategoryLocations.size() <= 0)
+            selectedCategoryLocations = LocationData.getInstance().getList();
 
-        if (selectedCategoryLocations != null && selectedCategoryLocations.size() > 0) {
+//        if (selectedCategoryLocations != null && selectedCategoryLocations.size() > 0) {
             List<Location> clone = new ArrayList<>();
             Location all = new Location("All");
             clone.add(all);
@@ -219,11 +220,11 @@ public class SelectLocationFragment extends Fragment implements SelectLocationAd
             }
             Log.i(TAG, "newList: Time to create clone: " + (System.currentTimeMillis() - now));
             return clone;
-        }
-        else {
-            Log.i(TAG, "newList: else Time to create clone: " + (System.currentTimeMillis() - now));
-            return new ArrayList<Location>();
-        }
+//        }
+//        else {
+//            Log.i(TAG, "newList: else Time to create clone: " + (System.currentTimeMillis() - now));
+//            return new ArrayList<Location>();
+//        }
     }
 
     public void onKeyTypedInSearchField(View view) {
@@ -240,7 +241,7 @@ public class SelectLocationFragment extends Fragment implements SelectLocationAd
             Log.i(TAG, "setCategory: locationData size: " + list.size());
             selectedCategoryLocations = new ArrayList<>();
             for (Location l : list) {
-                if (l.containsCategory(category))
+                if (l.containsCategoryName(category))
                     selectedCategoryLocations.add(l);
             }
         }
@@ -260,7 +261,7 @@ public class SelectLocationFragment extends Fragment implements SelectLocationAd
             Log.i(TAG, "setCategory: locationData size: " + list.size());
             selectedCategoryLocations = new ArrayList<>();
             for (Location l : list) {
-                if (l.containsCategory(category))
+                if (l.containsCategoryName(category))
                     selectedCategoryLocations.add(l);
             }
         }

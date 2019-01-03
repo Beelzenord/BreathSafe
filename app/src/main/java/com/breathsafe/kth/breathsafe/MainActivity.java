@@ -38,7 +38,9 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
     private static final int LOCATION_TASK = 2;
     private static final int LOCATION_SPECIFIC_TASK = 3;
     private long prev;
+    private long startDBSynchronizer;
     private boolean searchButtonPressed;
+    private int loadingDatabaseLocationsCounter;
 
     private PagerAdapter mPagerAdapter;
     private ViewPager mViewPager;
@@ -55,14 +57,17 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
         mPagerAdapter = new PagerAdapter(getSupportFragmentManager());
         mViewPager = (ViewPager)findViewById(R.id.container);
         setupViewPager(mViewPager);
-        openOrCreateDatabase("BreathSafe", MODE_PRIVATE, null);
 
+        openOrCreateDatabase(getResources().getString(R.string.database), MODE_PRIVATE, null);
         startReadFromDatabase();
+//        prev = System.currentTimeMillis();
+//        startDBSynchronizer = System.currentTimeMillis();
+//        startDatabaseSynchronizer();
+//        RetrieveFavorites retrieveFavorites = new RetrieveFavorites(this);
+//        retrieveFavorites.execute();
 
-        RetrieveFavorites retrieveFavorites = new RetrieveFavorites(this);
-        retrieveFavorites.execute();
-
-
+//        searchButtonPressed = true;
+//        startSearchActivity();
     }
 
     private void startReadFromDatabase() {
@@ -83,13 +88,13 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
     @Override
     protected void onStart() {
         super.onStart();
-        Log.i(TAG, "onStart: ");
+//        Log.i(TAG, "onStart: ");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.i(TAG, "onResume: ");
+//        Log.i(TAG, "onResume: ");
     }
 
     @Override
@@ -105,10 +110,6 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
                     System.out.println("millisc: " + (now - prev));
                     OnTaskCompleteHelper.onLocationCategoryTaskComplete(this, (String)result.msg);
                     LocationCategoryData locationCategoryData = LocationCategoryData.getInstance();
-                    for (LocationCategory lc : locationCategoryData.getList())
-                        System.out.println(lc.getSingularName());
-//                    StoreToDatabase storeToDatabase = new StoreToDatabase(this,locationCategoryData.getList());
-//                    storeToDatabase.execute(); //if executed the database holds values for location categories
                     Log.i(TAG, "onDownloadComplete: stored categories");
                     break;
                 case LOCATION_TASK:
@@ -142,11 +143,17 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
                     List<LocationCategory> list = (List<LocationCategory>)result.msg;
                     LocationCategoryData locationCategoryData = LocationCategoryData.getInstance();
                     locationCategoryData.setList(list);
+
                     Log.i(TAG, "onDatabaseReadComplete: time to read LocationCategory: " + (now - prev));
                     Log.i(TAG, "onDatabaseReadComplete: size of LocationCategory: " + list.size());
                     if (list.size() <= 0) {
                         Log.i(TAG, "onDatabaseReadComplete: No data in database, starting DatabaseSynchronizer");
+                        startDBSynchronizer = System.currentTimeMillis();
                         startDatabaseSynchronizer();
+                    }
+                    else if (searchButtonPressed) {
+                        SearchActivity.setLocationCategoriesLoaded();
+                        Log.i(TAG, "onDatabaseReadComplete: setLocationCategoriesLoaded");
                     }
                     break;
                 }
@@ -154,16 +161,36 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
                 case DatabaseTables.LOCATION: {
                     long now = Calendar.getInstance().getTimeInMillis();
                     List<Location> list = (List<Location>)result.msg;
-                    LocationData.getInstance().setList(list);
                     Log.i(TAG, "onDatabaseReadComplete: time to read Location: " + (now-prev));
                     Log.i(TAG, "onDatabaseReadComplete: size of Location: " + list.size());
+                    for (Location l : list) {
+                        DatabaseTask.Read databaseTask = new DatabaseTask.Read(this, l, DatabaseTables.LOCATION_AND_CATEGORY_RELATION);
+                        databaseTask.execute();
+                    }
+                    SearchActivity.hello("From mainactivity");
+                    LocationData.getInstance().setList(list);
+                    loadingDatabaseLocationsCounter = 0;
+                    break;
+                }
+                case DatabaseTables.LOCATION_AND_CATEGORY_RELATION: {
+//                    List<LocationCategory> list = (List<LocationCategory>)result.msg;
+//
+                    loadingDatabaseLocationsCounter++;
+                    if (loadingDatabaseLocationsCounter >= LocationData.getInstance().getList().size()) {
+                        Log.i(TAG, "onDatabaseReadComplete: SearchActivity.setLocationsLoaded()");
+                        if (searchButtonPressed) {
+                            SearchActivity.setLocationsLoaded();
+                        }
+                        Log.i(TAG, "categoreies loaded: " + (System.currentTimeMillis() - prev));
+                    }
                     break;
                 }
             }
         }
         else {
             Log.i(TAG, "onDatabaseReadComplete: could not read from database");
-            result.ex.printStackTrace();
+//            result.ex.printStackTrace();
+            Log.i(TAG, "onDatabaseReadComplete: " + result.tag);
         }
     }
 
@@ -189,10 +216,12 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
     }
 
     public void onDBSynchronizeComplete(Boolean result) {
+        Log.i(TAG, "onDBSynchronizeComplete: timer: " + (System.currentTimeMillis() - startDBSynchronizer));
+        Log.i(TAG, "onDBSynchronizeComplete: since start: " + (System.currentTimeMillis() - prev));
         if (result && searchButtonPressed) {
-
+            SearchActivity.setLocationCategoriesLoaded();
+            SearchActivity.setLocationsLoaded();
         }
-
     }
 
     private void setupViewPager(ViewPager viewPager) {

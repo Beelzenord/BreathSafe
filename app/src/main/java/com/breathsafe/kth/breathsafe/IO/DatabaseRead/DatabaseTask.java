@@ -38,83 +38,91 @@ public class DatabaseTask {
             this.data = data;
             this.tag = tag;
         }
-    @Override
-    protected Result doInBackground(Void... strings) {
-        Result result = null;
-        Repository repository;
-        try {
-//            repository = Repository.getInstance(activity);
-//            repository.clearAllTables();
-            if (isCancelled())
-                throw new CancelTaskException();
-            switch (tag) {
-                case DatabaseTables.AIR_POLLUTION:
-                    repository = Repository.getInstance(activity);
-                    List<AirPollution> list1 = repository.airPollutionDoa().getAirPollution();
-                    result = new Result(tag, list1);
-                    break;
+        @Override
+        protected Result doInBackground(Void... strings) {
+            Result result = null;
+            Repository repository;
+            try {
+    //            repository = Repository.getInstance(activity);
+    //            repository.clearAllTables();
+                if (isCancelled())
+                    throw new CancelTaskException();
+                switch (tag) {
+                    case DatabaseTables.AIR_POLLUTION:
+                        repository = Repository.getInstance(activity);
+                        List<AirPollution> list1 = repository.airPollutionDoa().getAirPollution();
+                        result = new Result(tag, list1);
+                        break;
 
 
-                case DatabaseTables.LOCATION_CATEGORY:
-                    repository = Repository.getInstance(activity);
-                    List<LocationCategory> list2 = repository.locationCategoryDoa().getAllLocationCategory();
-                    result = new Result(tag, list2);
-//                      repository.locationCategoryDoa().insertAsList((List<LocationCategory>)data);
-                    break;
+                    case DatabaseTables.LOCATION_CATEGORY:
+                        repository = Repository.getInstance(activity);
+                        List<LocationCategory> list2 = repository.locationCategoryDoa().getAllLocationCategory();
+                        result = new Result(tag, list2);
+    //                      repository.locationCategoryDoa().insertAsList((List<LocationCategory>)data);
+                        break;
 
 
-                case DatabaseTables.LOCATION:
-                    System.out.println("gettings locations");
-                    Repository repository2 = Repository.getInstance(activity);
-                    List<Location> list3 = repository2.locationDoa().getAllLocations();
-                    result = new Result(tag, list3);
-                    break;
+                    case DatabaseTables.LOCATION:
+                        repository = Repository.getInstance(activity);
+                        List<Location> list3 = repository.locationDoa().getAllLocations();
+                        result = new Result(tag, list3);
+                        break;
 
+                    case DatabaseTables.LOCATION_AND_CATEGORY_RELATION:
+                        repository = Repository.getInstance(activity);
+                        Location location = ((Location)data);
+                        List<LocationCategory> list4 = repository.locationAndCategoryRelationDao().getCategoriesForLocations(location.getId());
+                        for (LocationCategory lc : list4)
+                            location.addCategoryNames(lc.getSingularName());
+                        result = new Result(tag, "done");
+                        break;
+
+
+                }
+                if (isCancelled())
+                    throw new CancelTaskException();
+    //            if (j != null)
+    //                result = new Result(tag, j);
+    //            else
+    //                result = new Result(tag, new NullPointerException());
+
+            } catch (CancelTaskException e) {
+                e.printStackTrace();
+                result = new Result(tag, e);
+            } catch (Exception e) {
+                e.printStackTrace();
+                result = new Result(tag, e);
+            }
+            finally {
 
             }
-            if (isCancelled())
-                throw new CancelTaskException();
-//            if (j != null)
-//                result = new Result(tag, j);
-//            else
-//                result = new Result(tag, new NullPointerException());
-
-        } catch (CancelTaskException e) {
-            e.printStackTrace();
-            result = new Result(tag, e);
-        } catch (Exception e) {
-            e.printStackTrace();
-            result = new Result(tag, e);
+            return result;
         }
-        finally {
 
+        @Override
+        protected void onPostExecute(Result result) {
+            super.onPostExecute(result);
+            ((MainActivity)activity).onDatabaseReadComplete(result);
         }
-        return result;
     }
-
-    @Override
-    protected void onPostExecute(Result result) {
-        super.onPostExecute(result);
-        ((MainActivity)activity).onDatabaseReadComplete(result);
-    }
-}
 
 /**
  * The result of the file read. Tag is to identify what was read.
  */
-public static class Result {
-    public int tag;
-    public Object msg;
-    public Exception ex;
-    public Result(int tag, Object msg) {
-        this.tag = tag;
-        this.msg = msg;
-        ex = null;
+    public static class Result {
+        public int tag;
+        public Object msg;
+        public Exception ex;
+        public Result(int tag, Exception ex) {
+            this.tag = tag;
+            this.ex = ex;
+            msg = null;
+        }
+        public Result(int tag, Object msg) {
+            this.tag = tag;
+            this.msg = msg;
+            ex = null;
+        }
     }
-    public Result(int tag, Exception ex) {
-        this.tag = tag;
-        this.ex = ex;
-        msg = null;
-    }
-}
 }

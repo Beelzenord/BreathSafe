@@ -1,12 +1,16 @@
 package com.breathsafe.kth.breathsafe.Maps;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.PorterDuff;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.widget.Toast;
 
 import com.breathsafe.kth.breathsafe.AsyncTaskCallback;
 import com.breathsafe.kth.breathsafe.CalculateAirPollutionData;
@@ -49,11 +53,7 @@ public class MapActivity extends AppCompatActivity implements AsyncTaskCallback 
 
     private void startMapsFragment(){
 //        hideSoftKeyboard();
-        Log.i(TAG, "startMapsFragment: ");
         fragment = MapsThingFragment.newInstance();
-        Bundle bundle = new Bundle();
-//        bundle.putParcelableArrayList(getString(R.string.intent_user_list), mUserList);
-//        fragment.setArguments(bundle);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 //        transaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_up);
@@ -65,7 +65,6 @@ public class MapActivity extends AppCompatActivity implements AsyncTaskCallback 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.i(TAG, "onResume: ");
         if (InitLocation.checkMapServices(this)) {
             locationPermissionGranted = InitLocation.getLocationPermission(this);
             if (locationPermissionGranted) {
@@ -149,7 +148,7 @@ public class MapActivity extends AppCompatActivity implements AsyncTaskCallback 
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     locationPermissionGranted = true;
-                    Log.d(TAG, "onRequestPermissionsResult: " + "nr1");
+                    Log.d(TAG, "onRequestPermissionsResult: " + "granted");
                     startMapsFragment();
                 }
             }
@@ -205,5 +204,35 @@ public class MapActivity extends AppCompatActivity implements AsyncTaskCallback 
             result.ex.printStackTrace();
         }
     }
+
+    public void addToFavorites(Location currentLocation) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(currentLocation.getName());
+        sb.append(" ");
+        if (!currentLocation.isFavorite()) {
+            currentLocation.setFavorite(true);
+            StoreToDatabase.UpdateLocation updateLocation = new StoreToDatabase.UpdateLocation(this, currentLocation);
+            updateLocation.execute();
+            sb.append(getResources().getString(R.string.saved_to_favorites));
+            showToast(sb.toString());
+        }
+        else {
+            sb.append(getResources().getString(R.string.already_in_favorites));
+            showToast(sb.toString());
+        }
+
+    }
+
+    /**
+     * Shows a short toast message in the middle of the screen.
+     * @param msg The message to show.
+     */
+    private void showToast(String msg) {
+        Context context = getApplicationContext();
+        Toast toast = Toast.makeText(this, msg, Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.CENTER, 0, 0);
+        toast.show();
+    }
+
 
 }

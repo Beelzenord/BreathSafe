@@ -11,17 +11,17 @@ public class LocationData {
         list = new ArrayList<>();
     }
 
-    public static LocationData getInstance() {
+    public synchronized static LocationData getInstance() {
         if (locationData == null)
             locationData = new LocationData();
         return locationData;
     }
 
-    public List<Location> getList() {
+    public synchronized List<Location> getList() {
         return list;
     }
 
-    public void setList(List<Location> list) {
+    public synchronized void setList(List<Location> list) {
         this.list = list;
     }
 }

@@ -12,6 +12,8 @@ public class CalculateAirPollutionData {
     private static final String TAG = "CalculateAirPollutionDa";
     private static final double AVERAGE_RADIUS_OF_EARTH_M = 6378137;
     private static final int nrOfSensorsToUse = 5;
+    private static final double P1_TO_AQI = 1.5;
+    private static final double P2_to_AQI = 0.35;
 
     public static double weightedPM1andPM2(List<AirPollution> originalList, Location location) {
         long start = System.currentTimeMillis();
@@ -27,7 +29,7 @@ public class CalculateAirPollutionData {
         }
 
         double average = caculateAverage(toCalculate, distancesToUse);
-//        Log.i(TAG, "weightedPM1andPM2: Time to calculate: " + (System.currentTimeMillis() - start));
+        Log.i(TAG, "weightedPM1andPM2: Time to calculate: " + (System.currentTimeMillis() - start));
         Log.i(TAG, "weightedPM1andPM2: AQI: " + average);
         return average;
     }
@@ -60,8 +62,8 @@ public class CalculateAirPollutionData {
 //        Log.i(TAG, "caculateAverage: Total P1: " + weightedP1);
 //        Log.i(TAG, "caculateAverage: Total P2: " + weightedP2);
 
-        double AQIP1 = (weightedP1 / 1.5);
-        double AQIP2 = (weightedP2 / 0.35);
+        double AQIP1 = (weightedP1 / P1_TO_AQI);
+        double AQIP2 = (weightedP2 / P2_to_AQI);
 //        Log.i(TAG, "caculateAverage: AQIP1: " + AQIP1);
 //        Log.i(TAG, "caculateAverage: AQIP2: " + AQIP2);
         double averageAQI = (AQIP1 + AQIP2);

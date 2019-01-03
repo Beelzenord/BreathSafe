@@ -56,10 +56,10 @@ public class OnTaskCompleteHelper {
         }
     }
 
-    public static List<Location> onSpecificLocationTaskComplete(String s, String categoryName) {
+    public static List<Location> onSpecificLocationTaskComplete(String s, String categoryName, String categoryID) {
         try {
 //            LocationData locationData = LocationData.getInstance();
-            List<Location> list = LocationJsonParser.parseLocationStockholmApi(s, categoryName);
+            List<Location> list = LocationJsonParser.parseLocationStockholmApi(s, categoryName, categoryID);
 //            locationData.setList(list);
             return list;
         } catch (JSONException e) {

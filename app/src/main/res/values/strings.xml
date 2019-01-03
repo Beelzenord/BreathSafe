@@ -36,4 +36,8 @@
     <string name="comment_button_title">Comments</string>
     <string name="go_to_map_button_title">Map</string>
     <string name="go_to_favourites_button_title">Favourites</string>
+    <string name="menu_maps_title_add_favorite">Add Favorite</string>
+    <string name="menu_maps_title_remove_favorite">Remove Favorite</string>
+    <string name="saved_to_favorites">is now saved to Favorites</string>
+    <string name="already_in_favorites">is already in Favorites</string>
 </resources>

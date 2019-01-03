@@ -13,8 +13,10 @@ import android.view.ViewGroup;
 
 import com.breathsafe.kth.breathsafe.Database.RetrieveFavorites;
 import com.breathsafe.kth.breathsafe.Model.Location;
+import com.breathsafe.kth.breathsafe.Model.LocationData;
 import com.breathsafe.kth.breathsafe.R;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -25,6 +27,7 @@ public class FavoritesFragment extends Fragment {
     private final String TAG  = "FavoritesFragment";
 
     private RetrieveFavorites retrieveFavorites;
+    private boolean hasLoaded = false;
     private List<Location> list;
     @Nullable
     @Override
@@ -35,28 +38,48 @@ public class FavoritesFragment extends Fragment {
         recyclerView = view.findViewById(R.id.favorite_recyclerView);
         retrieveFavorites = new RetrieveFavorites(getContext());
 
-        try {
-            list = retrieveFavorites.execute().get();
-
+//        try {
+//            list = retrieveFavorites.execute().get();
+            list = new ArrayList<Location>();
             // System.out.println("list " +list.size());
-
             recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
 
-            favoritesAdapter = new FavoritesAdapter(getContext(),list);
+            favoritesAdapter = new FavoritesAdapter(getContext(), list);
             recyclerView.setAdapter(favoritesAdapter);
+            hasLoaded = true;
 
 
 
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        } catch (ExecutionException e) {
+//            e.printStackTrace();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
 
         return view;
 
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            Log.i("Fragments", "SearchCategoryFragment is visible");
+            if (hasLoaded)
+                updateList();
+        }
+    }
+
+    private void updateList() {
+        for (Location l : LocationData.getInstance().getList()) {
+            if (l.isFavorite()) {
+                if (!list.contains(l))
+                    list.add(l);
+            }
+        }
+        favoritesAdapter.notifyDataSetChanged();
     }
 
     @Override

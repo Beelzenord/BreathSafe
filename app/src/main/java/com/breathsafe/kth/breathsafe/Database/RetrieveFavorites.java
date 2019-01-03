@@ -29,7 +29,7 @@ public class RetrieveFavorites extends AsyncTask<Void,Void,List<Location>> {
                 //LocationCategory locationCategory = repository.locationCategoryDoa().getSingle(l.getChildId());
              //   Categories categories = new Categories(locationCategory.getSingularName());
              //   l.setCategories(categories);
-                List<String> tmp = l.getCategory();
+                List<String> tmp = l.getCategoryNames();
 
                 if(tmp!=null){
                     for(String s : tmp){

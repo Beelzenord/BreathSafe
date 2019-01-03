@@ -4,24 +4,24 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
 
-@Entity(tableName = "Location",foreignKeys = @ForeignKey(entity = LocationCategory.class,
-        parentColumns = "id",childColumns = "childId",
-        onDelete = CASCADE))
-//@Entity(tableName = "Location")
+//@Entity(tableName = "Location",foreignKeys = @ForeignKey(entity = LocationCategory.class,
+//        parentColumns = "id",childColumns = "childId",
+//        onDelete = CASCADE))
+@Entity(tableName = "Location")
 public class Location {
     @NonNull
     @PrimaryKey
     String id;
-    @ColumnInfo(name = "categories")
-    Categories categories;
     @ColumnInfo(name = "name")
     String name;
     @ColumnInfo(name = "timeCreated")
@@ -34,38 +34,51 @@ public class Location {
     double longitude;
     @ColumnInfo(name = "retrieved")
     long retrieved;
+    @ColumnInfo(name = "favorite")
+    boolean favorite;
 
     @ColumnInfo(name = "childId")
     String childId;
 
     @Ignore
-    double averageAQI;
+    private double averageAQI;
     @Ignore
-    boolean isOnMap;
+    private boolean isOnMap;
+    @Ignore
+    private List<String> categoryNames;
+    @Ignore
+    private List<String> tmpLCID;
 
     @Ignore
-    public Location(String id, List<String> categories, String name, long timeCreated, long timeUpdated, double latitude, double longitude, long retrieved) {
+    public Location(String id, List<String> categoryNames, List<String> tmpLCID, String name, long timeCreated, long timeUpdated, double latitude, double longitude, long retrieved) {
         this.id = id;
-        this.categories = new Categories(categories);
         this.name = name;
         this.timeCreated = timeCreated;
         this.timeUpdated = timeUpdated;
         this.latitude = latitude;
         this.longitude = longitude;
         this.retrieved = retrieved;
+        this.categoryNames = categoryNames;
+        this.tmpLCID = tmpLCID;
+        this.favorite = false;
         averageAQI = -1;
         isOnMap = false;
     }
 
-    public Location(@NonNull String id, Categories categories, String name, long timeCreated, long timeUpdated, double latitude, double longitude, long retrieved) {
+    public Location(@NonNull String id, String name, long timeCreated, long timeUpdated, double latitude, double longitude, long retrieved, boolean favorite) {
         this.id = id;
-        this.categories = categories;
+//        this.categories = categories;
         this.name = name;
         this.timeCreated = timeCreated;
         this.timeUpdated = timeUpdated;
         this.latitude = latitude;
         this.longitude = longitude;
         this.retrieved = retrieved;
+        this.favorite = favorite;
+        averageAQI = -1;
+        isOnMap = false;
+        categoryNames = new ArrayList<>();
+        tmpLCID = new ArrayList<>();
     }
 
     @Ignore
@@ -73,34 +86,72 @@ public class Location {
         this.name = name;
     }
 
-    public Categories getCategories() {
-        return categories;
+    public List<String> getCategoryNames() {
+        return categoryNames;
     }
 
-    public void setCategories(Categories categories) {
-        this.categories = categories;
+    public void setCategoryNames(List<String> categoryNames) {
+        this.categoryNames = categoryNames;
     }
 
-    public void addCategory(String c) {
-        if (categories.getCategories() != null)
-            categories.getCategories().add(c);
+    public void addCategoryNames(String name) {
+        categoryNames.add(name);
     }
 
-    public boolean containsCategory(String category) {
+    public List<String> getTmpLCID() {
+        return tmpLCID;
+    }
+
+    public void setTmpLCID(List<String> tmpLCID) {
+        this.tmpLCID = tmpLCID;
+    }
+
+    //    public Categories getCategories() {
+//        return categories;
+//    }
+
+//    public void setCategories(Categories categories) {
+//        this.categories = categories;
+//    }
+
+//    public List<String> getTmpLCID() {
+//        return tmpLCID;
+//    }
+
+    public void setCategories(List<String> tmpLCID) {
+        this.tmpLCID = tmpLCID;
+    }
+
+    /*public void addCategory(String c) {
+            if (categories.getCategories() != null)
+                categories.getCategories().add(c);
+        }*/
+    public void addTmpLCID(String c) {
+        if (tmpLCID != null)
+            tmpLCID.add(c);
+    }
+
+    /*public boolean containsCategory(String category) {
         for (String c : categories.getCategories()) {
+            if (c.equalsIgnoreCase(category))
+                return true;
+        }
+        return false;
+    }*/
+    public boolean containsTmpLCID(String category) {
+        for (String c : tmpLCID) {
             if (c.equalsIgnoreCase(category))
                 return true;
         }
         return false;
     }
 
-    public List<String> getCategory() {
-        return categories.getCategories();
+    public List<String> setTmpLCID() {
+//        return categories.getCategories();
+        return tmpLCID;
     }
 
-    public void setCategory(List<String> category) {
-        this.categories.setCategories(category);
-    }
+
 
     public String getId() {
         return id;
@@ -158,14 +209,21 @@ public class Location {
         this.retrieved = retrieved;
     }
 
-    public String getFirstCategory() {
+    /*public String getFirstCategory() {
         if (categories != null) {
             List<String> category = categories.getCategories();
             if (category != null && category.size() > 0)
                 return category.get(0);
         }
         return null;
+    }*/
 
+    public String getFirstTmpLCID() {
+        if (tmpLCID != null) {
+            if (tmpLCID.size() > 0)
+                return tmpLCID.get(0);
+        }
+        return null;
     }
 
     public String getChildId() {
@@ -200,7 +258,7 @@ public class Location {
     public String toString() {
         return "Location{" +
                 "id='" + id + '\'' +
-                ", categories=" + categories +
+                ", categories=" + categoryNames +
                 ", name='" + name + '\'' +
                 ", timeCreated=" + timeCreated +
                 ", timeUpdated=" + timeUpdated +
@@ -210,5 +268,25 @@ public class Location {
                 ", childId='" + childId + '\'' +
                 ", averageAQI=" + averageAQI +
                 '}';
+    }
+
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
+    }
+
+    public boolean containsCategoryName(String category) {
+        return categoryNames.contains(category);
+    }
+
+    public String getFirstCategory() {
+        if (categoryNames != null) {
+            if (categoryNames.size() > 0)
+                return categoryNames.get(0);
+        }
+        return "";
     }
 }

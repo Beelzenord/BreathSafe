@@ -10,17 +10,19 @@ import android.content.Context;
 import com.breathsafe.kth.breathsafe.Model.AirPollution;
 import com.breathsafe.kth.breathsafe.Model.CategoriesConverter;
 import com.breathsafe.kth.breathsafe.Model.Location;
+import com.breathsafe.kth.breathsafe.Model.LocationAndCategoryRelation;
 import com.breathsafe.kth.breathsafe.Model.LocationCategory;
 import com.breathsafe.kth.breathsafe.R;
 import com.google.android.gms.location.places.Place;
 
-@Database(entities = {AirPollution.class,Location.class, LocationCategory.class}, version = 4 )
+@Database(entities = {AirPollution.class,Location.class, LocationCategory.class, LocationAndCategoryRelation.class}, version = 6 )
 @TypeConverters({CategoriesConverter.class})
 public abstract class Repository extends RoomDatabase{
 
     public abstract AirPollutionDoa airPollutionDoa();
     public abstract LocationCategoryDoa locationCategoryDoa();
     public abstract LocationDoa locationDoa();
+    public abstract LocationAndCategoryRelationDao locationAndCategoryRelationDao();
     public static Repository instance;
 
     public static Repository getInstance(final Context con) {
@@ -50,9 +52,6 @@ public abstract class Repository extends RoomDatabase{
                     "longitude"+
                     "retrieved)");
             database.endTransaction();
-//            database.execSQL("ALTER TABLE Location "
-//                    + "DROP COLUMN "
-//                    + " ADD COLUMN price INTEGER");
         }
     };
 }

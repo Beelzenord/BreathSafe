@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.breathsafe.kth.breathsafe.Database.RemoveFromDatabase;
+import com.breathsafe.kth.breathsafe.Database.StoreToDatabase;
 import com.breathsafe.kth.breathsafe.Maps.MapActivity;
 import com.breathsafe.kth.breathsafe.Model.DisplayOnMapList;
 import com.breathsafe.kth.breathsafe.Model.Location;
@@ -43,7 +44,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
     public void onBindViewHolder(@NonNull FavoritesAdapter.ViewHolder viewHolder, int i) {
         final Location fingItem = list.get(i);
         viewHolder.textName.setText(fingItem.getName());
-        viewHolder.textDesc.setText(fingItem.getCategories().getCategories().get(0));
+        viewHolder.textDesc.setText(fingItem.getFirstCategory());
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -97,9 +98,13 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
             }
 
             private void removeFromFavorite(Context context, Location position) {
-                RemoveFromDatabase removeFromDatabase = new RemoveFromDatabase(context,position);
-                System.out.println("PRE-REMOVE " + position.getName());
-                removeFromDatabase.execute();
+//                RemoveFromDatabase removeFromDatabase = new RemoveFromDatabase(context,position);
+//                System.out.println("PRE-REMOVE " + position.getName());
+//                removeFromDatabase.execute();
+                position.setFavorite(false);
+                StoreToDatabase.UpdateLocation updateLocation = new StoreToDatabase.UpdateLocation(context, position);
+                updateLocation.execute();
+
                /* try {
                     if(removeFromDatabase.execute().get()){
                         list.remove(position);
