@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,6 +16,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.breathsafe.kth.breathsafe.Database.DatabaseTables;
+import com.breathsafe.kth.breathsafe.IO.DatabaseRead.DatabaseTask;
+import com.breathsafe.kth.breathsafe.Model.Location;
+import com.breathsafe.kth.breathsafe.Model.LocationData;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class MainFragment extends Fragment {
     private static final String TAG = "MainFragment";
@@ -21,19 +31,26 @@ public class MainFragment extends Fragment {
     private Button goToMapButton;
     private Button goToFragment;
 
+    private RecyclerView recyclerView;
+    private FavoritesAdapter favoritesAdapter ;
+    private boolean hasLoaded = false;
+    private List<Location> list;
+    private long timer;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.i("Fragments", "MainFragment");
         View view = inflater.inflate(R.layout.main_fragment, container, false);
         setHasOptionsMenu(true);
-        goToFragment = (Button) view.findViewById(R.id.go_to_favourites_button);
+        /*goToFragment = (Button) view.findViewById(R.id.go_to_favourites_button);
         goToFragment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ((MainActivity)getActivity()).setmViewPagerint(0);
             }
-        });
+        });*/
+        recyclerView = view.findViewById(R.id.favorite_recyclerView);
         searchButton = (Button)view.findViewById(R.id.main_search_text);
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,6 +66,15 @@ public class MainFragment extends Fragment {
             }
         });
 
+        list = new ArrayList<Location>();
+        // System.out.println("list " +list.size());
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+
+        favoritesAdapter = new FavoritesAdapter(getContext(), list);
+        recyclerView.setAdapter(favoritesAdapter);
+        hasLoaded = true;
         return view;
     }
 
@@ -82,4 +108,38 @@ public class MainFragment extends Fragment {
     }
 
 
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            Log.i("Fragments", "SearchCategoryFragment is visible");
+            updateList(LocationData.getInstance().getList());
+        }
+    }
+
+    public void updateList(List<Location> newList) {
+        if (hasLoaded) {
+            list.clear();
+            for (Location l : newList) {
+                if (l.isFavorite()) {
+                    if (!list.contains(l))
+                        list.add(l);
+                }
+            }
+            favoritesAdapter.notifyDataSetChanged();
+            Log.i(TAG, "updateList: start: " + (System.currentTimeMillis() - ((MainActivity)getActivity()).startOfApp));
+            Log.i(TAG, "updateList: timer: " + (System.currentTimeMillis() - timer));
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.i(TAG,"onResume:");
+        timer = System.currentTimeMillis();
+        DatabaseTask.Read favorites = new DatabaseTask.Read(getActivity(), null, DatabaseTables.LOCATION_FAVORITES);
+        favorites.execute();
+//        updateList(LocationData.getInstance().getList());
+    }
 }

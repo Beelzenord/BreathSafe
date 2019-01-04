@@ -1,4 +1,4 @@
-package com.breathsafe.kth.breathsafe.CoordinatesConverterRT90;
+package com.breathsafe.kth.breathsafe.Utilities.CoordinatesConverterRT90;
 
 /**
  * https://github.com/paera/Coordinate-Handler-JS

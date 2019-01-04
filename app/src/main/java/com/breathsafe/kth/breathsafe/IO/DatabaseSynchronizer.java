@@ -4,18 +4,15 @@ import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.breathsafe.kth.breathsafe.Database.LocationCategoryDoa;
 import com.breathsafe.kth.breathsafe.Database.Repository;
 import com.breathsafe.kth.breathsafe.Database.StoreToDatabase;
-import com.breathsafe.kth.breathsafe.Exceptions.CancelTaskException;
 import com.breathsafe.kth.breathsafe.IO.Network.LocationDownloadThread;
-import com.breathsafe.kth.breathsafe.IO.Network.NetworkTask;
 import com.breathsafe.kth.breathsafe.MainActivity;
 import com.breathsafe.kth.breathsafe.Model.Location;
 import com.breathsafe.kth.breathsafe.Model.LocationCategory;
 import com.breathsafe.kth.breathsafe.Model.LocationCategoryData;
 import com.breathsafe.kth.breathsafe.Model.LocationData;
-import com.breathsafe.kth.breathsafe.OnTaskCompleteHelper;
+import com.breathsafe.kth.breathsafe.Utilities.OnTaskCompleteHelper;
 import com.breathsafe.kth.breathsafe.R;
 
 import java.io.BufferedReader;

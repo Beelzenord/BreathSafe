@@ -2,6 +2,7 @@ package com.breathsafe.kth.breathsafe.IO.DatabaseRead;
 
 import android.app.Activity;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.breathsafe.kth.breathsafe.Database.Repository;
 import com.breathsafe.kth.breathsafe.Exceptions.CancelTaskException;
@@ -20,9 +21,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseTask {
+    private static final String TAG = "DatabaseTask";
 
 
     /**
@@ -48,36 +51,51 @@ public class DatabaseTask {
                 if (isCancelled())
                     throw new CancelTaskException();
                 switch (tag) {
-                    case DatabaseTables.AIR_POLLUTION:
+                    case DatabaseTables.AIR_POLLUTION: {
                         repository = Repository.getInstance(activity);
                         List<AirPollution> list1 = repository.airPollutionDoa().getAirPollution();
                         result = new Result(tag, list1);
                         break;
+                    }
 
-
-                    case DatabaseTables.LOCATION_CATEGORY:
+                    case DatabaseTables.LOCATION_CATEGORY: {
                         repository = Repository.getInstance(activity);
                         List<LocationCategory> list2 = repository.locationCategoryDoa().getAllLocationCategory();
                         result = new Result(tag, list2);
-    //                      repository.locationCategoryDoa().insertAsList((List<LocationCategory>)data);
+                        //                      repository.locationCategoryDoa().insertAsList((List<LocationCategory>)data);
                         break;
+                    }
 
-
-                    case DatabaseTables.LOCATION:
+                    case DatabaseTables.LOCATION: {
                         repository = Repository.getInstance(activity);
                         List<Location> list3 = repository.locationDoa().getAllLocations();
                         result = new Result(tag, list3);
                         break;
+                    }
 
-                    case DatabaseTables.LOCATION_AND_CATEGORY_RELATION:
+                    case DatabaseTables.LOCATION_AND_CATEGORY_RELATION: {
                         repository = Repository.getInstance(activity);
-                        Location location = ((Location)data);
+                        Location location = ((Location) data);
                         List<LocationCategory> list4 = repository.locationAndCategoryRelationDao().getCategoriesForLocations(location.getId());
                         for (LocationCategory lc : list4)
                             location.addCategoryNames(lc.getSingularName());
                         result = new Result(tag, "done");
                         break;
-
+                    }
+                    case DatabaseTables.LOCATION_FAVORITES: {
+                        repository = Repository.getInstance(activity);
+                        List<Location> favorites = repository.locationDoa().getFavorites();
+                        Log.i(TAG, "doInBackground: PRINTING FAVE");
+                        for (Location l : favorites) {
+                            Log.i(TAG, "doInBackground: FAVE: " + l.getName());
+                            List<LocationCategory> lcs = repository.locationAndCategoryRelationDao().getCategoriesForLocations(l.getId());
+                            List<String> names = new ArrayList<>();
+                            for (LocationCategory lc : lcs)
+                                names.add(lc.getSingularName());
+                            l.setCategoryNames(names);
+                        }
+                        result = new Result(tag, favorites);
+                    }
 
                 }
                 if (isCancelled())

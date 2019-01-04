@@ -12,22 +12,22 @@ import android.view.Gravity;
 import android.widget.Toast;
 
 import com.breathsafe.kth.breathsafe.AsyncTaskCallback;
-import com.breathsafe.kth.breathsafe.CalculateAirPollutionData;
-import com.breathsafe.kth.breathsafe.Constants;
+import com.breathsafe.kth.breathsafe.Utilities.CoordinatesConverterRT90.CalculateAirPollutionData;
+import com.breathsafe.kth.breathsafe.Utilities.Constants;
 import com.breathsafe.kth.breathsafe.Database.StoreToDatabase;
 import com.breathsafe.kth.breathsafe.IO.Network.NetworkTask;
 import com.breathsafe.kth.breathsafe.Model.AirPollution;
 import com.breathsafe.kth.breathsafe.Model.AirPollutionData;
 import com.breathsafe.kth.breathsafe.Model.DisplayOnMapList;
 import com.breathsafe.kth.breathsafe.Model.Location;
-import com.breathsafe.kth.breathsafe.OnTaskCompleteHelper;
+import com.breathsafe.kth.breathsafe.Utilities.OnTaskCompleteHelper;
 import com.breathsafe.kth.breathsafe.R;
 import com.breathsafe.kth.breathsafe.Search.SearchActivity;
-import com.breathsafe.kth.breathsafe.Util;
+import com.breathsafe.kth.breathsafe.Utilities.Util;
 
 import java.util.List;
 
-import static com.breathsafe.kth.breathsafe.Constants.PERMISSIONS_REQUEST_ENABLE_GPS;
+import static com.breathsafe.kth.breathsafe.Utilities.Constants.PERMISSIONS_REQUEST_ENABLE_GPS;
 
 public class MapActivity extends AppCompatActivity implements AsyncTaskCallback {
     private static final String TAG = "MapActivityTagger";

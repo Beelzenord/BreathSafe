@@ -1,4 +1,4 @@
-package com.breathsafe.kth.breathsafe;
+package com.breathsafe.kth.breathsafe.Utilities;
 
 
 import android.app.Activity;

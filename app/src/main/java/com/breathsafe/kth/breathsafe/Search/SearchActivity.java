@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.breathsafe.kth.breathsafe.Constants;
+import com.breathsafe.kth.breathsafe.Utilities.Constants;
 import com.breathsafe.kth.breathsafe.MainActivity;
 import com.breathsafe.kth.breathsafe.Maps.MapActivity;
 import com.breathsafe.kth.breathsafe.R;

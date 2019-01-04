@@ -2,17 +2,15 @@ package com.breathsafe.kth.breathsafe.IO.Network;
 
 import android.util.Log;
 
-import com.breathsafe.kth.breathsafe.Exceptions.CancelTaskException;
 import com.breathsafe.kth.breathsafe.Model.Location;
 import com.breathsafe.kth.breathsafe.Model.LocationCategory;
-import com.breathsafe.kth.breathsafe.OnTaskCompleteHelper;
+import com.breathsafe.kth.breathsafe.Utilities.OnTaskCompleteHelper;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 public class LocationDownloadThread implements Runnable {

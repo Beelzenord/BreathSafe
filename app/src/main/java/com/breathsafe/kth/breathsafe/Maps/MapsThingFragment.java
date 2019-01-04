@@ -19,7 +19,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.breathsafe.kth.breathsafe.Constants;
+import com.breathsafe.kth.breathsafe.Utilities.Constants;
 import com.breathsafe.kth.breathsafe.Model.DisplayOnMapList;
 import com.breathsafe.kth.breathsafe.Model.Location;
 import com.breathsafe.kth.breathsafe.R;
@@ -27,7 +27,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -239,18 +238,18 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
             }
         });
         // if the map doesn't load..
-//        if (!mMapView.hasWindowFocus()) {
-        if (!mMapView.isEnabled()) {
+        if (!mMapView.hasWindowFocus()) {
+//        if (!mMapView.isEnabled()) {
             Log.i(TAG, "onMapReady: NOT FOCUS");
-            Log.i(TAG, "onMapReady: isActivated: " + mMapView.isActivated());
-            Log.i(TAG, "onMapReady: isEnabled: " + mMapView.isEnabled());
+//            Log.i(TAG, "onMapReady: isActivated: " + mMapView.isActivated());
+//            Log.i(TAG, "onMapReady: isEnabled: " + mMapView.isEnabled());
             mMapView.getMapAsync(this);
         }
         else {
             Log.i(TAG, "onMapReady: HAS LOADED");
-            Log.i(TAG, "onMapReady: isActivated: " + mMapView.isActivated());
-            Log.i(TAG, "onMapReady: isEnabled: " + mMapView.isEnabled());
-            Log.i(TAG, "onMapReady: Time: " + (System.currentTimeMillis() - Constants.getStart()));
+//            Log.i(TAG, "onMapReady: isActivated: " + mMapView.isActivated());
+//            Log.i(TAG, "onMapReady: isEnabled: " + mMapView.isEnabled());
+//            Log.i(TAG, "onMapReady: Time: " + (System.currentTimeMillis() - Constants.getStart()));
         }
     }
 

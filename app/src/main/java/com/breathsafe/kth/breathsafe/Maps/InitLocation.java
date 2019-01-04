@@ -13,11 +13,11 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.breathsafe.kth.breathsafe.Constants;
+import com.breathsafe.kth.breathsafe.Utilities.Constants;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
-import static com.breathsafe.kth.breathsafe.Constants.ERROR_DIALOG_REQUEST;
+import static com.breathsafe.kth.breathsafe.Utilities.Constants.ERROR_DIALOG_REQUEST;
 
 public class InitLocation {
     private static final String TAG = "InitLocation";

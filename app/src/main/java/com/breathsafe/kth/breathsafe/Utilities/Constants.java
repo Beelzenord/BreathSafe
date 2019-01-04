@@ -1,4 +1,4 @@
-package com.breathsafe.kth.breathsafe;
+package com.breathsafe.kth.breathsafe.Utilities;
 
 public class Constants {
 

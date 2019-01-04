@@ -21,9 +21,10 @@ import com.breathsafe.kth.breathsafe.Model.LocationCategory;
 import com.breathsafe.kth.breathsafe.Model.LocationCategoryData;
 import com.breathsafe.kth.breathsafe.IO.Network.NetworkTask;
 import com.breathsafe.kth.breathsafe.Model.LocationData;
-import com.breathsafe.kth.breathsafe.Search.FavoritesFragment;
 import com.breathsafe.kth.breathsafe.Search.PagerAdapter;
 import com.breathsafe.kth.breathsafe.Search.SearchActivity;
+import com.breathsafe.kth.breathsafe.Utilities.Constants;
+import com.breathsafe.kth.breathsafe.Utilities.Util;
 
 import java.util.Calendar;
 import java.util.List;
@@ -37,17 +38,20 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
     private static final int LOCATION_SPECIFIC_TASK = 3;
     private long prev;
     private long startDBSynchronizer;
+    public long startOfApp;
     private boolean searchButtonPressed;
     private boolean databaseSynchronizerIsRunning;
     private int loadingDatabaseLocationsCounter;
 
     private PagerAdapter mPagerAdapter;
     private ViewPager mViewPager;
+    private MainFragment mainFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        startOfApp = System.currentTimeMillis();
         Log.i(TAG, "onCreate: ");
         searchButtonPressed = false;
         databaseSynchronizerIsRunning = false;
@@ -64,6 +68,8 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
 
     private void startReadFromDatabase() {
         prev = System.currentTimeMillis();
+//        DatabaseTask.Read favorites = new DatabaseTask.Read(this, null, DatabaseTables.LOCATION_FAVORITES);
+//        favorites.execute();
         DatabaseTask.Read databaseTask = new DatabaseTask.Read(this, null, DatabaseTables.LOCATION_CATEGORY);
         databaseTask.execute();
         DatabaseTask.Read location = new DatabaseTask.Read(this, null, DatabaseTables.LOCATION);
@@ -111,10 +117,6 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
 
                     Log.i(TAG, "onDatabaseReadComplete: time to read LocationCategory: " + (now - prev));
                     Log.i(TAG, "onDatabaseReadComplete: size of LocationCategory: " + list.size());
-                    for (LocationCategory lc : list) {
-                        Log.i(TAG, "onDatabaseReadComplete: name: " + lc.getSingularName());
-                        Log.i(TAG, "onDatabaseReadComplete: id: " + lc.getId());
-                    }
                     if (Util.isThresholdReachedToDownloadPlaces(this)) {
                         Log.i(TAG, "onDatabaseReadComplete: starting DatabaseSynchronizer");
                         startDBSynchronizer = System.currentTimeMillis();
@@ -148,9 +150,16 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
                             SearchActivity.setLocationsLoaded();
                             Log.i(TAG, "onDatabaseReadComplete: SearchActivity.setLocationsLoaded()");
                         }
+//                        else
+//                            mainFragment.updateList();
                         Log.i(TAG, "Everything loaded: " + (System.currentTimeMillis() - prev));
                     }
                     break;
+                }
+                case DatabaseTables.LOCATION_FAVORITES: {
+                    Log.i(TAG, "onDatabaseReadComplete: LOCATION_FAVORITES time: " + (System.currentTimeMillis() - prev));
+                    List<Location> favorites = (List<Location>)result.msg;
+                    mainFragment.updateList(favorites);
                 }
             }
         }
@@ -190,12 +199,15 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
             SearchActivity.setLocationCategoriesLoaded();
             SearchActivity.setLocationsLoaded();
         }
+        else if(result)
+            mainFragment.updateList(LocationData.getInstance().getList());
     }
 
     private void setupViewPager(ViewPager viewPager) {
         PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new FavoritesFragment(),"FavoritesFragment");
-        adapter.addFragment(new MainFragment(), "MainFragment");
+//        adapter.addFragment(new FavoritesFragment(),"FavoritesFragment");
+        mainFragment = new MainFragment();
+        adapter.addFragment(mainFragment, "MainFragment");
         viewPager.setAdapter(adapter);
         mViewPager.setCurrentItem(1);
     }

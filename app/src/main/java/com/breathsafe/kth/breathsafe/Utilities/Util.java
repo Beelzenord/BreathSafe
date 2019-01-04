@@ -1,4 +1,4 @@
-package com.breathsafe.kth.breathsafe;
+package com.breathsafe.kth.breathsafe.Utilities;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -13,6 +13,7 @@ import com.breathsafe.kth.breathsafe.Model.AirPollution;
 import com.breathsafe.kth.breathsafe.Model.AirPollutionData;
 import com.breathsafe.kth.breathsafe.Model.LocationCategory;
 import com.breathsafe.kth.breathsafe.Model.LocationCategoryData;
+import com.breathsafe.kth.breathsafe.R;
 
 import java.util.List;
 

@@ -2,7 +2,7 @@ package com.breathsafe.kth.breathsafe.JsonParsers;
 
 import android.content.res.Resources;
 
-import com.breathsafe.kth.breathsafe.CoordinatesConverterRT90.CoordinateHandler;
+import com.breathsafe.kth.breathsafe.Utilities.CoordinatesConverterRT90.CoordinateHandler;
 import com.breathsafe.kth.breathsafe.Model.Location;
 import com.breathsafe.kth.breathsafe.Model.LocationCategory;
 

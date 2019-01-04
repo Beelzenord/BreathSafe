@@ -35,7 +35,10 @@ public interface LocationDoa {
     @Query("SELECT COUNT(*) FROM Location")
     int countNumberOfEntities();
 
-    @Query("SELECT * FROM Location WHERE childId IS NOT NULL")
+//    @Query("SELECT * FROM Location WHERE childId IS NOT NULL")
+//    List<Location> getFavorites();
+
+    @Query("SELECT * FROM Location WHERE favorite = 1")
     List<Location> getFavorites();
 
     //@Query("SELECT id FROM items WHERE id = :id LIMIT 1")

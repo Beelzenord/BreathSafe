@@ -1,10 +1,11 @@
-package com.breathsafe.kth.breathsafe.Search;
+package com.breathsafe.kth.breathsafe;
 
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -12,17 +13,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.breathsafe.kth.breathsafe.Database.RemoveFromDatabase;
 import com.breathsafe.kth.breathsafe.Database.StoreToDatabase;
 import com.breathsafe.kth.breathsafe.Maps.MapActivity;
 import com.breathsafe.kth.breathsafe.Model.DisplayOnMapList;
 import com.breathsafe.kth.breathsafe.Model.Location;
-import com.breathsafe.kth.breathsafe.R;
+import com.breathsafe.kth.breathsafe.Model.LocationData;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.ViewHolder>{
+    private static final String TAG = "FavoritesAdapter";
     private Context context;
     private List<Location> list;
 
@@ -101,10 +101,13 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
 //                RemoveFromDatabase removeFromDatabase = new RemoveFromDatabase(context,position);
 //                System.out.println("PRE-REMOVE " + position.getName());
 //                removeFromDatabase.execute();
+                list.remove(position);
+                tryUpdateList(position);
                 position.setFavorite(false);
                 StoreToDatabase.UpdateLocation updateLocation = new StoreToDatabase.UpdateLocation(context, position);
                 updateLocation.execute();
 
+                notifyDataSetChanged();
                /* try {
                     if(removeFromDatabase.execute().get()){
                         list.remove(position);
@@ -116,6 +119,21 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
                 }*/
             }
         });
+    }
+
+    private void tryUpdateList(Location position) {
+        List<Location> list = LocationData.getInstance().getList();
+        if (list.size() > 0) {
+            Log.i(TAG, "tryUpdateList: size > 0");
+            for (Location l : list) {
+                if (l.getId().equals(position.getId())) {
+                    l.setFavorite(false);
+                    break;
+                }
+            }
+        }
+        else
+            Log.i(TAG, "tryUpdateList: ");
     }
 
     @Override
