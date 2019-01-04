@@ -1,12 +1,8 @@
 package com.breathsafe.kth.breathsafe;
 
 import android.app.Activity;
-import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.NetworkInfo;
-import android.preference.PreferenceManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,17 +11,12 @@ import android.view.Gravity;
 import android.widget.Toast;
 
 import com.breathsafe.kth.breathsafe.Database.DatabaseTables;
-import com.breathsafe.kth.breathsafe.Database.RetrieveFavorites;
 import com.breathsafe.kth.breathsafe.IO.DatabaseRead.DatabaseTask;
 import com.breathsafe.kth.breathsafe.IO.DatabaseSynchronizer;
-import com.breathsafe.kth.breathsafe.IO.Network.NetworkIdentifier;
 import com.breathsafe.kth.breathsafe.Maps.MapActivity;
 import com.breathsafe.kth.breathsafe.Model.AirPollution;
 import com.breathsafe.kth.breathsafe.Model.AirPollutionData;
 import com.breathsafe.kth.breathsafe.Model.Location;
-import com.breathsafe.kth.breathsafe.Database.LocationCategoryDoa;
-import com.breathsafe.kth.breathsafe.Database.Repository;
-import com.breathsafe.kth.breathsafe.Database.StoreToDatabase;
 import com.breathsafe.kth.breathsafe.Model.LocationCategory;
 import com.breathsafe.kth.breathsafe.Model.LocationCategoryData;
 import com.breathsafe.kth.breathsafe.IO.Network.NetworkTask;
@@ -47,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
     private long prev;
     private long startDBSynchronizer;
     private boolean searchButtonPressed;
+    private boolean databaseSynchronizerIsRunning;
     private int loadingDatabaseLocationsCounter;
 
     private PagerAdapter mPagerAdapter;
@@ -58,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
         setContentView(R.layout.activity_main);
         Log.i(TAG, "onCreate: ");
         searchButtonPressed = false;
+        databaseSynchronizerIsRunning = false;
 
         mPagerAdapter = new PagerAdapter(getSupportFragmentManager());
         mViewPager = (ViewPager)findViewById(R.id.container);
@@ -79,9 +72,12 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
         airPollution.execute();
     }
 
-    private void startDatabaseSynchronizer() {
-        DatabaseSynchronizer databaseSynchronizer = new DatabaseSynchronizer(this);
-        databaseSynchronizer.execute();
+    public void startDatabaseSynchronizer() {
+        if (!databaseSynchronizerIsRunning) {
+            DatabaseSynchronizer databaseSynchronizer = new DatabaseSynchronizer(this);
+            databaseSynchronizer.execute();
+            databaseSynchronizerIsRunning = true;
+        }
     }
 
     @Override
@@ -94,36 +90,6 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
     protected void onResume() {
         super.onResume();
 //        Log.i(TAG, "onResume: ");
-    }
-
-    @Override
-    public void onDownloadComplete(NetworkTask.Result result) {
-        Log.i(TAG, "onDownloadComplete: is this ever called?");
-        if (result.msg != null) {
-            switch (result.tag) {
-                case AIR_TASK:
-                    OnTaskCompleteHelper.onAirTaskComplete(this, (String) result.msg);
-                    break;
-                case LOCATION_CATEGORY_TASK:
-                    long now = Calendar.getInstance().getTimeInMillis();
-                    System.out.println("millisc: " + (now - prev));
-                    OnTaskCompleteHelper.onLocationCategoryTaskComplete(this, (String)result.msg);
-                    LocationCategoryData locationCategoryData = LocationCategoryData.getInstance();
-                    Log.i(TAG, "onDownloadComplete: stored categories");
-                    break;
-                case LOCATION_TASK:
-
-                    break;
-                case LOCATION_SPECIFIC_TASK:
-
-                    break;
-                default:
-                    break;
-            }
-        }
-        else {
-            Log.i("Exception", "Could not download data: " + result.ex.toString());
-        }
     }
 
     public void onDatabaseReadComplete(DatabaseTask.Result result) {
@@ -219,6 +185,7 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
     public void onDBSynchronizeComplete(Boolean result) {
         Log.i(TAG, "onDBSynchronizeComplete: timer: " + (System.currentTimeMillis() - startDBSynchronizer));
         Log.i(TAG, "onDBSynchronizeComplete: since start: " + (System.currentTimeMillis() - prev));
+        databaseSynchronizerIsRunning = false;
         if (result && searchButtonPressed) {
             SearchActivity.setLocationCategoriesLoaded();
             SearchActivity.setLocationsLoaded();
@@ -262,6 +229,23 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
         Toast toast = Toast.makeText(this, msg, Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
+    }
+
+    @Override
+    public void onDownloadComplete(NetworkTask.Result result) {
+        Log.i(TAG, "onDownloadComplete: is this ever called?");
+        if (result.msg != null) {
+            switch (result.tag) {
+                case AIR_TASK: break;
+                case LOCATION_CATEGORY_TASK: break;
+                case LOCATION_TASK: break;
+                case LOCATION_SPECIFIC_TASK: break;
+                default: break;
+            }
+        }
+        else {
+            Log.i("Exception", "Could not download data: " + result.ex.toString());
+        }
     }
 }
 

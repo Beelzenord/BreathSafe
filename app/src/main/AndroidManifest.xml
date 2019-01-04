@@ -2,9 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.breathsafe.kth.breathsafe">
 
-    <uses-feature
-        android:glEsVersion="0x0020000"
-        android:required="true" />
+    <!--<uses-feature-->
+        <!--android:glEsVersion="0x0020000"-->
+        <!--android:required="true" />-->
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -24,13 +24,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".Maps.MapActivity" />
         <activity android:name=".Search.SearchActivity" />
         <activity android:name=".SettingsActivity" />
-        <!--<activity-->
-            <!--android:name=".SettingsActivity"-->
-            <!--android:label="@string/title_activity_settings"></activity>-->
+        <!-- <activity -->
+        <!-- android:name=".SettingsActivity" -->
+        <!-- android:label="@string/title_activity_settings"></activity> -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
@@ -42,6 +41,7 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
 
+        <activity android:name=".AboutActivity"></activity>
     </application>
 
 </manifest>

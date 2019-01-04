@@ -2,26 +2,26 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/test_container"
+    android:id="@+id/maps_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <com.google.android.gms.maps.MapView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/test_user_list_map"
+        android:id="@+id/maps_map_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintBottom_toTopOf="@+id/lul"
+        app:layout_constraintBottom_toTopOf="@+id/maps_air_pollution"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
 
     <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/lul"
+        android:id="@+id/maps_air_pollution"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/test_user_list_map">
+        app:layout_constraintTop_toBottomOf="@+id/maps_map_view">
 
 
         <TextView
@@ -53,10 +53,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/location_name_view" />
-        <!--android:autoSizeTextType="uniform"-->
-        <!--android:autoSizeMinTextSize="8sp"-->
-        <!--android:autoSizeMaxTextSize="18sp"-->
-        <!--android:autoSizeStepGranularity="2sp"-->
 
         <Button
             android:id="@+id/go_to_comments_button"
@@ -73,31 +69,5 @@
             app:layout_constraintStart_toEndOf="@+id/air_quality_view"
             app:layout_constraintTop_toTopOf="parent" />
     </android.support.constraint.ConstraintLayout>
-
-
-    <!--<FrameLayout
-        android:id="@+id/frameLayout1"
-        android:layout_width="0dp"
-        android:layout_height="186dp"
-        android:layout_marginBottom="32dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/test_user_list_map">-->
-
-        <!--<TextView
-            android:id="@+id/textV1"
-            android:layout_width="258dp"
-            android:layout_height="20dp"
-            android:text="ASDASD" />
-        <TextView
-            android:id="@+id/textV2"
-
-            android:layout_width="258dp"
-            android:layout_height="20dp"
-            android:text="ASDASD" />
-
-    </FrameLayout>-->
-
 
 </android.support.constraint.ConstraintLayout>

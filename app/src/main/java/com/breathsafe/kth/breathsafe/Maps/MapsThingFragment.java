@@ -60,13 +60,13 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.maps_fragment, container, false);
-        mMapView = view.findViewById(R.id.test_user_list_map);
+        mMapView = view.findViewById(R.id.maps_map_view);
         displayOnMapList = DisplayOnMapList.getInstance();
         displayOnMapList.setOnMapFalse();
         clearMarkers = false;
         setHasOptionsMenu(true);
         initGoogleMap(savedInstanceState);
-        ConstraintLayout cl = view.findViewById(R.id.lul);
+        ConstraintLayout cl = view.findViewById(R.id.maps_air_pollution);
         cl.setBackgroundColor(getResources().getColor(R.color.colorGreyish));
         locationNameTextView = view.findViewById(R.id.location_name_view);
         airQualityTextView = view.findViewById(R.id.air_quality_view);

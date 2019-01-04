@@ -38,7 +38,6 @@ public class MainFragment extends Fragment {
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                ((MainActivity)getActivity()).setmViewPagerint(1);
                 ((MainActivity)getActivity()).startSearchActivity();
             }
         });
@@ -70,6 +69,13 @@ public class MainFragment extends Fragment {
             case R.id.menu_main_settings :
                 Intent intent = new Intent(getActivity(), SettingsActivity.class);
                 startActivity(intent);
+                break;
+            case R.id.menu_main_refresh_location :
+                ((MainActivity)getActivity()).startDatabaseSynchronizer();
+                break;
+            case R.id.menu_main_about :
+                Intent intent2 = new Intent(getActivity(), AboutActivity.class);
+                startActivity(intent2);
                 break;
         }
         return true;
