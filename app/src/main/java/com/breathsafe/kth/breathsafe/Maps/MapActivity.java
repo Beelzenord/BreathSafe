@@ -104,11 +104,13 @@ public class MapActivity extends AppCompatActivity implements AsyncTaskCallback 
         for (Location l : DisplayOnMapList.getInstance().getList()) {
             double res = CalculateAirPollutionData.weightedPM1andPM2(list, l);
 //            Log.i(TAG, "on database data: averageAQI: " + res);
+            Log.i(TAG,"handleAirPollutionData " + DisplayOnMapList.getInstance().getList().size());
             l.setAverageAQI(res);
         }
     }
 
     private void startNetworkTask() {
+        Log.i(TAG,"Starting network Task");
         StringBuilder sb = new StringBuilder();
         sb.append(getResources().getString(R.string.api_luftdaten_lat_lat_area));
         sb.append(defaultLat);sb.append(",");

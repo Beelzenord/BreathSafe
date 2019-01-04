@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.breathsafe.kth.breathsafe.Constants;
 import com.breathsafe.kth.breathsafe.MainActivity;
@@ -13,7 +14,7 @@ import com.breathsafe.kth.breathsafe.R;
 
 public class SearchActivity extends AppCompatActivity {
     private int callbackActivity;
-
+    private final String TAG = "SearchActivity";
     private PagerAdapter mPagerAdapter;
     private ViewPager mViewPager;
     private SelectLocationFragment selectLocationFragment;
@@ -63,13 +64,16 @@ public class SearchActivity extends AppCompatActivity {
         Intent intent = null;
         switch (callbackActivity) {
             case Constants.SEARCH_ACTIVITY_CALLBACK_MAINACTIVITY:
+                Log.i(TAG,"Starting Main Activity");
                 intent = new Intent(this, MainActivity.class);
                 break;
             case Constants.SEARCH_ACTIVITY_CALLBACK_MAPACTIVITY:
+                Log.i(TAG,"Starting Map Activity");
                 intent = new Intent(this, MapActivity.class);
                 break;
         }
         if (intent != null) {
+            Log.i(TAG,"Setting Result");
             setResult(Activity.RESULT_OK, intent);
         }
         finish();

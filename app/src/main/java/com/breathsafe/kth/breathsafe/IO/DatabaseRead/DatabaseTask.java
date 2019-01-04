@@ -2,6 +2,7 @@ package com.breathsafe.kth.breathsafe.IO.DatabaseRead;
 
 import android.app.Activity;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.breathsafe.kth.breathsafe.Database.Repository;
 import com.breathsafe.kth.breathsafe.Exceptions.CancelTaskException;
@@ -47,6 +48,7 @@ public class DatabaseTask {
                 throw new CancelTaskException();
             switch (tag) {
                 case DatabaseTables.AIR_POLLUTION:
+
                     repository = Repository.getInstance(activity);
                     List<AirPollution> list1 = repository.airPollutionDoa().getAirPollution();
                     result = new Result(tag, list1);

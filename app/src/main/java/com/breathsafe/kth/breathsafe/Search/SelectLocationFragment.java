@@ -61,7 +61,6 @@ public class SelectLocationFragment extends Fragment implements SelectLocationAd
         locationData = LocationData.getInstance();
         displayOnMapList = DisplayOnMapList.getInstance();
         searchText = view.findViewById(R.id.search2_search_text);
-
         addTextWatcher();
         createRecycler(view);
         return view;

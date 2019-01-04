@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.breathsafe.kth.breathsafe.Database.DatabaseTables;
+import com.breathsafe.kth.breathsafe.Database.RetrieveAirPollution;
 import com.breathsafe.kth.breathsafe.Database.RetrieveFavorites;
 import com.breathsafe.kth.breathsafe.IO.DatabaseRead.DatabaseTask;
 import com.breathsafe.kth.breathsafe.IO.DatabaseSynchronizer;
@@ -50,18 +51,13 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
         setContentView(R.layout.activity_main);
         Log.i(TAG, "onCreate: ");
         searchButtonPressed = false;
-
         mPagerAdapter = new PagerAdapter(getSupportFragmentManager());
         mViewPager = (ViewPager)findViewById(R.id.container);
         setupViewPager(mViewPager);
-
         startReadFromDatabase();
-
-
         RetrieveFavorites retrieveFavorites = new RetrieveFavorites(this);
         retrieveFavorites.execute();
-
-
+        new RetrieveAirPollution(this).execute();
     }
 
     private void startReadFromDatabase() {

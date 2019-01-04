@@ -88,7 +88,7 @@ public class NetworkTask extends AsyncTask<String, Void, NetworkTask.Result> {
                 throw new CancelTaskException();
 
             String msg = sb.toString();
-          //  List<AirPollusion> parsedJsonObject = AirJsonParser.parseAirLuftdaten(callbackActivity.getResources(), sb.toString());
+             //  List<AirPollusion> parsedJsonObject = AirJsonParser.parseAirLuftdaten(callbackActivity.getResources(), sb.toString());
             if (msg != null)
                 result = new NetworkTask.Result(msg, tag);
             else
