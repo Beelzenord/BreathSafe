@@ -1,4 +1,4 @@
-package com.breathsafe.kth.breathsafe.Utilities.CoordinatesConverterRT90;
+package com.breathsafe.kth.breathsafe.Utilities;
 
 import android.util.Log;
 

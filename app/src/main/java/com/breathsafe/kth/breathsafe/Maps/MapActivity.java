@@ -12,7 +12,7 @@ import android.view.Gravity;
 import android.widget.Toast;
 
 import com.breathsafe.kth.breathsafe.AsyncTaskCallback;
-import com.breathsafe.kth.breathsafe.Utilities.CoordinatesConverterRT90.CalculateAirPollutionData;
+import com.breathsafe.kth.breathsafe.Utilities.CalculateAirPollutionData;
 import com.breathsafe.kth.breathsafe.Utilities.Constants;
 import com.breathsafe.kth.breathsafe.Database.StoreToDatabase;
 import com.breathsafe.kth.breathsafe.IO.Network.NetworkTask;
