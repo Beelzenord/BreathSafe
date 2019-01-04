@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
 
+import com.breathsafe.kth.breathsafe.Comments.LoginActivity;
 import com.breathsafe.kth.breathsafe.Database.DatabaseTables;
 import com.breathsafe.kth.breathsafe.IO.DatabaseRead.DatabaseTask;
 import com.breathsafe.kth.breathsafe.IO.DatabaseSynchronizer;
@@ -53,6 +54,11 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
         setContentView(R.layout.activity_main);
         startOfApp = System.currentTimeMillis();
         Log.i(TAG, "onCreate: ");
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+        if (true)
+            return;
+
         searchButtonPressed = false;
         databaseSynchronizerIsRunning = false;
 

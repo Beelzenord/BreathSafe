@@ -2,9 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.breathsafe.kth.breathsafe">
 
-    <!--<uses-feature-->
-        <!--android:glEsVersion="0x0020000"-->
-        <!--android:required="true" />-->
+    <!-- <uses-feature -->
+    <!-- android:glEsVersion="0x0020000" -->
+    <!-- android:required="true" /> -->
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -41,7 +41,8 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
 
-        <activity android:name=".AboutActivity"></activity>
+        <activity android:name=".AboutActivity" />
+        <activity android:name=".Comments.LoginActivity"></activity>
     </application>
 
 </manifest>
