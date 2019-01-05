@@ -42,7 +42,10 @@
             android:required="false" />
 
         <activity android:name=".AboutActivity" />
-        <activity android:name=".Comments.LoginActivity"></activity>
+        <activity android:name=".Comments.LoginActivity" />
+        <activity android:name=".Comments.CommentsActivity" />
+        <activity android:name=".Comments.AddCommentActivity" />
+        <activity android:name=".Comments.ReadCommentActivity"></activity>
     </application>
 
 </manifest>

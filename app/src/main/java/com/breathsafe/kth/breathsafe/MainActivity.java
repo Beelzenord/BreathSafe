@@ -1,8 +1,11 @@
 package com.breathsafe.kth.breathsafe;
 
 import android.app.Activity;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -52,12 +55,26 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        /*NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        builder.setAutoCancel(true);
+        builder.setSmallIcon(R.drawable.common_google_signin_btn_icon_dark);
+        builder.setContentText("text");
+        builder.setContentTitle("Title");
+        Intent s = new Intent(this,MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,0,s,PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(pendingIntent);
+
+        NotificationManager nmn = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        nmn.notify(321,builder.build());
+        if (true)
+            return;*/
         startOfApp = System.currentTimeMillis();
         Log.i(TAG, "onCreate: ");
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
-        if (true)
-            return;
+//        Intent intent = new Intent(this, LoginActivity.class);
+//        startActivity(intent);
+//        if (true)
+//            return;
 
         searchButtonPressed = false;
         databaseSynchronizerIsRunning = false;
@@ -74,8 +91,8 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
 
     private void startReadFromDatabase() {
         prev = System.currentTimeMillis();
-//        DatabaseTask.Read favorites = new DatabaseTask.Read(this, null, DatabaseTables.LOCATION_FAVORITES);
-//        favorites.execute();
+        DatabaseTask.Read favorites = new DatabaseTask.Read(this, null, DatabaseTables.LOCATION_FAVORITES);
+        favorites.execute();
         DatabaseTask.Read databaseTask = new DatabaseTask.Read(this, null, DatabaseTables.LOCATION_CATEGORY);
         databaseTask.execute();
         DatabaseTask.Read location = new DatabaseTask.Read(this, null, DatabaseTables.LOCATION);

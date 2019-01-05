@@ -51,4 +51,18 @@
     <string name="about_air_pollution">This app uses the luftdaten API to retrieve data used to calculate the level of air pollution.</string>
     <string name="about_P1_P2">The air quality is based on a weighted value for PM2.5 and PM10 of 5 nearby sensors. These values are further weighted into an approximate AQI for PM2.5 and PM10, though a real AQI would use more parameters than just PM2.5 and PM10. </string>
     <string name="menu_main_title_about">About</string>
+    <string name="comment_add_button_title">Add</string>
+    <string name="comment_cancel_button_title">Cancel</string>
+    <string name="comment_title_hint">Title</string>
+    <string name="comment_text_hint">Text</string>
+    <string name="comment_add_comment_button_title">Add Comment</string>
+    <string name="firebase_table_users">users</string>
+    <string name="intent_extra_location">comment_location</string>
+    <string name="intent_extra_location_id">comment_location_id</string>
+    <string name="intent_extra_location_name">comment_location_extra_name</string>
+    <string name="firebase_table_comments">comments</string>
+    <string name="read_comment_extra_author">read_comment_extra_author</string>
+    <string name="read_comment_extra_timestamp">read_comment_extra_timestamp</string>
+    <string name="read_comment_extra_title">read_comment_extra_title</string>
+    <string name="read_comment_extra_text">read_comment_extra_text</string>
 </resources>

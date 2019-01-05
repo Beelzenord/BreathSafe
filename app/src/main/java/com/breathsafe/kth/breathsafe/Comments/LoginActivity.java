@@ -5,8 +5,11 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.Toast;
 
+import com.breathsafe.kth.breathsafe.Model.Location;
 import com.breathsafe.kth.breathsafe.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -28,12 +31,17 @@ public class LoginActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     private static final int RC_SIGN_IN = 2;
     GoogleSignInClient mGoogleSignInClient;
+    private String commentLocationID;
+    private String commentLocationName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        Bundle extras = getIntent().getExtras();
+        commentLocationID = extras.getString(getResources().getString(R.string.intent_extra_location_id));
+        commentLocationName = extras.getString(getResources().getString(R.string.intent_extra_location_name));
         loginButton = findViewById(R.id.login_button);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,6 +125,14 @@ public class LoginActivity extends AppCompatActivity {
         }
         else {
             Log.i(TAG, "updateUI: authentication complete");
+            Log.i(TAG, "updateUI: name: " + user.getDisplayName());
+            Log.i(TAG, "updateUI: name: " + user.getEmail());
+            Log.i(TAG, "updateUI: id: " + user.getUid());
+            Toast.makeText(this, "Logged in as " + user.getDisplayName(), Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(this, CommentsActivity.class);
+            intent.putExtra(getResources().getString(R.string.intent_extra_location_id), commentLocationID);
+            intent.putExtra(getResources().getString(R.string.intent_extra_location_name), commentLocationName);
+            startActivity(intent);
         }
     }
 }

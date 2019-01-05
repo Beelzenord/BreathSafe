@@ -1,6 +1,7 @@
 package com.breathsafe.kth.breathsafe.Maps;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -18,7 +19,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.breathsafe.kth.breathsafe.Comments.LoginActivity;
 import com.breathsafe.kth.breathsafe.Utilities.Constants;
 import com.breathsafe.kth.breathsafe.Model.DisplayOnMapList;
 import com.breathsafe.kth.breathsafe.Model.Location;
@@ -74,7 +77,7 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: go to comment activity
+                goToComments();
             }
         });
         return view;
@@ -312,6 +315,18 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
     public void onLowMemory() {
         super.onLowMemory();
         mMapView.onLowMemory();
+    }
+
+
+    private void goToComments() {
+        if (currentLocation == null) {
+            Toast.makeText(getContext(), "Select a location first", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Intent intent = new Intent(getActivity(), LoginActivity.class);
+        intent.putExtra(getResources().getString(R.string.intent_extra_location_id), currentLocation.getId());
+        intent.putExtra(getResources().getString(R.string.intent_extra_location_name), currentLocation.getName());
+        startActivity(intent);
     }
 
 }
