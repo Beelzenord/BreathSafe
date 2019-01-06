@@ -1,6 +1,8 @@
 package com.breathsafe.kth.breathsafe.Utilities.CoordinatesConverterRT90;
 
 /**
+ * Converts from RT90 to longitude, latitude and vice versa.
+ * Thanks to Per Axelsson available at:
  * https://github.com/paera/Coordinate-Handler-JS
  */
 public class CoordinateHandler {

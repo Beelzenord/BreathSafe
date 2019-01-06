@@ -92,6 +92,7 @@ public class MapActivity extends AppCompatActivity implements AsyncTaskCallback 
     }
 
     private void useOldAirPollutionData() {
+        Log.i(TAG, "useOldAirPollutionData: ");
         List<AirPollution> list = AirPollutionData.getInstance().getList();
         for (Location l : DisplayOnMapList.getInstance().getList()) {
             double res = CalculateAirPollutionData.weightedPM1andPM2(list, l);
@@ -149,6 +150,7 @@ public class MapActivity extends AppCompatActivity implements AsyncTaskCallback 
     }
 
     private void startNetworkTask() {
+        Log.i(TAG, "startNetworkTask: ");
         StringBuilder sb = new StringBuilder();
         sb.append(getResources().getString(R.string.api_luftdaten_lat_lat_area));
         sb.append(getResources().getString(R.string.api_luftdaten_default_lat));

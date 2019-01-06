@@ -17,10 +17,17 @@ import com.breathsafe.kth.breathsafe.R;
 
 import java.util.List;
 
-
+/**
+ * Static helper methods.
+ */
 public class Util {
     private static final String TAG = "UtilClass";
 
+    /**
+     * Finds if enough time has passed to download new locations based of user settings.
+     * @param context The context to use.
+     * @return If enough time has passed to download new data.
+     */
     public static boolean isThresholdReachedToDownloadPlaces(Context context) {
         int networkState = findInternetConnection(context);
         if (networkState == 0) {
@@ -62,6 +69,11 @@ public class Util {
         return false;
     }
 
+    /**
+     * Finds if enough time has passed to download new air pollution data based of user settings.
+     * @param context The context to use.
+     * @return If enough time has passed to download new data.
+     */
     public static boolean isThresholdReachedToDownloadAirPollution(Context context) {
         int networkState = findInternetConnection(context);
         if (networkState == 0) {
@@ -116,8 +128,6 @@ public class Util {
         ConnectivityManager cm =
                 (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = cm.getActiveNetworkInfo();
-//        boolean isConnected = activeNetwork != null &&
-//                activeNetwork.isConnectedOrConnecting();
         if (networkInfo != null && networkInfo.isConnected()) {
             if (networkInfo.getType() == ConnectivityManager.TYPE_WIFI)
                 return 1;

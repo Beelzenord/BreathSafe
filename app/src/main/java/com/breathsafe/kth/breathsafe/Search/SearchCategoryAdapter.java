@@ -13,6 +13,9 @@ import com.breathsafe.kth.breathsafe.R;
 
 import java.util.List;
 
+/**
+ * Recycler view adapter for the Search for Category Fragment.
+ */
 public class SearchCategoryAdapter extends RecyclerView.Adapter<SearchCategoryAdapter.MyViewHolder> {
     private Activity activity;
     private List<LocationCategory> mDataset;
@@ -24,7 +27,7 @@ public class SearchCategoryAdapter extends RecyclerView.Adapter<SearchCategoryAd
     }
 
     /**
-     * Returns the location name selected at position i.
+     * Returns the location category selected at position i.
      * @param i The position selected.
      * @return The location at position i.
      */
@@ -46,8 +49,6 @@ public class SearchCategoryAdapter extends RecyclerView.Adapter<SearchCategoryAd
 
         MyViewHolder vh = new MyViewHolder(v);
         vh.category = v.findViewById(R.id.item_in_recycler);
-//        vh.district = v.findViewById(R.id.district);
-
         return vh;
     }
 
@@ -58,34 +59,25 @@ public class SearchCategoryAdapter extends RecyclerView.Adapter<SearchCategoryAd
      */
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
-        try {
-            LocationCategory locationCategory = mDataset.get(i);
-
-            myViewHolder.category.setText(locationCategory.getSingularName());
-
-        }  catch (Exception e) {
-            e.printStackTrace();
-        }
+        LocationCategory locationCategory = mDataset.get(i);
+        myViewHolder.category.setText(locationCategory.getSingularName());
     }
 
     /**
-     * Sets the listener to be used when a user clicks an name.
+     * Sets the listener to be used when a user clicks an item.
      * @param itemClickListener The listener to be used.
      */
     void setClickListener(ItemClickListener itemClickListener) {
         this.mClickListener = itemClickListener;
     }
 
-    public boolean hasEmptyList() {
-        if (mDataset != null && mDataset.size() <= 0)
-            return true;
-        return false;
-    }
-
     public void setList(List<LocationCategory> list) {
         this.mDataset = list;
     }
 
+    /**
+     * Implement this interface to receive notification when an item is clicked.
+     */
     public interface ItemClickListener {
         void onItemClick(View view, int position);
     }
@@ -100,7 +92,7 @@ public class SearchCategoryAdapter extends RecyclerView.Adapter<SearchCategoryAd
     }
 
     /**
-     * The view holder from every name in the list.
+     * The view holder for every item in the list.
      */
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener  {
         public TextView category;

@@ -8,6 +8,9 @@ import com.breathsafe.kth.breathsafe.R;
 
 import java.util.Calendar;
 
+/**
+ * Lets the user read a specific comment.
+ */
 public class ReadCommentActivity extends AppCompatActivity {
     private TextView authorTextView;
     private TextView timestampTextView;
@@ -42,6 +45,11 @@ public class ReadCommentActivity extends AppCompatActivity {
         textTextView.setText(text);
     }
 
+    /**
+     * Creates a string date using a long timestamp.
+     * @param timestamp The timestamp in milliseconds since 1970-01-01.
+     * @return A string date.
+     */
     private String createTimestampString(long timestamp) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(timestamp);

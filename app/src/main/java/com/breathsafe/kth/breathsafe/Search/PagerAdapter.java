@@ -7,6 +7,10 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Pager adapter for the Search Activity so the user easily can switch between
+ * different search types.
+ */
 public class PagerAdapter extends FragmentStatePagerAdapter {
     private final List<Fragment> mFragmentList = new ArrayList<>();
     private final List<String> mFragmentTitleList = new ArrayList<String>();

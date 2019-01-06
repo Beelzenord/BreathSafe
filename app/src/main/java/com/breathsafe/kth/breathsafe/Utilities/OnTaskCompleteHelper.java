@@ -14,29 +14,36 @@ import org.json.JSONException;
 
 import java.util.List;
 
+/**
+ * Helper class to relieve code of MainActivity.
+ */
 public class OnTaskCompleteHelper {
+
+    /**
+     * Parse airpollution json data to a list of AirPollution.
+     * @param activity The calling activity .
+     * @param s The json documents.
+     * @return A List<AirPollution>.
+     */
     public static List<AirPollution> onAirTaskComplete(Activity activity, String s) {
         try {
-//            AirPollutionData airPollusionData = AirPollutionData.getInstance();
             List<AirPollution> list = AirJsonParser.parseAirLuftdaten(activity.getResources(), s);
-//            airPollusionData.setList(list);
-            System.out.println("list size AP " + list.size());
-           // Intent intent = new Intent(activity, MapsActivity.class);
             return list;
-          //  activity.startActivity(intent);
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
         }
     }
 
+    /**
+     * Parse location category json data to a list of LocationCategory.
+     * @param activity The calling activity.
+     * @param s The json document.
+     * @return A List<LocationCategory>
+     */
     public static List<LocationCategory> onLocationCategoryTaskComplete(Activity activity, String s) {
         try {
-//            LocationCategoryData locationCategoryData = LocationCategoryData.getInstance();
             List<LocationCategory> list = LocationJsonParser.parseLocationCategoriesStockholmApi(activity.getResources(), s);
-//            locationCategoryData.setList(list);
-            System.out.println("list size Loc " + list.size());
-
             return list;
         } catch (JSONException e) {
             e.printStackTrace();
@@ -44,23 +51,16 @@ public class OnTaskCompleteHelper {
         }
     }
 
-    public static List<Location> onSpecificLocationTaskComplete(Activity activity, String s) {
-        try {
-//            LocationData locationData = LocationData.getInstance();
-            List<Location> list = LocationJsonParser.parseLocationStockholmApi(activity.getResources(), s);
-//            locationData.setList(list);
-            return list;
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
+    /**
+     * Parses a json document with Location data.
+     * @param s The json document.
+     * @param categoryName The name of the LocationCategory.
+     * @param categoryID The id of the LocationCategory.
+     * @return A List<Location>
+     */
     public static List<Location> onSpecificLocationTaskComplete(String s, String categoryName, String categoryID) {
         try {
-//            LocationData locationData = LocationData.getInstance();
             List<Location> list = LocationJsonParser.parseLocationStockholmApi(s, categoryName, categoryID);
-//            locationData.setList(list);
             return list;
         } catch (JSONException e) {
             e.printStackTrace();

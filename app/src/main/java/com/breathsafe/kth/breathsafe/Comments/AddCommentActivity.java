@@ -15,6 +15,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+/**
+ * Activity to add comments about a Location.
+ */
 public class AddCommentActivity extends AppCompatActivity {
     private EditText titleText;
     private EditText textText;
@@ -50,6 +53,9 @@ public class AddCommentActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Pushes a new comment to the firebase database.
+     */
     private void handleNewComment() {
         if (titleText.length() <= 0) {
             showToast("You need a title");

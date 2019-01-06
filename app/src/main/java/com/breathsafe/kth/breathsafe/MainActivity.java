@@ -161,7 +161,6 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
                         DatabaseTask.Read databaseTask = new DatabaseTask.Read(this, l, DatabaseTables.LOCATION_AND_CATEGORY_RELATION);
                         databaseTask.execute();
                     }
-                    SearchActivity.hello("From mainactivity");
                     LocationData.getInstance().setList(list);
                     loadingDatabaseLocationsCounter = 0;
                     break;

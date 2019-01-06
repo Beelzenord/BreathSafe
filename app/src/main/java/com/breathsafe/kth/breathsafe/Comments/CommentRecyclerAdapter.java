@@ -14,21 +14,22 @@ import com.breathsafe.kth.breathsafe.R;
 import java.util.Calendar;
 import java.util.List;
 
+/**
+ * Recycler adapter to show all the comments of a Location.
+ */
 public class CommentRecyclerAdapter extends RecyclerView.Adapter<CommentRecyclerAdapter.MyViewHolder> {
     private static final String TAG = "CommentRecyclerAdapter";
     private Activity activity;
     private List<Comment> mDataset;
-    private String category;
     private CommentRecyclerAdapter.ItemClickListener mClickListener;
 
     public CommentRecyclerAdapter(Activity Activity, List<Comment> myDataset) {
         this.activity = Activity;
         this.mDataset = myDataset;
-        this.category = "";
     }
 
     /**
-     * Returns the location name selected at position i.
+     * Returns the comment name selected at position i.
      * @param i The position selected.
      * @return The location at position i.
      */
@@ -37,7 +38,7 @@ public class CommentRecyclerAdapter extends RecyclerView.Adapter<CommentRecycler
     }
 
     /**
-     * When created, finds the view name to be used in each name.
+     * When created, finds the view name to be used in each item.
      * @param viewGroup The view group of a certain layout.
      * @param i The position.
      * @return The viewholder created from the view items.
@@ -51,8 +52,6 @@ public class CommentRecyclerAdapter extends RecyclerView.Adapter<CommentRecycler
         CommentRecyclerAdapter.MyViewHolder vh = new CommentRecyclerAdapter.MyViewHolder(v);
         vh.title = v.findViewById(R.id.teeto);
         vh.author = v.findViewById(R.id.deeto);
-//        vh.district = v.findViewById(R.id.district);
-
         return vh;
     }
 
@@ -104,6 +103,9 @@ public class CommentRecyclerAdapter extends RecyclerView.Adapter<CommentRecycler
         return mDataset;
     }
 
+    /**
+     * Implement this interface to receive notification when an item is clicked.
+     */
     public interface ItemClickListener {
         void onItemClick(View view, int position);
     }
@@ -118,7 +120,7 @@ public class CommentRecyclerAdapter extends RecyclerView.Adapter<CommentRecycler
     }
 
     /**
-     * The view holder from every name in the list.
+     * The view holder from every item in the list.
      */
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener  {
         public TextView title;

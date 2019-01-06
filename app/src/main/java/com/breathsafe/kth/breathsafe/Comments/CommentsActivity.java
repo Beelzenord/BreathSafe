@@ -30,16 +30,19 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Activity to show a list of comments of a specific Location.
+ */
 public class CommentsActivity extends AppCompatActivity  implements CommentRecyclerAdapter.ItemClickListener {
     private static final String TAG = "CommentsActivity";
     private RecyclerView mRecyclerView;
     private CommentRecyclerAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private List<Comment> commentsToDisplay;
-    FirebaseDatabase database;
-    DatabaseReference myRef;
+    private FirebaseDatabase database;
+    private DatabaseReference myRef;
     private DatabaseReference comments;
-    FirebaseUser currentUser;
+    private FirebaseUser currentUser;
     private TextView locationName;
     private Button addCommentBtn;
     private String commentLocationID;
@@ -70,91 +73,13 @@ public class CommentsActivity extends AppCompatActivity  implements CommentRecyc
             }
         });
 
-
         createRecyclerView();
         findComments();
-
-        if (true)
-            return;
-
-        DatabaseReference usersRef = database.getReference("users");
-//        Query query = myRef.child("users");
-        usersRef.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Log.i(TAG, "onChildAdded: ");
-                String key = dataSnapshot.getKey();
-                Log.i(TAG, "onChildAdded: key: " + key);
-                User u = dataSnapshot.getValue(User.class);
-                Log.i(TAG, "onChildAdded: name: " + u.getUsername());
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Log.i(TAG, "onChildChanged: ");
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-        if (true)
-            return;
-        usersRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Log.i(TAG, "onDataChange: ");
-                String key = dataSnapshot.getKey();
-                Log.i(TAG, "onDataChange: key: " + key);
-                Map<String, User> map = (Map<String, User>)dataSnapshot.getValue();
-                Collection<User> users = map.values();
-                for (User u : users) {
-                    Log.i(TAG, "onDataChange: name: " + u.getUsername());
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-        if (true)
-            return;
-
-
-        Query get = usersRef.child("asd");
-        get.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Log.i(TAG, "onDataChange: ");
-                User u = dataSnapshot.getValue(User.class);
-                Log.i(TAG, "onDataChange: name: " + u.getUsername());
-                Log.i(TAG, "onDataChange: mail: " + u.getEmail());
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.i(TAG, "onCancelled: ");
-            }
-        });
-
-
-//        writeNewUser("asd", "asd", "emiasdalsd");
     }
 
+    /**
+     * Creates the recycler view to show comments.
+     */
     private void createRecyclerView() {
         mRecyclerView = findViewById(R.id.comments_recycler_view);
         mRecyclerView.setHasFixedSize(true);
@@ -166,6 +91,9 @@ public class CommentsActivity extends AppCompatActivity  implements CommentRecyc
         mRecyclerView.setAdapter(mAdapter);
     }
 
+    /**
+     * Finds comments for a specific location and puts them in the recycler view.
+     */
     private void findComments() {
         DatabaseReference comments = myRef.child(getResources().getString(R.string.firebase_table_comments));
         Query query = comments.orderByChild("locationID").equalTo(commentLocationID);
@@ -205,6 +133,9 @@ public class CommentsActivity extends AppCompatActivity  implements CommentRecyc
         super.onStop();
     }
 
+    /**
+     * Adds a new user to the database.
+     */
     private void tryAddUserToDatabase() {
         Query query = myRef.child(getResources().getString(R.string.firebase_table_users)).child(currentUser.getUid());
         query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -226,6 +157,11 @@ public class CommentsActivity extends AppCompatActivity  implements CommentRecyc
         });
     }
 
+    /**
+     * If a comment is clicked, show the whole comment in ReadCommentActivity.
+     * @param view The view.
+     * @param position The position of the item that was clicked.
+     */
     @Override
     public void onItemClick(View view, int position) {
         Comment comment = mAdapter.getItem(position);

@@ -130,6 +130,8 @@ public class DatabaseSynchronizer extends AsyncTask<Void, Void, Boolean> {
             downloadLocations();
 
             long startOfMerge = System.currentTimeMillis();
+            Repository repository = Repository.getInstance(activity);
+            List<Location> favorites = repository.locationDoa().getFavorites();
             Log.d(TAG, "run: Time to download all: " + (startOfMerge - startOfPool));
             List<Location> wholeList = new ArrayList<>();
             ArrayList<String> keys = new ArrayList<>();
@@ -146,6 +148,8 @@ public class DatabaseSynchronizer extends AsyncTask<Void, Void, Boolean> {
                         }
                     }
                     else {
+                        if (isFavorites(l, favorites))
+                            l.setFavorite(true);
                         wholeList.add(l);
                         keys.add(l.getId());
                     }
@@ -175,6 +179,16 @@ public class DatabaseSynchronizer extends AsyncTask<Void, Void, Boolean> {
         }
 
         return true;
+    }
+
+    private boolean isFavorites(Location location, List<Location> favs) {
+        for (Location l : favs) {
+            if (l.getId().equals(location.getId())) {
+                favs.remove(l);
+                return true;
+            }
+        }
+        return false;
     }
 
     private void saveLocationCategories() {

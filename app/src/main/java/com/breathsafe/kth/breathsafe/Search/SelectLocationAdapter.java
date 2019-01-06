@@ -14,7 +14,9 @@ import com.breathsafe.kth.breathsafe.R;
 
 import java.util.List;
 
-
+/**
+ * Recycler view adapter for the Search for Location Fragment.
+ */
 public class SelectLocationAdapter extends RecyclerView.Adapter<SelectLocationAdapter.MyViewHolder> {
     private static final String TAG = "SelectLocationAdapter";
     private Activity activity;
@@ -38,7 +40,7 @@ public class SelectLocationAdapter extends RecyclerView.Adapter<SelectLocationAd
     }
 
     /**
-     * When created, finds the view name to be used in each name.
+     * When created, finds the view name to be used in each item.
      * @param viewGroup The view group of a certain layout.
      * @param i The position.
      * @return The viewholder created from the view items.
@@ -52,8 +54,6 @@ public class SelectLocationAdapter extends RecyclerView.Adapter<SelectLocationAd
         SelectLocationAdapter.MyViewHolder vh = new SelectLocationAdapter.MyViewHolder(v);
         vh.name = v.findViewById(R.id.teeto);
         vh.desc = v.findViewById(R.id.deeto);
-//        vh.district = v.findViewById(R.id.district);
-
         return vh;
     }
 
@@ -64,22 +64,16 @@ public class SelectLocationAdapter extends RecyclerView.Adapter<SelectLocationAd
      */
     @Override
     public void onBindViewHolder(@NonNull SelectLocationAdapter.MyViewHolder myViewHolder, int i) {
-        try {
-            Location location = mDataset.get(i);
-            myViewHolder.name.setText(location.getName());
-            Log.i(TAG, "onBindViewHolder: category: " + category);
-            if (category.length() > 0 && !category.equalsIgnoreCase("All"))
-                myViewHolder.desc.setText(category);
-            else
-                myViewHolder.desc.setText(location.getFirstCategory());
-
-        }  catch (Exception e) {
-            e.printStackTrace();
-        }
+        Location location = mDataset.get(i);
+        myViewHolder.name.setText(location.getName());
+        if (category.length() > 0 && !category.equalsIgnoreCase("All"))
+            myViewHolder.desc.setText(category);
+        else
+            myViewHolder.desc.setText(location.getFirstCategory());
     }
 
     /**
-     * Sets the listener to be used when a user clicks an name.
+     * Sets the listener to be used when a user clicks an item.
      * @param itemClickListener The listener to be used.
      */
     void setClickListener(SelectLocationAdapter.ItemClickListener itemClickListener) {
@@ -95,6 +89,9 @@ public class SelectLocationAdapter extends RecyclerView.Adapter<SelectLocationAd
         return mDataset;
     }
 
+    /**
+     * Implement this interface to receive notification when an item is clicked.
+     */
     public interface ItemClickListener {
         void onItemClick(View view, int position);
     }

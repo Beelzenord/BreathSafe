@@ -19,7 +19,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.breathsafe.kth.breathsafe.Database.LinkAsFavorite;
 import com.breathsafe.kth.breathsafe.Model.DisplayOnMapList;
 import com.breathsafe.kth.breathsafe.Model.Location;
 import com.breathsafe.kth.breathsafe.Model.LocationData;
@@ -28,6 +27,9 @@ import com.breathsafe.kth.breathsafe.R;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Fragment to let the user search and select a Location.
+ */
 public class SelectLocationFragment extends Fragment implements SelectLocationAdapter.ItemClickListener {
     private static final String TAG = "SelectLocationFragment";
     private RecyclerView mRecyclerView;
@@ -38,17 +40,12 @@ public class SelectLocationFragment extends Fragment implements SelectLocationAd
     private String actualSearchText;
     private String actualSearchTextPrev;
     private List<Location> selectedCategoryLocations;
-    private String locatorForCategory;
     private DisplayOnMapList displayOnMapList;
     private String category;
-
-
-
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-
     }
 
     @Nullable
@@ -68,7 +65,9 @@ public class SelectLocationFragment extends Fragment implements SelectLocationAd
         createRecycler(view);
         return view;
     }
-
+    /**
+     * Updates the list of Locations instantly when the user types in the search field.
+     */
     private void addTextWatcher() {
         searchText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -97,6 +96,10 @@ public class SelectLocationFragment extends Fragment implements SelectLocationAd
         super.onStart();
     }
 
+    /**
+     * Update the list of items when the user goes to this fragment.
+     * @param isVisibleToUser If this fragment is visible.
+     */
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
@@ -132,8 +135,10 @@ public class SelectLocationFragment extends Fragment implements SelectLocationAd
         }
         return true;
     }
+
     /**
-     * Creates the recycler which contains the locations. Creates the adapter used with the recycler.
+     * Creates the recycler which contains the location. Creates the adapter used with the recycler.
+     * @param view The view of this fragment.
      */
     private void createRecycler(View view) {
         mRecyclerView = view.findViewById(R.id.search2_recycler_view);
@@ -146,19 +151,16 @@ public class SelectLocationFragment extends Fragment implements SelectLocationAd
         mRecyclerView.setAdapter(mAdapter);
     }
 
+    /**
+     * Updates the list of Locations.
+     */
     public void updateList() {
-//        if (mAdapter.hasEmptyList()) {
-//            List<LocationCategory> list = locationCategoryData.getList();
-//            if (list != null) {
-            mAdapter.setList(newList(), category);
-            mAdapter.notifyDataSetChanged();
-//            }
-//        }
+        mAdapter.setList(newList(), category);
+        mAdapter.notifyDataSetChanged();
     }
 
     /**
-     * When a location is clicked it is picked out and sent back to the main activity.
-     * This activity closes.
+     * When an item is clicked it is picked out the location to the be display in the MapActivity.
      * @param view The view the click came from.
      * @param position The position in the list of the name clicked.
      */
@@ -189,7 +191,11 @@ public class SelectLocationFragment extends Fragment implements SelectLocationAd
             ((SearchActivity)getActivity()).exitThisActivity();
         }
     }
-
+    /**
+     * Creates a new List of Locations to show to the user.
+     * This list will only include matches of when the user typed in the search field.
+     * @return The new list of Locations to display to the user.
+     */
     private List<Location> newList() {
         long now = System.currentTimeMillis();
         if (selectedCategoryLocations == null || category.equalsIgnoreCase("All"))
@@ -205,8 +211,12 @@ public class SelectLocationFragment extends Fragment implements SelectLocationAd
         return clone;
     }
 
+    /**
+     * Sets the category that the user selected and creates a list
+     * of Locations for that category.
+     * @param category The category selected.
+     */
     public void setCategory(String category) {
-        long start = System.currentTimeMillis();
         this.category = category;
         Log.i(TAG, "setCategory: " + category);
         if (category.equalsIgnoreCase("All")) {
@@ -220,29 +230,6 @@ public class SelectLocationFragment extends Fragment implements SelectLocationAd
                     selectedCategoryLocations.add(l);
             }
         }
-        Log.i(TAG, "setCategory: timer: " + (System.currentTimeMillis() - start));
-       // this.locatorForCategory = identifier;
-       // Log.i(TAG,"list category from fragment " + selectedCategoryLocations.size() + " identifier " + identifier);
     }
-
-    /*public void setCategory(String category, String categoryIdentifier) {
-        this.category = category;
-        this.locatorForCategory = categoryIdentifier;
-        long start = System.currentTimeMillis();
-        if (category.equalsIgnoreCase("All")) {
-            selectedCategoryLocations = locationData.getList();
-        }
-        else {
-            List<Location> list = locationData.getList();
-            Log.i(TAG, "setCategory: locationData size: " + list.size());
-            selectedCategoryLocations = new ArrayList<>();
-            for (Location l : list) {
-                if (l.containsCategoryName(category))
-                    selectedCategoryLocations.add(l);
-            }
-        }
-        Log.i(TAG, "setCategory: timer: " + (System.currentTimeMillis() - start));
-    }*/
-
 
 }

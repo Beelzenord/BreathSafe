@@ -90,7 +90,7 @@ public class StoreToDatabase {
             int count = repository.locationDoa().countNumberOfEntities();
             Log.d(TAG, "number of location in db: " + count);
             Log.d(TAG, "number of locationCategories in db: " + repository.locationCategoryDoa().countNumberOfEntities());
-            if (count == locations.size() && 1 == 4) {
+            if (count == locations.size()) {
                 repository.locationDoa().updateAsList(locations);
             }
             /** this takes very long but shouldn't happen more than a few times a year **/
