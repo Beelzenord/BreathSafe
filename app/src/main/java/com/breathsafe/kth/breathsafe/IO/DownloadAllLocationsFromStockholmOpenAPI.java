@@ -38,7 +38,7 @@ import java.util.concurrent.TimeUnit;
  * doesn't contain their LocationCategories when downloading from Stockholm open API.
  */
 public class DownloadAllLocationsFromStockholmOpenAPI extends AsyncTask<Void, Void, Boolean> {
-    private static final String TAG = "DownloadAllLocationsFromStockholmOpenAPI";
+    private static final String TAG = "DownloadAllLocations";
     private Activity activity;
     private long startOfPool;
 
@@ -138,14 +138,19 @@ public class DownloadAllLocationsFromStockholmOpenAPI extends AsyncTask<Void, Vo
             locationCategories = OnTaskCompleteHelper.onLocationCategoryTaskComplete(activity, msg);
             LocationCategoryData locationCategoryData = LocationCategoryData.getInstance();
             locationCategoryData.setList(locationCategories);
+            Repository repository = Repository.getInstance(activity);
+            repository.locationCategoryDoa().insertAsList(locationCategories);
+
 
             locations = (List<Location>[]) new ArrayList[locationCategories.size()];
             startOfPool = System.currentTimeMillis();
             downloadLocations();
 
             long startOfMerge = System.currentTimeMillis();
-            Repository repository = Repository.getInstance(activity);
+            repository = Repository.getInstance(activity);
             List<Location> favorites = repository.locationDoa().getFavorites();
+            if (repository != null)
+                repository.close();
             Log.d(TAG, "run: Time to download all: " + (startOfMerge - startOfPool));
             List<Location> wholeList = new ArrayList<>();
             ArrayList<String> keys = new ArrayList<>();
@@ -175,6 +180,7 @@ public class DownloadAllLocationsFromStockholmOpenAPI extends AsyncTask<Void, Vo
             locationData.setList(wholeList);
 
             saveLocationsToDB(wholeList);
+
             Log.d(TAG, "timer: end of all: " + (System.currentTimeMillis() - startOfAll));
         } catch (Exception e) {
             Log.d(TAG, "run: threadpool rip : " + e.toString());

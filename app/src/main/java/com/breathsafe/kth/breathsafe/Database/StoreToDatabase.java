@@ -47,6 +47,8 @@ public class StoreToDatabase {
             }
             Log.d(TAG, "timer: end of LocationCategories: " + System.currentTimeMillis());
             Log.d(TAG, "Time to save locationcategores to db: " + (System.currentTimeMillis() - startSavingLocationCategories));
+            if (repository != null)
+                repository.close();
             return true;
         }
 
@@ -93,6 +95,8 @@ public class StoreToDatabase {
 
             Log.d(TAG, "timer: end of Location: " + System.currentTimeMillis());
             Log.d(TAG, "run: Time to save to database: " + (System.currentTimeMillis() - startOfDatabaseSave));
+            if (repository != null)
+                repository.close();
             return true;
         }
 
@@ -134,6 +138,8 @@ public class StoreToDatabase {
             }
             Log.d(TAG, "timer: end of AirPollution: " + System.currentTimeMillis());
             Log.d(TAG, "run: Time to save to database: " + (System.currentTimeMillis() - startOfDatabaseSave));
+            if (repository != null)
+                repository.close();
             return true;
         }
 
@@ -162,6 +168,8 @@ public class StoreToDatabase {
             repository.airPollutionDoa().insertAsList(airPollutions);
             Log.d(TAG, "timer: end of AirPollution: " + System.currentTimeMillis());
             Log.d(TAG, "run: Time to save to database: " + (System.currentTimeMillis() - startOfDatabaseSave));
+            if (repository != null)
+                repository.close();
             return true;
         }
 
@@ -188,6 +196,8 @@ public class StoreToDatabase {
             repository = Repository.getInstance(this.context);
             repository.locationDoa().update(location);
             Log.d(TAG, "Time to update Location to db: " + (System.currentTimeMillis() - startSavingLocationCategories));
+            if (repository != null)
+                repository.close();
             return true;
         }
 

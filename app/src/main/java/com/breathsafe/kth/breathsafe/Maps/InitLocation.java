@@ -19,6 +19,10 @@ import com.google.android.gms.common.GoogleApiAvailability;
 
 import static com.breathsafe.kth.breathsafe.Utilities.Constants.ERROR_DIALOG_REQUEST;
 
+/**
+ * Checks if google maps is enabled and if the app has permission.
+ * Functionality is based on this tutorial https://github.com/mitchtabian/Google-Maps-2018.
+ */
 public class InitLocation {
     private static final String TAG = "InitLocation";
 
