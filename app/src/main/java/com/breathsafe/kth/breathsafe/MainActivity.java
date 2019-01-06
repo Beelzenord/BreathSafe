@@ -33,7 +33,9 @@ import com.breathsafe.kth.breathsafe.Utilities.Util;
 import java.util.Calendar;
 import java.util.List;
 
-
+/**
+ * The first activity that will be launched
+ */
 public class MainActivity extends AppCompatActivity implements AsyncTaskCallback {
     private static final String TAG = "MainActivity";
     private static final int AIR_TASK = 0;
@@ -51,6 +53,11 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
     private ViewPager mViewPager;
     private MainFragment mainFragment;
 
+    /**
+     * starts a timer and reads from the database, or creates
+     * one if it isn't already there.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,7 +95,10 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
     }
 
 
-
+    /**
+     * gathers entities from the database that represent
+     * location, locationCategories and AirPollution
+     */
     private void startReadFromDatabase() {
         prev = System.currentTimeMillis();
         DatabaseTask.Read favorites = new DatabaseTask.Read(this, null, DatabaseTables.LOCATION_FAVORITES);
@@ -101,6 +111,9 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
         airPollution.execute();
     }
 
+    /**
+     * triggers the database synchronizer on the background task
+     */
     public void startDatabaseSynchronizer() {
         if (!databaseSynchronizerIsRunning) {
             DatabaseSynchronizer databaseSynchronizer = new DatabaseSynchronizer(this);
@@ -121,6 +134,11 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
 //        Log.i(TAG, "onResume: ");
     }
 
+    /**
+     * asychronous callback invoked by the DatabaseTask where we obtain the data
+     * from the database
+     * @param result: the result can be of type Air Pollution, Location and Location Category
+     */
     public void onDatabaseReadComplete(DatabaseTask.Result result) {
         if (result.msg != null) {
             switch(result.tag) {
@@ -238,6 +256,9 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
         mViewPager.setCurrentItem(nr);
     }
 
+    /**
+     * start map activity
+     */
     public void startMapActivity() {
         Log.i(TAG, "startMapActivity: ");
         Constants.setStart();
@@ -265,6 +286,10 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
         toast.show();
     }
 
+    /**
+     *
+     * @param result
+     */
     @Override
     public void onDownloadComplete(NetworkTask.Result result) {
         Log.i(TAG, "onDownloadComplete: is this ever called?");
