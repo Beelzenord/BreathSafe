@@ -15,6 +15,9 @@ import com.breathsafe.kth.breathsafe.Model.LocationCategory;
 import com.breathsafe.kth.breathsafe.R;
 import com.google.android.gms.location.places.Place;
 
+/**
+ * SQLite database to locally store data about Location, LocationCategory and AirPollution.
+ */
 @Database(entities = {AirPollution.class,Location.class, LocationCategory.class, LocationAndCategoryRelation.class}, version = 6 )
 @TypeConverters({CategoriesConverter.class})
 public abstract class Repository extends RoomDatabase{

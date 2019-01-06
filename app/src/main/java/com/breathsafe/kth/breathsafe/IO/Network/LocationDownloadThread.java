@@ -11,8 +11,16 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Used to download all Locations which is part of a specific LocationCategory.
+ * A list of Locations is created and put into the array of List<Location>.
+ * This array is used by many different threads so only the position in the array
+ * specified by the position attribute may be used, otherwise a ConcurrentModificationException
+ * may occur.
+ */
 public class LocationDownloadThread implements Runnable {
     private static final String TAG = "LocationDownloadThread";
     private List<Location>[] list;
@@ -58,15 +66,8 @@ public class LocationDownloadThread implements Runnable {
             List<Location> data = OnTaskCompleteHelper.onSpecificLocationTaskComplete(msg, locationCategory.getSingularName(), locationCategory.getId());
             list[position] = data;
         } catch (Exception e) {
-
+            list[position] = new ArrayList<>();
         }
-
-
-
-
-
-
     }
-
 
 }

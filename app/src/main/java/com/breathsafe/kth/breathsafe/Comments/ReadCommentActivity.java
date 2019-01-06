@@ -35,7 +35,10 @@ public class ReadCommentActivity extends AppCompatActivity {
         authorTextView.setText(sb1);
 
         sb1 = new StringBuilder();
-        sb1.append("Created: "); sb1.append(createTimestampString(timestamp));
+//        sb1.append("Created: "); sb1.append(createTimestampString(timestamp));
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(timestamp);
+        sb1.append("Created: "); sb1.append(calendar.getTime().toString());
         timestampTextView.setText(sb1);
 
         sb1 = new StringBuilder();

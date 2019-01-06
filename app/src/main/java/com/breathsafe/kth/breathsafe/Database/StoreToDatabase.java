@@ -11,34 +11,15 @@ import com.breathsafe.kth.breathsafe.Model.LocationCategory;
 
 import java.util.List;
 
+/**
+ * Contains AsyncTasks to store data to the database asynchronously.
+ */
 public class StoreToDatabase {
     private static final String TAG = "StoreToDatabase";
 
-    public class StoreLocationCategoryOld extends AsyncTask<Void, Void, Boolean> {
-        private Repository repository;
-        private Context context;
-        private List<LocationCategory> locationCategories;
-        public StoreLocationCategoryOld(Context context, List<LocationCategory> locationCategoryList){
-            this.context = context;
-            this.locationCategories = locationCategoryList;
-        }
-        @Override
-        protected Boolean doInBackground(Void... voids) {
-            repository = Repository.getInstance(this.context);
-
-            repository.locationCategoryDoa().insertAsList(locationCategories);
-            if(repository.locationCategoryDoa().countNumberOfEntities()!=0){
-                return true;
-            }
-            return false;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean aBoolean) {
-            super.onPostExecute(aBoolean);
-        }
-    }
-
+    /**
+     * Store A List of LocationCategories
+     */
     public static class StoreLocationCategory extends AsyncTask<Void, Void, Boolean> {
         private Repository repository;
         private Context context;
@@ -75,6 +56,9 @@ public class StoreToDatabase {
         }
     }
 
+    /**
+     * Store A List of Locations async.
+     */
     public static class StoreLocation extends AsyncTask<Void, Void, Boolean> {
         private Repository repository;
         private Context context;
@@ -118,6 +102,9 @@ public class StoreToDatabase {
         }
     }
 
+    /**
+     * Store a List of AirPollution async.
+     */
     public static class StoreAirPollution extends AsyncTask<Void, Void, Boolean> {
         private Repository repository;
         private Context context;
@@ -156,6 +143,9 @@ public class StoreToDatabase {
         }
     }
 
+    /**
+     * Deletes all AirPollution data in the database and replaces it with the List of AirPollution provided.
+     */
     public static class DeleteAllAndStoreAirPollution extends AsyncTask<Void, Void, Boolean> {
         private Repository repository;
         private Context context;
@@ -170,16 +160,6 @@ public class StoreToDatabase {
             repository = Repository.getInstance(this.context);
             repository.airPollutionDoa().deleteAllAirPollution();
             repository.airPollutionDoa().insertAsList(airPollutions);
-            /** this takes very long **/
-            /*else {
-                long id;
-                for (AirPollution a : airPollutions) {
-                    id = repository.airPollutionDoa().insert(a);
-                    if (id < 0) {
-                        repository.airPollutionDoa().update(a);
-                    }
-                }
-            }*/
             Log.d(TAG, "timer: end of AirPollution: " + System.currentTimeMillis());
             Log.d(TAG, "run: Time to save to database: " + (System.currentTimeMillis() - startOfDatabaseSave));
             return true;
@@ -191,6 +171,9 @@ public class StoreToDatabase {
         }
     }
 
+    /**
+     * Updates a single Location asynchronously.
+     */
     public static class UpdateLocation extends AsyncTask<Void, Void, Boolean> {
         private Repository repository;
         private Context context;

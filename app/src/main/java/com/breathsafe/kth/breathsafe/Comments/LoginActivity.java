@@ -39,10 +39,17 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        Log.i(TAG, "onCreate: ");
 
         Bundle extras = getIntent().getExtras();
         commentLocationID = extras.getString(getResources().getString(R.string.intent_extra_location_id));
         commentLocationName = extras.getString(getResources().getString(R.string.intent_extra_location_name));
+
+        firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+        if (currentUser != null) {
+            updateUI(currentUser);
+        }
         loginButton = findViewById(R.id.login_button);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,7 +65,6 @@ public class LoginActivity extends AppCompatActivity {
                 .build();
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-        firebaseAuth = FirebaseAuth.getInstance();
     }
 
     /**
@@ -67,9 +73,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-        if (currentUser != null)
-            updateUI(currentUser);
+        Log.i(TAG, "onStart: ");
     }
 
     private void signIn() {
@@ -135,6 +139,7 @@ public class LoginActivity extends AppCompatActivity {
             intent.putExtra(getResources().getString(R.string.intent_extra_location_id), commentLocationID);
             intent.putExtra(getResources().getString(R.string.intent_extra_location_name), commentLocationName);
             startActivity(intent);
+            finish();
         }
     }
 }
