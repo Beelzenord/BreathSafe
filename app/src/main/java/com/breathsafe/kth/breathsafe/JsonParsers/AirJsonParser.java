@@ -15,7 +15,7 @@ import java.util.List;
 
 public class AirJsonParser {
 
-    public static List<AirPollution> parseAirLuftdaten(Resources res, String s) throws JSONException {
+    public static List<AirPollution> parseAirLuftdaten( String s) throws JSONException {
         JSONArray jsonArray = new JSONArray(s);
         List<AirPollution> list = new ArrayList<>();
         for (int i = 0; i < jsonArray.length(); i++) {

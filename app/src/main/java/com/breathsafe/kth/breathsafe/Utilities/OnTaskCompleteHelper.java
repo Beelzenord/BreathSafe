@@ -15,10 +15,10 @@ import org.json.JSONException;
 import java.util.List;
 
 public class OnTaskCompleteHelper {
-    public static List<AirPollution> onAirTaskComplete(Activity activity, String s) {
+    public static List<AirPollution> onAirTaskComplete( String s) {
         try {
 //            AirPollutionData airPollusionData = AirPollutionData.getInstance();
-            List<AirPollution> list = AirJsonParser.parseAirLuftdaten(activity.getResources(), s);
+            List<AirPollution> list = AirJsonParser.parseAirLuftdaten(s);
 //            airPollusionData.setList(list);
             System.out.println("list size AP " + list.size());
            // Intent intent = new Intent(activity, MapsActivity.class);

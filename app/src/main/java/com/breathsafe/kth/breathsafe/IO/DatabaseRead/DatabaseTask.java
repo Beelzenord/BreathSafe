@@ -52,6 +52,7 @@ public class DatabaseTask {
                     throw new CancelTaskException();
                 switch (tag) {
                     case DatabaseTables.AIR_POLLUTION: {
+                        Log.i(TAG,"Acquiring air pollution from the database");
                         repository = Repository.getInstance(activity);
                         List<AirPollution> list1 = repository.airPollutionDoa().getAirPollution();
                         result = new Result(tag, list1);

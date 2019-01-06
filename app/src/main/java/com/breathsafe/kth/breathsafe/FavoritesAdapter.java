@@ -49,8 +49,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
             @Override
             public void onClick(View view) {
                 showPopup(context,view,fingItem);
-
-
+                Log.i(TAG," Air Pollution " +fingItem.getAverageAQI());
             }
         });
 

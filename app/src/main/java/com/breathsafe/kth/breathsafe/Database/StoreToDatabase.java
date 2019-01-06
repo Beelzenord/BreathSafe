@@ -17,19 +17,28 @@ public class StoreToDatabase {
     public class StoreLocationCategoryOld extends AsyncTask<Void, Void, Boolean> {
         private Repository repository;
         private Context context;
+        private int pivotFlag;
         private List<LocationCategory> locationCategories;
+        private Location toBeStored;
         public StoreLocationCategoryOld(Context context, List<LocationCategory> locationCategoryList){
             this.context = context;
             this.locationCategories = locationCategoryList;
         }
+
         @Override
         protected Boolean doInBackground(Void... voids) {
             repository = Repository.getInstance(this.context);
-
-            repository.locationCategoryDoa().insertAsList(locationCategories);
-            if(repository.locationCategoryDoa().countNumberOfEntities()!=0){
+            if(this.pivotFlag==1){
+                repository.locationDoa().update(toBeStored);
                 return true;
             }
+            else{
+                repository.locationCategoryDoa().insertAsList(locationCategories);
+                if(repository.locationCategoryDoa().countNumberOfEntities()!=0){
+                    return true;
+                }
+            }
+
             return false;
         }
 
@@ -51,6 +60,7 @@ public class StoreToDatabase {
         protected Boolean doInBackground(Void... voids) {
             long startSavingLocationCategories = System.currentTimeMillis();
             repository = Repository.getInstance(this.context);
+
             int count = repository.locationCategoryDoa().countNumberOfEntities();
             if (count == locationCategories.size()) {
                 repository.locationCategoryDoa().updateAsList(locationCategories);

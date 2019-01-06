@@ -32,6 +32,7 @@ import static com.breathsafe.kth.breathsafe.Utilities.Constants.PERMISSIONS_REQU
 public class MapActivity extends AppCompatActivity implements AsyncTaskCallback {
     private static final String TAG = "MapActivityTagger";
     private static final int NETWORK_AIR = 5;
+    private static final int PIVOT_DATA_STORE = 1;
 
     public boolean locationPermissionGranted;
     public boolean gpsEnabled;
@@ -78,20 +79,27 @@ public class MapActivity extends AppCompatActivity implements AsyncTaskCallback 
     }
 
     public void checkForAirPollution() {
+
         List<Location> list = DisplayOnMapList.getInstance().getList();
+
+        Log.i(TAG, "Check Air Pollution " + DisplayOnMapList.getInstance().getList().size());
         if (list.size() == 0) {
             Log.i(TAG, "createAirTask: list is <= 0");
             fragment.refreshMap();
             return;
         }
-
-        if (Util.isThresholdReachedToDownloadAirPollution(this))
+        if (Util.isThresholdReachedToDownloadAirPollution(this)){
+            Log.i(TAG, "Threshold reached.. ");
             startNetworkTask();
+        }
+
+
         else
             useOldAirPollutionData();
     }
 
     private void useOldAirPollutionData() {
+        Log.i(TAG,"Checking old air pollution data");
         List<AirPollution> list = AirPollutionData.getInstance().getList();
         for (Location l : DisplayOnMapList.getInstance().getList()) {
             double res = CalculateAirPollutionData.weightedPM1andPM2(list, l);
@@ -163,14 +171,19 @@ public class MapActivity extends AppCompatActivity implements AsyncTaskCallback 
     @Override
     public void onDownloadComplete(NetworkTask.Result result) {
         if (result.msg != null) {
-            List<AirPollution> list = OnTaskCompleteHelper.onAirTaskComplete(this, (String)result.msg);
+            List<AirPollution> list = OnTaskCompleteHelper.onAirTaskComplete( (String)result.msg);
             Log.i(TAG, "onDownloadComplete: size: " + list.size());
 
             for (Location l : DisplayOnMapList.getInstance().getList()) {
                 double res = CalculateAirPollutionData.weightedPM1andPM2(list, l);
                 Log.i(TAG, "onDownloadComplete: averageAQI: " + res);
+                Log.i(TAG, "list data " + l.getName() +  " " + l.getCategoryNames().get(0).toString());
                 l.setAverageAQI(res);
             }
+            if(DisplayOnMapList.getInstance().getList()!=null){
+                storeAirPollutionDataIntoDatabase(DisplayOnMapList.getInstance().getList().get(0));
+            }
+
             fragment.refreshMap();
             AirPollutionData.getInstance().setList(list);
             StoreToDatabase.DeleteAllAndStoreAirPollution storeAirPollution = new StoreToDatabase.DeleteAllAndStoreAirPollution(this, list);
@@ -180,6 +193,11 @@ public class MapActivity extends AppCompatActivity implements AsyncTaskCallback 
             Log.i(TAG, "onDownloadComplete: luftdaten exception");
             result.ex.printStackTrace();
         }
+    }
+
+    private void storeAirPollutionDataIntoDatabase(Location location) {
+        StoreToDatabase storeToDatabase = new StoreToDatabase();
+
     }
 
     public void addToFavorites(Location currentLocation) {

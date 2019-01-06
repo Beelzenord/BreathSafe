@@ -1,8 +1,18 @@
 package com.breathsafe.kth.breathsafe;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.BitmapFactory;
+import android.os.Build;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,14 +33,18 @@ import com.breathsafe.kth.breathsafe.IO.Network.NetworkTask;
 import com.breathsafe.kth.breathsafe.Model.LocationData;
 import com.breathsafe.kth.breathsafe.Search.PagerAdapter;
 import com.breathsafe.kth.breathsafe.Search.SearchActivity;
+import com.breathsafe.kth.breathsafe.Service.AlarmReceiver;
 import com.breathsafe.kth.breathsafe.Utilities.Constants;
 import com.breathsafe.kth.breathsafe.Utilities.Util;
 
+import java.nio.channels.Channel;
 import java.util.Calendar;
 import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity implements AsyncTaskCallback {
+    private NotificationManagerCompat notificationManager;
+
     private static final String TAG = "MainActivity";
     private static final int AIR_TASK = 0;
     private static final int LOCATION_CATEGORY_TASK = 1;
@@ -47,6 +61,9 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
     private ViewPager mViewPager;
     private MainFragment mainFragment;
 
+    private static final String CHANNEL_1_ID = "CHANNEL_1_ID";
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,14 +79,27 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
 
         openOrCreateDatabase(getResources().getString(R.string.database), MODE_PRIVATE, null);
         startReadFromDatabase();
+        scheduleService();
+
+
+        /*notificationManager = NotificationManagerCompat.from(this);
+        Notification notification = new NotificationCompat.Builder(this,CHANNEL_1_ID).setSmallIcon(R.drawable.ic_launcher_background)
+                .setContentTitle("title")
+                .setContentText("Text")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(NotificationCompat.CATEGORY_EVENT)
+                .build();
+        notificationManager.notify(1,notification);*/
     }
+
+
 
 
 
     private void startReadFromDatabase() {
         prev = System.currentTimeMillis();
 //        DatabaseTask.Read favorites = new DatabaseTask.Read(this, null, DatabaseTables.LOCATION_FAVORITES);
-//        favorites.execute();
+
         DatabaseTask.Read databaseTask = new DatabaseTask.Read(this, null, DatabaseTables.LOCATION_CATEGORY);
         databaseTask.execute();
         DatabaseTask.Read location = new DatabaseTask.Read(this, null, DatabaseTables.LOCATION);
@@ -258,6 +288,23 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
         else {
             Log.i("Exception", "Could not download data: " + result.ex.toString());
         }
+    }
+
+    private void scheduleService(){
+        // Construct an intent that will execute the AlarmReceiver
+        Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
+        // Create a PendingIntent to be triggered when the alarm goes off
+        final PendingIntent pIntent = PendingIntent.getBroadcast(this, AlarmReceiver.REQUEST_CODE,
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        // Setup periodic alarm every every half hour from this point onwards
+        long firstMillis = System.currentTimeMillis(); // alarm is set right away
+        AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+        // First parameter is the type: ELAPSED_REALTIME, ELAPSED_REALTIME_WAKEUP, RTC_WAKEUP
+        // Interval can be INTERVAL_FIFTEEN_MINUTES, INTERVAL_HALF_HOUR, INTERVAL_HOUR, INTERVAL_DAY
+        alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, firstMillis,
+                AlarmManager.INTERVAL_HALF_HOUR, pIntent);
+        alarm.setRepeating(AlarmManager.RTC, firstMillis,
+                500, pIntent);
     }
 }
 
