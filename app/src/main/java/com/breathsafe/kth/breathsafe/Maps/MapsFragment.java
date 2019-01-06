@@ -39,8 +39,8 @@ import java.util.List;
 /**
  * Fragment to show to google maps and air pollution for each selected location.
  */
-public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
-    private static final String TAG = "MapsThingFragment";
+public class MapsFragment extends Fragment implements OnMapReadyCallback {
+    private static final String TAG = "MapsFragment";
 
     private MapView mMapView;
     private DisplayOnMapList displayOnMapList;
@@ -50,8 +50,8 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
     private Location currentLocation;
     private MenuItem favoriteMenu;
 
-    public static MapsThingFragment newInstance() {
-        return new MapsThingFragment();
+    public static MapsFragment newInstance() {
+        return new MapsFragment();
     }
 
     @Override

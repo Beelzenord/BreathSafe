@@ -38,7 +38,7 @@ public class MapActivity extends AppCompatActivity implements AsyncTaskCallback 
 
     public boolean locationPermissionGranted;
     public boolean gpsEnabled;
-    private MapsThingFragment fragment;
+    private MapsFragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +52,7 @@ public class MapActivity extends AppCompatActivity implements AsyncTaskCallback 
      * Starts the fragment that show the google map.
      */
     private void startMapsFragment(){
-        fragment = MapsThingFragment.newInstance();
+        fragment = MapsFragment.newInstance();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.maps_container, fragment, getString(R.string.fragment_user_list));
         transaction.commit();
