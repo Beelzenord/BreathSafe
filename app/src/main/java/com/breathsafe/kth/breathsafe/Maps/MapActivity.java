@@ -29,6 +29,9 @@ import java.util.List;
 
 import static com.breathsafe.kth.breathsafe.Utilities.Constants.PERMISSIONS_REQUEST_ENABLE_GPS;
 
+/**
+ * An activity to show google maps with all selected Locations.
+ */
 public class MapActivity extends AppCompatActivity implements AsyncTaskCallback {
     private static final String TAG = "MapActivityTagger";
     private static final int NETWORK_AIR = 5;
@@ -45,38 +48,36 @@ public class MapActivity extends AppCompatActivity implements AsyncTaskCallback 
         gpsEnabled = false;
     }
 
+    /**
+     * Starts the fragment that show the google map.
+     */
     private void startMapsFragment(){
-//        hideSoftKeyboard();
         fragment = MapsThingFragment.newInstance();
-
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-//        transaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_up);
         transaction.replace(R.id.maps_container, fragment, getString(R.string.fragment_user_list));
-//        transaction.addToBackStack(getString(R.string.fragment_user_list));
         transaction.commit();
     }
 
+    /**
+     * Tries to start the map if the app already has location permission.
+     */
     @Override
     protected void onResume() {
         super.onResume();
         Log.i(TAG, "onResume: ");
         if (InitLocation.isServicesOK(this)) {
-//            gpsEnabled = InitLocation.isMapsEnabled(this);
-
             if (InitLocation.getLocationPermission(this)) {
                 Log.i(TAG, "onResume: start maps fragments");
                 startMapsFragment();
             }
-
-            /*if (InitLocation.isMapsEnabled(this)) {
-                gpsEnabled = true;
-            }
-            else {
-                gpsEnabled = false;
-            }*/
         }
     }
 
+    /**
+     * Checks if the use has selected any locations to show.
+     * Checks if database has updated AirPollution data. If not
+     * download new data.
+     */
     public void checkForAirPollution() {
         List<Location> list = DisplayOnMapList.getInstance().getList();
         if (list.size() == 0) {
@@ -102,17 +103,22 @@ public class MapActivity extends AppCompatActivity implements AsyncTaskCallback 
         fragment.refreshMap();
     }
 
+    /**
+     * Callback for when the app needs to ask the user for locations permission.
+     * If granted, open map. If not close the activity.
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String permissions[],
                                            @NonNull int[] grantResults) {
-//        locationPermissionGranted = false;
         switch (requestCode) {
             case Constants.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                    locationPermissionGranted = true;
                     Log.i(TAG, "onRequestPermissionsResult: GRANTED");
                     startMapsFragment();
                 }
@@ -125,6 +131,12 @@ public class MapActivity extends AppCompatActivity implements AsyncTaskCallback 
         }
     }
 
+    /**
+     * Callback for when the app asks for GPS enable.
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -149,6 +161,9 @@ public class MapActivity extends AppCompatActivity implements AsyncTaskCallback 
         }
     }
 
+    /**
+     * Starts a AsyncTask to download new AirPollution data.
+     */
     private void startNetworkTask() {
         Log.i(TAG, "startNetworkTask: ");
         StringBuilder sb = new StringBuilder();
@@ -162,6 +177,11 @@ public class MapActivity extends AppCompatActivity implements AsyncTaskCallback 
         networkTask.execute();
     }
 
+    /**
+     * Callback for when the app downloads new airpollution data.
+     * Refreshes the map when done.
+     * @param result The data retrieved.
+     */
     @Override
     public void onDownloadComplete(NetworkTask.Result result) {
         if (result.msg != null) {
@@ -184,6 +204,10 @@ public class MapActivity extends AppCompatActivity implements AsyncTaskCallback 
         }
     }
 
+    /**
+     * Adds a Location to favorites and updates the database.
+     * @param currentLocation
+     */
     public void addToFavorites(Location currentLocation) {
         StringBuilder sb = new StringBuilder();
         sb.append(currentLocation.getName());
@@ -201,6 +225,9 @@ public class MapActivity extends AppCompatActivity implements AsyncTaskCallback 
         }
     }
 
+    /**
+     * Starts the search activity
+     */
     public void startSearchActivity() {
         Intent intent = new Intent(this, SearchActivity.class);
         intent.putExtra(Constants.SEARCH_ACTIVITY_CALLBACK_ACTIVITY, Constants.SEARCH_ACTIVITY_CALLBACK_MAPACTIVITY);
