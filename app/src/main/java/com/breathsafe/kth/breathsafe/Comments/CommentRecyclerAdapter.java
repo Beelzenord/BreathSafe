@@ -47,11 +47,12 @@ public class CommentRecyclerAdapter extends RecyclerView.Adapter<CommentRecycler
     @Override
     public CommentRecyclerAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View v = (View) LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.row_favs, viewGroup, false);
+                .inflate(R.layout.name_date, viewGroup, false);
 
         CommentRecyclerAdapter.MyViewHolder vh = new CommentRecyclerAdapter.MyViewHolder(v);
         vh.title = v.findViewById(R.id.teeto);
         vh.author = v.findViewById(R.id.deeto);
+        vh.time = v.findViewById(R.id.deeto_timestamp);
         return vh;
     }
 
@@ -67,24 +68,12 @@ public class CommentRecyclerAdapter extends RecyclerView.Adapter<CommentRecycler
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(comment.getTimestamp());
             myViewHolder.title.setText(comment.getTitle());
-            StringBuilder sb = new StringBuilder();
-            sb.append(comment.getUsername());
-            sb.append("               ");
-            sb.append(calendar.get(Calendar.YEAR)); sb.append("-");
-            sb.append(extraZero(calendar.get((Calendar.MONTH) + 1))); sb.append("-");
-            sb.append(extraZero(calendar.get(Calendar.DAY_OF_MONTH)));
-
-            myViewHolder.author.setText(sb.toString());
+            myViewHolder.author.setText(comment.getUsername());
+            myViewHolder.time.setText(calendar.getTime().toString());
 
         }  catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    private String extraZero(int i) {
-        if (i < 10)
-            return "0"+i;
-        return ""+i;
     }
 
     /**
@@ -125,6 +114,7 @@ public class CommentRecyclerAdapter extends RecyclerView.Adapter<CommentRecycler
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener  {
         public TextView title;
         public TextView author;
+        public TextView time;
         public MyViewHolder(View v) {
             super(v);
             itemView.setOnClickListener(this);

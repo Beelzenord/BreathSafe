@@ -11,6 +11,9 @@ import com.breathsafe.kth.breathsafe.Model.Location;
 
 import java.util.List;
 
+/**
+ * Access to the Locations in the database.
+ */
 @Dao
 public interface LocationDoa {
     @Insert(onConflict = OnConflictStrategy.IGNORE)

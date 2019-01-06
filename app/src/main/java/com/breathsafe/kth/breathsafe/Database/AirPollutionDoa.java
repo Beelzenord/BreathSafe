@@ -11,6 +11,9 @@ import com.breathsafe.kth.breathsafe.Model.AirPollution;
 
 import java.util.List;
 
+/**
+ * Enables access to the Air Pollution data in the SQLite database.
+ */
 @Dao
 public interface AirPollutionDoa {
 

@@ -24,13 +24,17 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * AsyncTask to read from the local database.
+ */
 public class DatabaseTask {
     private static final String TAG = "DatabaseTask";
 
 
     /**
-     * Reads from a file asynchronously. If the task is canceled the result be set to
-     * CancelTaskException. After the task is done, onFileRead will be called on the activity.
+     * Reads from the database asynchronously. If the task is canceled the result be set to
+     * CancelTaskException. After the task is done, onDatabaseReadComplete will be called on
+     * the calling activity using the provided tag. .
      */
     public static class Read extends AsyncTask<Void, Void, Result> {
         private Activity activity;
@@ -62,7 +66,6 @@ public class DatabaseTask {
                         repository = Repository.getInstance(activity);
                         List<LocationCategory> list2 = repository.locationCategoryDoa().getAllLocationCategory();
                         result = new Result(tag, list2);
-                        //                      repository.locationCategoryDoa().insertAsList((List<LocationCategory>)data);
                         break;
                     }
 
@@ -87,7 +90,6 @@ public class DatabaseTask {
                         List<Location> favorites = repository.locationDoa().getFavorites();
                         Log.i(TAG, "doInBackground: PRINTING FAVE");
                         for (Location l : favorites) {
-                            Log.i(TAG, "doInBackground: FAVE: " + l.getName());
                             List<LocationCategory> lcs = repository.locationAndCategoryRelationDao().getCategoriesForLocations(l.getId());
                             List<String> names = new ArrayList<>();
                             for (LocationCategory lc : lcs)
@@ -100,10 +102,6 @@ public class DatabaseTask {
                 }
                 if (isCancelled())
                     throw new CancelTaskException();
-    //            if (j != null)
-    //                result = new Result(tag, j);
-    //            else
-    //                result = new Result(tag, new NullPointerException());
 
             } catch (CancelTaskException e) {
                 e.printStackTrace();

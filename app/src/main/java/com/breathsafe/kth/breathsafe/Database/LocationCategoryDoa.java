@@ -11,6 +11,9 @@ import com.breathsafe.kth.breathsafe.Model.LocationCategory;
 
 import java.util.List;
 
+/**
+ * Access to the LocationCategories in the database.
+ */
 @Dao
 public interface LocationCategoryDoa {
 

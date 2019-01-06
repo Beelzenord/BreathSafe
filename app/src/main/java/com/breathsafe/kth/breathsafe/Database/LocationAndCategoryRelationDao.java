@@ -11,6 +11,9 @@ import com.breathsafe.kth.breathsafe.Model.LocationCategory;
 
 import java.util.List;
 
+/**
+ * Access to the relation between Locations and LocationCategories.
+ */
 @Dao
 public interface LocationAndCategoryRelationDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
