@@ -38,7 +38,7 @@ import java.util.concurrent.TimeUnit;
  * doesn't contain their LocationCategories when downloading from Stockholm open API.
  */
 public class DownloadAllLocationsFromStockholmOpenAPI extends AsyncTask<Void, Void, Boolean> {
-    private static final String TAG = "DownloadAllLocationsFromStockholmOpenAPI";
+    private static final String TAG = "DownloadAllLocations";
     private Activity activity;
     private long startOfPool;
 

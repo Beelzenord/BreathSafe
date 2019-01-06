@@ -108,7 +108,8 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
     }
 
     /**
-     * triggers the database synchronizer on the background task
+     *  Gathers all the relevent data from Stockholm API and stuffs
+     *  it in the the database
      */
     public void startDatabaseSynchronizer() {
         if (!databaseSynchronizerIsRunning) {
@@ -227,6 +228,11 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
         }
     }
 
+    /**
+     * Checks if the download was successful,
+     * and updates the UI,
+     * @param result :
+     */
     public void onDBSynchronizeComplete(Boolean result) {
         Log.i(TAG, "onDBSynchronizeComplete: timer: " + (System.currentTimeMillis() - startDBSynchronizer));
         Log.i(TAG, "onDBSynchronizeComplete: since start: " + (System.currentTimeMillis() - prev));
@@ -239,6 +245,10 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
             mainFragment.updateList(LocationData.getInstance().getList());
     }
 
+    /**
+     *  Builds a view pager for the main fragment
+     * @param viewPager
+     */
     private void setupViewPager(ViewPager viewPager) {
         PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager());
 //        adapter.addFragment(new FavoritesFragment(),"FavoritesFragment");
@@ -248,6 +258,10 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
         mViewPager.setCurrentItem(1);
     }
 
+    /**
+     * Changes the view page (fragment)
+     * @param nr
+     */
     public void setmViewPagerint(int nr) {
         mViewPager.setCurrentItem(nr);
     }

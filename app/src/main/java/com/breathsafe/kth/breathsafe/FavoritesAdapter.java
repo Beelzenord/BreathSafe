@@ -21,17 +21,30 @@ import com.breathsafe.kth.breathsafe.Model.LocationData;
 
 import java.util.List;
 
+/**
+ * RecyclerView adapter
+ */
 public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.ViewHolder>{
     private static final String TAG = "FavoritesAdapter";
     private Context context;
     private List<Location> list;
 
-
+    /**
+     *
+     * @param context
+     * @param listItems : list of locations that are 'favorites' to the user
+     */
     public FavoritesAdapter(Context context, List<Location> listItems) {
         this.context = context ;
         this.list = listItems;
     }
 
+    /**
+     * the inflater loads a custom layout that corresponds to each row for each location.
+     * @param viewGroup
+     * @param i
+     * @return
+     */
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
@@ -40,6 +53,11 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
         return new ViewHolder(view);
     }
 
+    /**
+     * Updates the text regarding each location, sets a click listener to each 'row'
+     * @param viewHolder
+     * @param i
+     */
     @Override
     public void onBindViewHolder(@NonNull FavoritesAdapter.ViewHolder viewHolder, int i) {
         final Location fingItem = list.get(i);
@@ -56,8 +74,15 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
 
     }
 
+    /**
+     * Pop up menu shows up when the user clicks a row.
+     * User can choose whether to remove the location from favorites
+     * or perform a direct search on the Google Map
+     * @param context
+     * @param view
+     * @param position
+     */
     private void showPopup(final Context context, View view, final Location position) {
-
         PopupMenu popupMenu = new PopupMenu(context,view);
         MenuInflater inflater = popupMenu.getMenuInflater();
         inflater.inflate(R.menu.popup_menu,popupMenu.getMenu());
@@ -79,6 +104,11 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
 
             }
 
+            /**
+             * Finds the desired location on the map activity
+             * @param context
+             * @param position
+             */
             private void findFavorites(Context context, Location position) {
 
              //   Intent intent = new Intent(context, WelcomeActivity.class);
@@ -97,6 +127,11 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
                 context.startActivity(intent);
             }
 
+            /**
+             * removes the favorite location from the list through a background task
+             * @param context
+             * @param position
+             */
             private void removeFromFavorite(Context context, Location position) {
 //                RemoveFromDatabase removeFromDatabase = new RemoveFromDatabase(context,position);
 //                System.out.println("PRE-REMOVE " + position.getName());
@@ -121,6 +156,10 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
         });
     }
 
+    /**
+     * refreshes the list when user deletes a favorite
+     * @param position
+     */
     private void tryUpdateList(Location position) {
         List<Location> list = LocationData.getInstance().getList();
         if (list.size() > 0) {
@@ -136,11 +175,18 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
             Log.i(TAG, "tryUpdateList: ");
     }
 
+    /**
+     * list won't show without it
+     * @return
+     */
     @Override
     public int getItemCount() {
         return list.size();
     }
 
+    /**
+     * Defines the views from the custom row.
+     */
     public class ViewHolder extends RecyclerView.ViewHolder{
         public TextView textName;
         public TextView textDesc;
