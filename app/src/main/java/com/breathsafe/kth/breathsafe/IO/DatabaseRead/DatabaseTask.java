@@ -111,8 +111,7 @@ public class DatabaseTask {
                 result = new Result(tag, e);
             }
             finally {
-                if (repository != null)
-                    repository.close();
+
             }
             return result;
         }

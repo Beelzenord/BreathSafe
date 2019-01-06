@@ -149,8 +149,6 @@ public class DownloadAllLocationsFromStockholmOpenAPI extends AsyncTask<Void, Vo
             long startOfMerge = System.currentTimeMillis();
             repository = Repository.getInstance(activity);
             List<Location> favorites = repository.locationDoa().getFavorites();
-            if (repository != null)
-                repository.close();
             Log.d(TAG, "run: Time to download all: " + (startOfMerge - startOfPool));
             List<Location> wholeList = new ArrayList<>();
             ArrayList<String> keys = new ArrayList<>();
