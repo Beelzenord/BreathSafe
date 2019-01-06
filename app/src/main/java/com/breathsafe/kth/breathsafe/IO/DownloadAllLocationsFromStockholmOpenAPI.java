@@ -37,15 +37,15 @@ import java.util.concurrent.TimeUnit;
  * mapped to its LocationCategories. This has to done since the Locations itself
  * doesn't contain their LocationCategories when downloading from Stockholm open API.
  */
-public class DatabaseSynchronizer extends AsyncTask<Void, Void, Boolean> {
-    private static final String TAG = "DatabaseSynchronizer";
+public class DownloadAllLocationsFromStockholmOpenAPI extends AsyncTask<Void, Void, Boolean> {
+    private static final String TAG = "DownloadAllLocationsFromStockholmOpenAPI";
     private Activity activity;
     private long startOfPool;
 
     private static List<LocationCategory> locationCategories;
     private static List<Location>[] locations;
 
-    public DatabaseSynchronizer(Activity activity) {
+    public DownloadAllLocationsFromStockholmOpenAPI(Activity activity) {
         this.activity = activity;
     }
 

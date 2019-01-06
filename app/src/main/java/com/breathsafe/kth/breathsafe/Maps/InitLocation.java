@@ -22,20 +22,10 @@ import static com.breathsafe.kth.breathsafe.Utilities.Constants.ERROR_DIALOG_REQ
 public class InitLocation {
     private static final String TAG = "InitLocation";
 
-
-
-
-    public static boolean checkMapServices(Activity activity){
-        if(isServicesOK(activity)){
-            Log.i(TAG, "checkMapServices: isServices is OK");
-//            return true;
-            if(isMapsEnabled(activity)){
-                return true;
-            }
-        }
-        return false;
-    }
-
+    /**
+     * Builds an alert message for when the The GPS in not active.
+     * @param activity
+     */
     public static void buildAlertMessageNoGps(final Activity activity) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setMessage("Enable GPS to show your own location, do you want to enable it?")
@@ -57,6 +47,11 @@ public class InitLocation {
         alert.show();
     }
 
+    /**
+     * Checks if maps are enabled. Builds an alert if it is not.
+     * @param activity
+     * @return
+     */
     public static boolean isMapsEnabled(Activity activity){
         final LocationManager manager = (LocationManager) activity.getSystemService( Context.LOCATION_SERVICE );
 
@@ -67,18 +62,16 @@ public class InitLocation {
         return true;
     }
 
+    /**
+     * Checks if the app has Locations permission and asks for permission if not.
+     * @param activity The activity to use.
+     * @return True if app has permission, else false.
+     */
     public static boolean getLocationPermission(Activity activity) {
-        /*
-         * Request location permission, so that we can get the location of the
-         * device. The result of the permission request is handled by a callback,
-         * onRequestPermissionsResult.
-         */
         if (ContextCompat.checkSelfPermission(activity.getApplicationContext(),
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-//            ((MapActivity)activity).locationPermissionGranted = true;
             Log.i(TAG, "getLocationPermission: locationPermissionGranted = true");
-//            getChatrooms();
             return true;
         } else {
             ActivityCompat.requestPermissions(activity,
@@ -89,6 +82,11 @@ public class InitLocation {
         }
     }
 
+    /**
+     * Checks if google API service are present and working.
+     * @param activity The activity to use.
+     * @return True if it is working.
+     */
     public static boolean isServicesOK(Activity activity){
         Log.d(TAG, "isServicesOK: checking google services version");
 
@@ -110,5 +108,16 @@ public class InitLocation {
         return false;
     }
 
+
+    public static boolean checkMapServices(Activity activity){
+        if(isServicesOK(activity)){
+            Log.i(TAG, "checkMapServices: isServices is OK");
+//            return true;
+            if(isMapsEnabled(activity)){
+                return true;
+            }
+        }
+        return false;
+    }
 
 }

@@ -1,11 +1,8 @@
 package com.breathsafe.kth.breathsafe;
 
 import android.app.Activity;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,10 +10,9 @@ import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
 
-import com.breathsafe.kth.breathsafe.Comments.LoginActivity;
 import com.breathsafe.kth.breathsafe.Database.DatabaseTables;
 import com.breathsafe.kth.breathsafe.IO.DatabaseRead.DatabaseTask;
-import com.breathsafe.kth.breathsafe.IO.DatabaseSynchronizer;
+import com.breathsafe.kth.breathsafe.IO.DownloadAllLocationsFromStockholmOpenAPI;
 import com.breathsafe.kth.breathsafe.Maps.MapActivity;
 import com.breathsafe.kth.breathsafe.Model.AirPollution;
 import com.breathsafe.kth.breathsafe.Model.AirPollutionData;
@@ -116,8 +112,8 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
      */
     public void startDatabaseSynchronizer() {
         if (!databaseSynchronizerIsRunning) {
-            DatabaseSynchronizer databaseSynchronizer = new DatabaseSynchronizer(this);
-            databaseSynchronizer.execute();
+            DownloadAllLocationsFromStockholmOpenAPI downloadAllLocationsFromStockholmOpenAPI = new DownloadAllLocationsFromStockholmOpenAPI(this);
+            downloadAllLocationsFromStockholmOpenAPI.execute();
             databaseSynchronizerIsRunning = true;
         }
     }
@@ -159,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements AsyncTaskCallback
                     Log.i(TAG, "onDatabaseReadComplete: time to read LocationCategory: " + (now - prev));
                     Log.i(TAG, "onDatabaseReadComplete: size of LocationCategory: " + list.size());
                     if (Util.isThresholdReachedToDownloadPlaces(this)) {
-                        Log.i(TAG, "onDatabaseReadComplete: starting DatabaseSynchronizer");
+                        Log.i(TAG, "onDatabaseReadComplete: starting DownloadAllLocationsFromStockholmOpenAPI");
                         startDBSynchronizer = System.currentTimeMillis();
                         startDatabaseSynchronizer();
                     }
