@@ -4,22 +4,18 @@ import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
-import android.arch.persistence.room.TypeConverters;
 import android.arch.persistence.room.migration.Migration;
 import android.content.Context;
 import com.breathsafe.kth.breathsafe.Model.AirPollution;
-import com.breathsafe.kth.breathsafe.Model.CategoriesConverter;
 import com.breathsafe.kth.breathsafe.Model.Location;
 import com.breathsafe.kth.breathsafe.Model.LocationAndCategoryRelation;
 import com.breathsafe.kth.breathsafe.Model.LocationCategory;
 import com.breathsafe.kth.breathsafe.R;
-import com.google.android.gms.location.places.Place;
 
 /**
  * SQLite database to locally store data about Location, LocationCategory and AirPollution.
  */
-@Database(entities = {AirPollution.class,Location.class, LocationCategory.class, LocationAndCategoryRelation.class}, version = 6 )
-@TypeConverters({CategoriesConverter.class})
+@Database(entities = {AirPollution.class,Location.class, LocationCategory.class, LocationAndCategoryRelation.class}, version = 7 )
 public abstract class Repository extends RoomDatabase{
 
     public abstract AirPollutionDoa airPollutionDoa();

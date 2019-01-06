@@ -48,7 +48,7 @@ public class DatabaseTask {
         @Override
         protected Result doInBackground(Void... strings) {
             Result result = null;
-            Repository repository;
+            Repository repository = null;
             try {
     //            repository = Repository.getInstance(activity);
     //            repository.clearAllTables();
@@ -111,7 +111,8 @@ public class DatabaseTask {
                 result = new Result(tag, e);
             }
             finally {
-
+                if (repository != null)
+                    repository.close();
             }
             return result;
         }

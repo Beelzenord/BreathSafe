@@ -14,9 +14,6 @@ import java.util.List;
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
 
-//@Entity(tableName = "Location",foreignKeys = @ForeignKey(entity = LocationCategory.class,
-//        parentColumns = "id",childColumns = "childId",
-//        onDelete = CASCADE))
 @Entity(tableName = "Location")
 public class Location {
     @NonNull
@@ -67,7 +64,6 @@ public class Location {
 
     public Location(@NonNull String id, String name, long timeCreated, long timeUpdated, double latitude, double longitude, long retrieved, boolean favorite) {
         this.id = id;
-//        this.categories = categories;
         this.name = name;
         this.timeCreated = timeCreated;
         this.timeUpdated = timeUpdated;
@@ -106,38 +102,16 @@ public class Location {
         this.tmpLCID = tmpLCID;
     }
 
-    //    public Categories getCategories() {
-//        return categories;
-//    }
-
-//    public void setCategories(Categories categories) {
-//        this.categories = categories;
-//    }
-
-//    public List<String> getTmpLCID() {
-//        return tmpLCID;
-//    }
 
     public void setCategories(List<String> tmpLCID) {
         this.tmpLCID = tmpLCID;
     }
 
-    /*public void addCategory(String c) {
-            if (categories.getCategories() != null)
-                categories.getCategories().add(c);
-        }*/
     public void addTmpLCID(String c) {
         if (tmpLCID != null)
             tmpLCID.add(c);
     }
 
-    /*public boolean containsCategory(String category) {
-        for (String c : categories.getCategories()) {
-            if (c.equalsIgnoreCase(category))
-                return true;
-        }
-        return false;
-    }*/
     public boolean containsTmpLCID(String category) {
         for (String c : tmpLCID) {
             if (c.equalsIgnoreCase(category))
@@ -209,14 +183,6 @@ public class Location {
         this.retrieved = retrieved;
     }
 
-    /*public String getFirstCategory() {
-        if (categories != null) {
-            List<String> category = categories.getCategories();
-            if (category != null && category.size() > 0)
-                return category.get(0);
-        }
-        return null;
-    }*/
 
     public String getFirstTmpLCID() {
         if (tmpLCID != null) {

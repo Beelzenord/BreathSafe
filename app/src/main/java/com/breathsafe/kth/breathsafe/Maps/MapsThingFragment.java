@@ -36,7 +36,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.List;
 
-
+/**
+ * Fragment to show to google maps and air pollution for each selected location.
+ */
 public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
     private static final String TAG = "MapsThingFragment";
 
@@ -47,7 +49,6 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
     private TextView airQualityTextView;
     private Location currentLocation;
     private MenuItem favoriteMenu;
-
 
     public static MapsThingFragment newInstance() {
         return new MapsThingFragment();
@@ -117,6 +118,10 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
         return true;
     }
 
+    /**
+     * Initiates the google map.
+     * @param savedInstanceState The savedInstanceState to use.
+     */
     private void initGoogleMap(Bundle savedInstanceState){
         // *** IMPORTANT ***
         // MapView requires that the Bundle you pass contain _ONLY_ MapView SDK
@@ -130,6 +135,10 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
     }
 
 
+    /**
+     * Saves to instance when exiting the map.
+     * @param outState The state to save.
+     */
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -166,6 +175,10 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
         mMapView.onStop();
     }
 
+    /**
+     * When the map is ready, update locations on the map.
+     * @param map The google map to use.
+     */
     @Override
     public void onMapReady(GoogleMap map) {
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
@@ -173,8 +186,7 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
                 && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             Log.i(TAG, "onMapReady: failed");
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
+            // Consicer calling ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
             //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
             //                                          int[] grantResults)
@@ -202,25 +214,15 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
         if (displayList.size() > 0) {
             Location latest = displayList.get(displayList.size() - 1);
             LatLng latLng = new LatLng(latest.getLatitude(), latest.getLongitude());
-//            locationNameTextView.setText(l.getName());
             updateTextViews(latest);
             currentLocation = latest;
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14));
             map.animateCamera(CameraUpdateFactory.zoomIn());
             map.animateCamera(CameraUpdateFactory.zoomTo(14), 2000, null);
-//            CameraPosition cameraPosition = new CameraPosition.Builder()
-//                    .target(latLng)      // Sets the center of the map to Mountain View
-//                    .zoom(14)                   // Sets the zoom
-//                    .bearing(0)                // Sets the orientation of the camera to east
-//                    .tilt(0)                   // Sets the tilt of the camera to 30 degrees
-//                    .build();                   // Creates a CameraPosition from the builder
-//            map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         }
         else {
             doClearMarkers();
-            //TODO: Zoom to phones location
         }
-
 
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
@@ -240,7 +242,7 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
                     return true;
             }
         });
-        // if the map doesn't load..
+        /* if the map doesn't load, get it again */
         if (!mMapView.hasWindowFocus()) {
 //        if (!mMapView.isEnabled()) {
             Log.i(TAG, "onMapReady: NOT FOCUS");
@@ -256,6 +258,9 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
+    /**
+     * Clear all the markers from the map.
+     */
     private void doClearMarkers() {
         clearMarkers = false;
         displayOnMapList.clearList();
@@ -264,11 +269,19 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
         airQualityTextView.setTextColor(Color.BLACK);
     }
 
+    /**
+     * Updates the text views.
+     * @param location The location to use.
+     */
     private void updateTextViews(Location location) {
         locationNameTextView.setText(location.getName());
         setAirQuialityString(location.getAverageAQI());
     }
 
+    /**
+     * Sets the air quality string based of what the air quality is.
+     * @param averageAQI
+     */
     private void setAirQuialityString(double averageAQI) {
 //        Random r = new Random();
 //        averageAQI = r.nextInt(250);
@@ -318,6 +331,9 @@ public class MapsThingFragment extends Fragment implements OnMapReadyCallback {
     }
 
 
+    /**
+     * Start the LoginActivity to veryify the users identity before going to the comments.
+     */
     private void goToComments() {
         if (currentLocation == null) {
             Toast.makeText(getContext(), "Select a location first", Toast.LENGTH_SHORT).show();

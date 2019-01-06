@@ -24,12 +24,14 @@ import com.breathsafe.kth.breathsafe.Model.LocationData;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * The opening screen of the app. Contains the list of favorites, buttons for search and map.
+ * And a menu for settings, refresh locations, and About.
+ */
 public class MainFragment extends Fragment {
     private static final String TAG = "MainFragment";
     private Button searchButton;
     private Button goToMapButton;
-    private Button goToFragment;
 
     private RecyclerView recyclerView;
     private FavoritesAdapter favoritesAdapter ;
@@ -43,13 +45,6 @@ public class MainFragment extends Fragment {
         Log.i("Fragments", "MainFragment");
         View view = inflater.inflate(R.layout.main_fragment, container, false);
         setHasOptionsMenu(true);
-        /*goToFragment = (Button) view.findViewById(R.id.go_to_favourites_button);
-        goToFragment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((MainActivity)getActivity()).setmViewPagerint(0);
-            }
-        });*/
         recyclerView = view.findViewById(R.id.favorite_recyclerView);
         searchButton = (Button)view.findViewById(R.id.main_search_text);
         searchButton.setOnClickListener(new View.OnClickListener() {
@@ -67,7 +62,6 @@ public class MainFragment extends Fragment {
         });
 
         list = new ArrayList<Location>();
-        // System.out.println("list " +list.size());
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -78,6 +72,11 @@ public class MainFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Menu for this fragment.
+     * @param menu The menu to use.
+     * @param inflater
+     */
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.main_menu, menu);
@@ -107,8 +106,10 @@ public class MainFragment extends Fragment {
         return true;
     }
 
-
-
+    /**
+     * When the user goes to this fragment, update the list of favorites.
+     * @param isVisibleToUser
+     */
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
@@ -118,6 +119,10 @@ public class MainFragment extends Fragment {
         }
     }
 
+    /**
+     * Updates the list of favorites.
+     * @param newList The new list to show.
+     */
     public void updateList(List<Location> newList) {
         if (hasLoaded) {
             list.clear();
@@ -133,6 +138,9 @@ public class MainFragment extends Fragment {
         }
     }
 
+    /**
+     * When the user goes to this fragment, update the list of favorites from the database.
+     */
     @Override
     public void onResume() {
         super.onResume();
@@ -140,6 +148,5 @@ public class MainFragment extends Fragment {
         timer = System.currentTimeMillis();
         DatabaseTask.Read favorites = new DatabaseTask.Read(getActivity(), null, DatabaseTables.LOCATION_FAVORITES);
         favorites.execute();
-//        updateList(LocationData.getInstance().getList());
     }
 }
